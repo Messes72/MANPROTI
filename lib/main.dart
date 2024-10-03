@@ -13,6 +13,7 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
+        // Background app
         decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage('assets/background.jpg'),
@@ -27,6 +28,7 @@ class Home extends StatelessWidget {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  //Gambar logo yayasan
                   Container(
                     padding: const EdgeInsets.only(left: 13.0),
                     width: 120,
@@ -40,14 +42,16 @@ class Home extends StatelessWidget {
                     ),
                   ),
                   const Spacer(),
-                  Container(
-                    child: IconButton(
-                      onPressed: () {},
-                      icon: Image.asset('assets/garis tiga.jpg'),
-                    ),
+
+                  // Pencetan garis tiga
+                  IconButton(
+                    onPressed: () {},
+                    icon: Image.asset('assets/garis tiga.jpg'),
                   ),
                 ],
               ),
+
+              // Tulisan halo
               const Text(
                 'Halo, Jehezkiel Louis !',
                 style: TextStyle(
@@ -58,6 +62,8 @@ class Home extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 27.0),
+
+              //Tulisan event information
               const Text(
                 'Event Information',
                 style: TextStyle(
@@ -65,7 +71,129 @@ class Home extends StatelessWidget {
                   fontWeight: FontWeight.w700,
                   fontSize: 17,
                 ),
-              )
+              ),
+              const SizedBox(height: 15.0),
+
+              // Box gambar event
+              Padding(
+                padding: const EdgeInsets.only(right: 13.0),
+                child: Container(
+                  height: 150.0,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 2,
+                        blurRadius: 5,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: Stack(
+                    children: [
+                      PageView.builder(
+                          itemCount: 5,
+                          itemBuilder: (context, index) {
+                            return Card(
+                              margin: const EdgeInsets.all(8.0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(15),
+                                child: Image.network(
+                                  'https://via.placeholder.com/350x150',
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            );
+                          }),
+                      Positioned(
+                        bottom: 10,
+                        left: 0,
+                        right: 0,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: List.generate(
+                              5,
+                              (index) => Container(
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 2),
+                                    width: 8,
+                                    height: 8,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.grey.withOpacity(0.7),
+                                    ),
+                                  )),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 62.5),
+
+              //Menu di home screen
+              Padding(
+                padding: const EdgeInsets.only(right: 13.0),
+                child: Container(
+                  height: 250.0,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(30),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 6,
+                        blurRadius: 7,
+                      ),
+                    ],
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Column(
+                              children: [
+                                SizedBox(
+                                  height: 80,
+                                  width: 80,
+                                  child: IconButton(
+                                    onPressed: () {},
+                                    icon: Padding(
+                                      padding:
+                                          const EdgeInsets.only(right: 7.0),
+                                      child: Transform.scale(
+                                        scale: 1.6,
+                                        child: Image.asset(
+                                          'assets/icon event.png',
+                                          fit: BoxFit.contain,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const Text(
+                                  'Events',
+                                  style: TextStyle(
+                                    fontFamily: 'NunitoSans',
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
