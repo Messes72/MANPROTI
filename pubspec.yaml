@@ -60,14 +60,15 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-   - assets/
-   - assets/logo yayasan.png
-   - assets/icon event.png
-   - assets/icon article.png
-   - assets/icon information.png
-   - assets/icon donation.png
-   - assets/icon donation gallery.png
-   - assets/icon report.png
+   - assets/images/
+   - assets/logos/logo yayasan.png
+   - assets/icons/icon event.png
+   - assets/icons/icon article.png
+   - assets/icons/icon information.png
+   - assets/icons/icon donation.png
+   - assets/icons/icon donation gallery.png
+   - assets/icons/icon report.png
+   - assets/icons/garis tiga.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
@@ -83,15 +84,15 @@ flutter:
   fonts:
    - family: Montserrat
      fonts:
-       - asset: fonts/Montserrat-Bold.ttf
+       - asset: assets/fonts/Montserrat-Bold.ttf
          weight: 700 # Bold
-       - asset: fonts/Montserrat-Black.ttf
+       - asset: assets/fonts/Montserrat-Black.ttf
          weight: 900 #Black
    - family: NunitoSans
      fonts:
-       - asset: fonts/NunitoSans_10pt-Medium.ttf
+       - asset: assets/fonts/NunitoSans_7pt-Medium.ttf
          weight: 500 # Medium
-       - asset: fonts/NunitoSans-Bold.ttf
+       - asset: assets/fonts/NunitoSans-Bold.ttf
          weight: 700 # Bold
 
   #

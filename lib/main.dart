@@ -36,7 +36,7 @@ class Home extends StatelessWidget {
                     child: Transform.scale(
                       scale: 1.8,
                       child: Image.asset(
-                        'assets/logo yayasan.png',
+                        'assets/logos/logo yayasan.png',
                         fit: BoxFit.contain,
                       ),
                     ),
@@ -46,7 +46,7 @@ class Home extends StatelessWidget {
                   // Pencetan garis tiga
                   IconButton(
                     onPressed: () {},
-                    icon: Image.asset('assets/garis tiga.jpg'),
+                    icon: Image.asset('assets/icons/garis tiga.jpg'),
                   ),
                 ],
               ),
@@ -173,7 +173,7 @@ class Home extends StatelessWidget {
                                       child: Transform.scale(
                                         scale: 1.55,
                                         child: Image.asset(
-                                          'assets/icon event.png',
+                                          'assets/icons/icon event.png',
                                           fit: BoxFit.contain,
                                         ),
                                       ),
@@ -201,11 +201,11 @@ class Home extends StatelessWidget {
                                     onPressed: () {},
                                     icon: Padding(
                                       padding:
-                                          const EdgeInsets.only(left: 13.0),
+                                          const EdgeInsets.only(left: 16.0),
                                       child: Transform.scale(
-                                        scale: 1.13,
+                                        scale: 1.18,
                                         child: Image.asset(
-                                          'assets/icon article.png',
+                                          'assets/icons/icon article.png',
                                           fit: BoxFit.contain,
                                         ),
                                       ),
@@ -232,11 +232,12 @@ class Home extends StatelessWidget {
                                   child: IconButton(
                                     onPressed: () {},
                                     icon: Padding(
-                                      padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
+                                      padding: const EdgeInsets.fromLTRB(
+                                          0.0, 10.0, 0.0, 0.0),
                                       child: Transform.scale(
                                         scale: 1.12,
                                         child: Image.asset(
-                                          'assets/icon information.png',
+                                          'assets/icons/icon information.png',
                                           fit: BoxFit.contain,
                                         ),
                                       ),
@@ -271,7 +272,7 @@ class Home extends StatelessWidget {
                                       child: Transform.scale(
                                         scale: 0.95,
                                         child: Image.asset(
-                                          'assets/icon donation.png',
+                                          'assets/icons/icon donation.png',
                                           fit: BoxFit.contain,
                                         ),
                                       ),
@@ -291,7 +292,8 @@ class Home extends StatelessWidget {
 
                             // Bagian UI Donation Gallery
                             Container(
-                              margin: const EdgeInsets.fromLTRB(0.0, 6.0, 0.0, 0.0),
+                              margin:
+                                  const EdgeInsets.fromLTRB(0.0, 6.0, 3.0, 0.0),
                               child: Column(
                                 children: [
                                   SizedBox(
@@ -300,11 +302,12 @@ class Home extends StatelessWidget {
                                     child: IconButton(
                                       onPressed: () {},
                                       icon: Padding(
-                                        padding: const EdgeInsets.fromLTRB(0.0, 10.0, 1.0, 0.0),
+                                        padding: const EdgeInsets.fromLTRB(
+                                            0.0, 15.0, 1.0, 0.0),
                                         child: Transform.scale(
-                                          scale: 1.4,
+                                          scale: 1.45,
                                           child: Image.asset(
-                                            'assets/icon donation gallery.png',
+                                            'assets/icons/icon donation gallery.png',
                                             fit: BoxFit.contain,
                                           ),
                                         ),
@@ -334,11 +337,12 @@ class Home extends StatelessWidget {
                                   child: IconButton(
                                     onPressed: () {},
                                     icon: Padding(
-                                      padding: const EdgeInsets.only(right: 7.0),
+                                      padding: const EdgeInsets.fromLTRB(
+                                          0.0, 5.0, 9.0, 0.0),
                                       child: Transform.scale(
-                                        scale: 0.93,
+                                        scale: 0.85,
                                         child: Image.asset(
-                                          'assets/icon report.png',
+                                          'assets/icons/icon report.png',
                                           fit: BoxFit.contain,
                                         ),
                                       ),
@@ -365,6 +369,7 @@ class Home extends StatelessWidget {
           ),
         ),
       ),
+      // bottomNavigationBar: BottomNavigationBar(),
     );
   }
 }
