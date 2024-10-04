@@ -153,11 +153,13 @@ class Home extends StatelessWidget {
                     ],
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                    padding: const EdgeInsets.fromLTRB(22.5, 15.0, 22.5, 15.0),
                     child: Column(
                       children: [
                         Row(
+                          // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
+                            // Bagian UI Events
                             Column(
                               children: [
                                 SizedBox(
@@ -169,7 +171,7 @@ class Home extends StatelessWidget {
                                       padding:
                                           const EdgeInsets.only(right: 7.0),
                                       child: Transform.scale(
-                                        scale: 1.6,
+                                        scale: 1.55,
                                         child: Image.asset(
                                           'assets/icon event.png',
                                           fit: BoxFit.contain,
@@ -180,6 +182,171 @@ class Home extends StatelessWidget {
                                 ),
                                 const Text(
                                   'Events',
+                                  style: TextStyle(
+                                    fontFamily: 'NunitoSans',
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const Spacer(),
+
+                            // Bagian UI Article
+                            Column(
+                              children: [
+                                SizedBox(
+                                  height: 80,
+                                  width: 80,
+                                  child: IconButton(
+                                    onPressed: () {},
+                                    icon: Padding(
+                                      padding:
+                                          const EdgeInsets.only(left: 13.0),
+                                      child: Transform.scale(
+                                        scale: 1.13,
+                                        child: Image.asset(
+                                          'assets/icon article.png',
+                                          fit: BoxFit.contain,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const Text(
+                                  'Article',
+                                  style: TextStyle(
+                                    fontFamily: 'NunitoSans',
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const Spacer(),
+
+                            // Bagian UI Information
+                            Column(
+                              children: [
+                                SizedBox(
+                                  height: 80,
+                                  width: 80,
+                                  child: IconButton(
+                                    onPressed: () {},
+                                    icon: Padding(
+                                      padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
+                                      child: Transform.scale(
+                                        scale: 1.12,
+                                        child: Image.asset(
+                                          'assets/icon information.png',
+                                          fit: BoxFit.contain,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const Text(
+                                  'Information',
+                                  style: TextStyle(
+                                    fontFamily: 'NunitoSans',
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        Row(
+                          // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            // Bagian UI Donation
+                            Column(
+                              children: [
+                                SizedBox(
+                                  height: 80,
+                                  width: 80,
+                                  child: IconButton(
+                                    onPressed: () {},
+                                    icon: Padding(
+                                      padding:
+                                          const EdgeInsets.only(right: 7.0),
+                                      child: Transform.scale(
+                                        scale: 0.95,
+                                        child: Image.asset(
+                                          'assets/icon donation.png',
+                                          fit: BoxFit.contain,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const Text(
+                                  'Donation',
+                                  style: TextStyle(
+                                    fontFamily: 'NunitoSans',
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const Spacer(),
+
+                            // Bagian UI Donation Gallery
+                            Container(
+                              margin: const EdgeInsets.fromLTRB(0.0, 6.0, 0.0, 0.0),
+                              child: Column(
+                                children: [
+                                  SizedBox(
+                                    height: 80,
+                                    width: 80,
+                                    child: IconButton(
+                                      onPressed: () {},
+                                      icon: Padding(
+                                        padding: const EdgeInsets.fromLTRB(0.0, 10.0, 1.0, 0.0),
+                                        child: Transform.scale(
+                                          scale: 1.4,
+                                          child: Image.asset(
+                                            'assets/icon donation gallery.png',
+                                            fit: BoxFit.contain,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const Text(
+                                    'Donation\nGallery',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontFamily: 'NunitoSans',
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const Spacer(),
+
+                            // Bagian UI Report
+                            Column(
+                              children: [
+                                SizedBox(
+                                  height: 80,
+                                  width: 80,
+                                  child: IconButton(
+                                    onPressed: () {},
+                                    icon: Padding(
+                                      padding: const EdgeInsets.only(right: 7.0),
+                                      child: Transform.scale(
+                                        scale: 0.93,
+                                        child: Image.asset(
+                                          'assets/icon report.png',
+                                          fit: BoxFit.contain,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const Text(
+                                  'Report',
                                   style: TextStyle(
                                     fontFamily: 'NunitoSans',
                                     fontWeight: FontWeight.w500,

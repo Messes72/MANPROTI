@@ -63,6 +63,11 @@ flutter:
    - assets/
    - assets/logo yayasan.png
    - assets/icon event.png
+   - assets/icon article.png
+   - assets/icon information.png
+   - assets/icon donation.png
+   - assets/icon donation gallery.png
+   - assets/icon report.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
