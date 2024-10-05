@@ -118,16 +118,16 @@ class Home extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: List.generate(
                               5,
-                              (index) => Container(
-                                    margin: const EdgeInsets.symmetric(
-                                        horizontal: 2),
-                                    width: 8,
-                                    height: 8,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Colors.grey.withOpacity(0.7),
-                                    ),
-                                  )),
+                                  (index) => Container(
+                                margin: const EdgeInsets.symmetric(
+                                    horizontal: 2),
+                                width: 8,
+                                height: 8,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.grey.withOpacity(0.7),
+                                ),
+                              )),
                         ),
                       ),
                     ],
@@ -169,7 +169,7 @@ class Home extends StatelessWidget {
                                     onPressed: () {},
                                     icon: Padding(
                                       padding:
-                                          const EdgeInsets.only(right: 7.0),
+                                      const EdgeInsets.only(right: 7.0),
                                       child: Transform.scale(
                                         scale: 1.55,
                                         child: Image.asset(
@@ -201,7 +201,7 @@ class Home extends StatelessWidget {
                                     onPressed: () {},
                                     icon: Padding(
                                       padding:
-                                          const EdgeInsets.only(left: 16.0),
+                                      const EdgeInsets.only(left: 16.0),
                                       child: Transform.scale(
                                         scale: 1.18,
                                         child: Image.asset(
@@ -268,7 +268,7 @@ class Home extends StatelessWidget {
                                     onPressed: () {},
                                     icon: Padding(
                                       padding:
-                                          const EdgeInsets.only(right: 7.0),
+                                      const EdgeInsets.only(right: 7.0),
                                       child: Transform.scale(
                                         scale: 0.95,
                                         child: Image.asset(
@@ -293,7 +293,7 @@ class Home extends StatelessWidget {
                             // Bagian UI Donation Gallery
                             Container(
                               margin:
-                                  const EdgeInsets.fromLTRB(0.0, 6.0, 3.0, 0.0),
+                              const EdgeInsets.fromLTRB(0.0, 6.0, 3.0, 0.0),
                               child: Column(
                                 children: [
                                   SizedBox(
