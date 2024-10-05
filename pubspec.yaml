@@ -91,16 +91,19 @@ flutter:
   fonts:
     - family: Montserrat
       fonts:
-        - asset: assets/fonts/Montserrat-Bold.ttf
+        - asset: assets/fonts/Montserrat/Montserrat-Bold.ttf
           weight: 700 # Bold
-        - asset: assets/fonts/Montserrat-Black.ttf
+        - asset: assets/fonts/Montserrat/Montserrat-Black.ttf
           weight: 900 #Black
     - family: NunitoSans
       fonts:
-        - asset: assets/fonts/NunitoSans_7pt-Medium.ttf
+        - asset: assets/fonts/NunitoSans/NunitoSans_7pt-Medium.ttf
           weight: 500 # Medium
-        - asset: assets/fonts/NunitoSans-Bold.ttf
+        - asset: assets/fonts/NunitoSans/NunitoSans-Bold.ttf
           weight: 700 # Bold
+        - asset: assets/fonts/NunitoSans/NunitoSans_7pt-ExtraBold.ttf
+        - weight: 800 # ExtraBold
+
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
