@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:manpro/features/Login/Tampilan/widgets/login_form.dart';
+import 'package:manpro/features/bagian_awal/tampilan/login/widgets/login_form.dart';
 
 class IsiLogin extends StatelessWidget {
   const IsiLogin({
