@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:manpro/features/bagian_awal/tampilan/signup/widgets/signup_form.dart';
+import 'package:manpro/features/bagian_awal/tampilan/forget_password/widgets/fp_form.dart';
 
-class IsiSignup extends StatelessWidget {
-  const IsiSignup({
+
+class IsiFp extends StatelessWidget {
+  const IsiFp({
     super.key,
   });
 
@@ -10,7 +11,7 @@ class IsiSignup extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.fromLTRB(30.0, 0.0, 30.0, 0.0),
-      height: 550.0,
+      height: 230.0,
       decoration: BoxDecoration(
         color: Colors.indigo[100],
         borderRadius: BorderRadius.circular(40.0),
@@ -33,43 +34,21 @@ class IsiSignup extends StatelessWidget {
           children: [
             // Bagian tulisan login
             const Text(
-              'Sign Up',
+              'Forget Password',
               style: TextStyle(
                 fontFamily: 'NunitoSans',
                 fontWeight: FontWeight.w800,
                 fontSize: 20.0,
               ),
             ),
+            SizedBox(height: 10.0),
 
             // Bagian text field
             const SizedBox(
               height: 60.0,
-              child: CTextField(label: 'Username'),
+              child: CTextField(label: 'Masukkan Email/No. Telpon'),
             ),
-            const SizedBox(
-              height: 60.0,
-              child: CTextField(label: 'Alamat'),
-            ),
-            const SizedBox(
-              height: 60.0,
-              child: CTextField(label: 'Email'),
-            ),
-            const SizedBox(
-              height: 60.0,
-              child: CTextField(label: 'No. Telpon'),
-            ),
-            const SizedBox(
-              height: 60.0,
-              child: CTextField(label: 'Tanggal Lahir'),
-            ),
-            const SizedBox(
-              height: 60.0,
-              child: CTextField(label: 'Password', isPassword: true),
-            ),
-            const SizedBox(
-              height: 60.0,
-              child: CTextField(label: 'Re-confirm Password', isPassword: true),
-            ),
+            SizedBox(height: 10.0),
 
             // Bagian tombol
             SizedBox(

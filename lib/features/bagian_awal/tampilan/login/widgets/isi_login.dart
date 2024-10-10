@@ -29,6 +29,7 @@ class IsiLogin extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.fromLTRB(15.0, 13.0, 13.0, 15.0),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             // Bagian tulisan login
             const Text(
@@ -39,7 +40,6 @@ class IsiLogin extends StatelessWidget {
                 fontSize: 20.0,
               ),
             ),
-            const SizedBox(height: 10.0),
 
             // Bagian text field
             const SizedBox(
@@ -50,7 +50,6 @@ class IsiLogin extends StatelessWidget {
               height: 60.0,
               child: CTextField(label: 'Password', isPassword: true),
             ),
-            const Spacer(),
 
             // Bagian tombol
             SizedBox(
