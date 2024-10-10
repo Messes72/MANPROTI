@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:manpro/features/bagian_awal/controller/login_controller.dart';
-import 'package:manpro/features/bagian_awal/tampilan/login/widgets/background_app.dart';
+import 'package:manpro/common/widgets/background_app.dart';
 import 'package:manpro/features/bagian_awal/tampilan/login/widgets/isi_login.dart';
-import 'package:manpro/features/bagian_awal/tampilan/login/widgets/logo_app.dart';
-import 'package:manpro/features/bagian_awal/tampilan/login/widgets/tulisan_bawah.dart';
+import 'package:manpro/features/bagian_awal/tampilan/login/widgets/login_logo_app.dart';
+import 'package:manpro/features/bagian_awal/tampilan/login/widgets/login_tulisan_bawah.dart';
 
 class Login extends StatelessWidget {
   const Login({super.key});
@@ -27,14 +27,14 @@ class Login extends StatelessWidget {
                 child: Column(
                   children: [
                     // Gambar logo
-                    LogoApp(),
+                    LoginLogoApp(),
 
                     // Bagian login
                     IsiLogin(),
                     SizedBox(height: 20.0),
 
                     // Bagian tulisan bawah
-                    TulisanBawah()
+                    LoginTulisanBawah(),
                   ],
                 ),
               ),

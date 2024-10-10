@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class TulisanBawah extends StatelessWidget {
-  const TulisanBawah({
+class LoginTulisanBawah extends StatelessWidget {
+  const LoginTulisanBawah({
     super.key,
   });
 
@@ -23,29 +23,39 @@ class TulisanBawah extends StatelessWidget {
             ),
             TextButton(
               onPressed: () {},
+              style: TextButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                minimumSize: const Size(100, 40),
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
               child: const Text(
                 ' Sign Up Here',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontFamily: 'NunitoSans',
                   fontWeight: FontWeight.w500,
+                  fontSize: 14.0,
                   letterSpacing: -0.5,
                 ),
               ),
             ),
           ],
         ),
-        Container(
-          child: TextButton(
-            onPressed: () {},
-            child: const Text(
-              'Forgot Password ?',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: 'NunitoSans',
-                fontWeight: FontWeight.w500,
-                letterSpacing: -0.5,
-              ),
+        TextButton(
+          onPressed: () {},
+          style: TextButton.styleFrom(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+            minimumSize: const Size(100, 40),
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
+          child: const Text(
+            'Forgot Password ?',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontFamily: 'NunitoSans',
+              fontWeight: FontWeight.w500,
+              fontSize: 14.0,
+              letterSpacing: -0.5,
             ),
           ),
         ),

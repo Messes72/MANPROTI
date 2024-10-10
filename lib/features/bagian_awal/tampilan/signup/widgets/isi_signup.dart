@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:manpro/features/bagian_awal/tampilan/login/widgets/login_form.dart';
+import 'package:manpro/features/bagian_awal/tampilan/signup/widgets/signup_form.dart';
 
-class IsiLogin extends StatelessWidget {
-  const IsiLogin({
+class IsiSignup extends StatelessWidget {
+  const IsiSignup({
     super.key,
   });
 
@@ -10,7 +10,7 @@ class IsiLogin extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.fromLTRB(30.0, 0.0, 30.0, 0.0),
-      height: 250.0,
+      height: 550.0,
       decoration: BoxDecoration(
         color: Colors.indigo[100],
         borderRadius: BorderRadius.circular(40.0),
@@ -32,7 +32,7 @@ class IsiLogin extends StatelessWidget {
           children: [
             // Bagian tulisan login
             const Text(
-              'Login',
+              'Sign Up',
               style: TextStyle(
                 fontFamily: 'NunitoSans',
                 fontWeight: FontWeight.w800,
@@ -48,9 +48,29 @@ class IsiLogin extends StatelessWidget {
             ),
             const SizedBox(
               height: 60.0,
+              child: CTextField(label: 'Alamat'),
+            ),
+            const SizedBox(
+              height: 60.0,
+              child: CTextField(label: 'Email'),
+            ),
+            const SizedBox(
+              height: 60.0,
+              child: CTextField(label: 'No. Telpon'),
+            ),
+            const SizedBox(
+              height: 60.0,
+              child: CTextField(label: 'Tanggal Lahir'),
+            ),
+            const SizedBox(
+              height: 60.0,
               child: CTextField(label: 'Password', isPassword: true),
             ),
-            const Spacer(),
+            const SizedBox(
+              height: 60.0,
+              child: CTextField(label: 'Re-confirm Password', isPassword: true),
+            ),
+            Spacer(),
 
             // Bagian tombol
             SizedBox(
@@ -58,7 +78,7 @@ class IsiLogin extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () {},
                 child: const Text(
-                  'Login',
+                  'Confirm',
                   style: TextStyle(
                     fontFamily: 'NunitoSans',
                     fontWeight: FontWeight.w500,
