@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:manpro/features/bagian_awal/tampilan/login/login.dart';
 
 class FpTulisanBawah extends StatelessWidget {
   const FpTulisanBawah({
@@ -22,7 +24,7 @@ class FpTulisanBawah extends StatelessWidget {
               ),
             ),
             TextButton(
-              onPressed: () {},
+              onPressed: () => Get.to(() => const Login()),
               style: TextButton.styleFrom(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),

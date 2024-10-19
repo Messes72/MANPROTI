@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:manpro/features/bagian_awal/tampilan/login/login.dart';
 
 class RspTulisanBawah extends StatelessWidget {
   const RspTulisanBawah({
@@ -12,7 +14,7 @@ class RspTulisanBawah extends StatelessWidget {
       child: Row(
         children: [
           ElevatedButton.icon(
-            onPressed: () {},
+            onPressed: () => Get.to(() => const Login()),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.blue[200],
               padding:

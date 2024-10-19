@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:manpro/features/bagian_awal/tampilan/login/login.dart';
 import 'package:manpro/features/bagian_awal/tampilan/signup/widgets/signup_form.dart';
 
 class IsiSignup extends StatelessWidget {
@@ -42,40 +44,82 @@ class IsiSignup extends StatelessWidget {
             ),
 
             // Bagian text field
-            const SizedBox(
-              height: 60.0,
-              child: CTextField(label: 'Username'),
-            ),
-            const SizedBox(
-              height: 60.0,
-              child: CTextField(label: 'Alamat'),
-            ),
-            const SizedBox(
-              height: 60.0,
-              child: CTextField(label: 'Email'),
-            ),
-            const SizedBox(
-              height: 60.0,
-              child: CTextField(label: 'No. Telpon'),
-            ),
-            const SizedBox(
-              height: 60.0,
-              child: CTextField(label: 'Tanggal Lahir'),
-            ),
-            const SizedBox(
-              height: 60.0,
-              child: CTextField(label: 'Password', isPassword: true),
-            ),
-            const SizedBox(
-              height: 60.0,
-              child: CTextField(label: 'Re-confirm Password', isPassword: true),
+            Form(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  TextFormField(
+                    decoration: const InputDecoration(
+                      labelText: 'Username',
+                      labelStyle: TextStyle(
+                          fontFamily: 'NunitoSans',
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14.0),
+                    ),
+                  ),
+                  TextFormField(
+                    decoration: const InputDecoration(
+                      labelText: 'Alamat',
+                      labelStyle: TextStyle(
+                          fontFamily: 'NunitoSans',
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14.0),
+                    ),
+                  ),
+                  TextFormField(
+                    decoration: const InputDecoration(
+                      labelText: 'Email',
+                      labelStyle: TextStyle(
+                          fontFamily: 'NunitoSans',
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14.0),
+                    ),
+                  ),
+                  TextFormField(
+                    decoration: const InputDecoration(
+                      labelText: 'No. Telpon',
+                      labelStyle: TextStyle(
+                          fontFamily: 'NunitoSans',
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14.0),
+                    ),
+                  ),
+                  TextFormField(
+                    decoration: const InputDecoration(
+                      labelText: 'Tanggal Lahir',
+                      labelStyle: TextStyle(
+                          fontFamily: 'NunitoSans',
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14.0),
+                    ),
+                  ),
+                  TextFormField(
+                    decoration: const InputDecoration(
+                      labelText: 'Password',
+                      labelStyle: TextStyle(
+                          fontFamily: 'NunitoSans',
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14.0),
+                    ),
+                  ),
+                  TextFormField(
+                    decoration: const InputDecoration(
+                      labelText: 'Re-confirm Password',
+                      labelStyle: TextStyle(
+                          fontFamily: 'NunitoSans',
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14.0),
+                    ),
+                  ),
+                ],
+              ),
             ),
 
             // Bagian tombol
             SizedBox(
               width: 170.0,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () => Get.to(() => const Login()),
                 child: const Text(
                   'Confirm',
                   style: TextStyle(

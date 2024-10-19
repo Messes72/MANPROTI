@@ -15,4 +15,9 @@ class YPKImages {
   static const String icon_donation = 'assets/icons/icon donation.png';
   static const String icon_donation_gallery = 'assets/icons/icon donation gallery.png';
   static const String icon_report = 'assets/icons/icon report.png';
+  static const String icon_forum = 'assets/icons/forum.png';
+  static const String icon_profile_yayasan = 'assets/icons/profile yayasan.png';
+  static const String icon_contact = 'assets/icons/contact.png';
+  static const String icon_history = 'assets/icons/history.png';
+  static const String icon_back_button = 'assets/icons/back button.png';
 }

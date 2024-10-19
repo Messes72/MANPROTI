@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:manpro/features/bagian_awal/tampilan/forget_password/forget_password.dart';
+import 'package:manpro/features/bagian_awal/tampilan/signup/signup.dart';
 
 class LoginTulisanBawah extends StatelessWidget {
   const LoginTulisanBawah({
@@ -22,7 +25,7 @@ class LoginTulisanBawah extends StatelessWidget {
               ),
             ),
             TextButton(
-              onPressed: () {},
+              onPressed: () => Get.to(() => const Signup()),
               style: TextButton.styleFrom(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                 minimumSize: const Size(100, 40),
@@ -42,7 +45,7 @@ class LoginTulisanBawah extends StatelessWidget {
           ],
         ),
         TextButton(
-          onPressed: () {},
+          onPressed: () => Get.to(() => const ForgetPassword()),
           style: TextButton.styleFrom(
             padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
             minimumSize: const Size(100, 40),

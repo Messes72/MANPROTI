@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:manpro/features/bagian_awal/tampilan/forget_password/widgets/fp_form.dart';
-
+import 'package:manpro/features/bagian_awal/tampilan/resubmission_password/resubmission_password.dart';
 
 class IsiFp extends StatelessWidget {
   const IsiFp({
@@ -41,20 +42,32 @@ class IsiFp extends StatelessWidget {
                 fontSize: 20.0,
               ),
             ),
-            SizedBox(height: 10.0),
+            const SizedBox(height: 10.0),
 
             // Bagian text field
-            const SizedBox(
-              height: 60.0,
-              child: CTextField(label: 'Masukkan Email/No. Telpon'),
+            Form(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  TextFormField(
+                    decoration: const InputDecoration(
+                      labelText: 'Masukkan Email/No.Telpon',
+                      labelStyle: TextStyle(
+                          fontFamily: 'NunitoSans',
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14.0),
+                    ),
+                  ),
+                ],
+              ),
             ),
-            SizedBox(height: 10.0),
+            const SizedBox(height: 10.0),
 
             // Bagian tombol
             SizedBox(
               width: 170.0,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () => Get.to(() => const ResubmissionPassword()),
                 child: const Text(
                   'Confirm',
                   style: TextStyle(

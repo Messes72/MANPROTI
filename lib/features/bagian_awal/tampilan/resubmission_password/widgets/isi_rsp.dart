@@ -40,18 +40,35 @@ class IsiRsp extends StatelessWidget {
                 fontSize: 20.0,
               ),
             ),
-            SizedBox(height: 10.0),
+            const SizedBox(height: 10.0),
 
             // Bagian text field
-            const SizedBox(
-              height: 60.0,
-              child: CTextField(label: 'Masukkan password baru'),
+            Form(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  TextFormField(
+                    decoration: const InputDecoration(
+                      labelText: 'Masukkan password baru',
+                      labelStyle: TextStyle(
+                          fontFamily: 'NunitoSans',
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14.0),
+                    ),
+                  ),
+                  TextFormField(
+                    decoration: const InputDecoration(
+                      labelText: 'Masukkan ulang password baru',
+                      labelStyle: TextStyle(
+                          fontFamily: 'NunitoSans',
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14.0),
+                    ),
+                  ),
+                ],
+              ),
             ),
-            const SizedBox(
-              height: 60.0,
-              child: CTextField(label: 'Masukkan ulang password baru'),
-            ),
-            SizedBox(height: 10.0),
+            const SizedBox(height: 10.0),
 
             // Bagian tombol
             SizedBox(

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:manpro/features/bagian_awal/tampilan/login/widgets/login_form.dart';
+import 'package:manpro/features/bagian_utama/Tampilan/home/home.dart';
+import 'package:manpro/navbar.dart';
 
 class IsiLogin extends StatelessWidget {
   const IsiLogin({
@@ -42,20 +45,46 @@ class IsiLogin extends StatelessWidget {
             ),
 
             // Bagian text field
-            const SizedBox(
-              height: 60.0,
-              child: CTextField(label: 'Username'),
-            ),
-            const SizedBox(
-              height: 60.0,
-              child: CTextField(label: 'Password', isPassword: true),
+            // const SizedBox(
+            //   height: 60.0,
+            //   child: CTextField(label: 'Username'),
+            // ),
+            // const SizedBox(
+            //   height: 60.0,
+            //   child: CTextField(label: 'Password', isPassword: true),
+            // ),
+
+            Form(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  TextFormField(
+                    decoration: const InputDecoration(
+                      labelText: 'Username',
+                      labelStyle: TextStyle(
+                          fontFamily: 'NunitoSans',
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14.0),
+                    ),
+                  ),
+                  TextFormField(
+                    decoration: const InputDecoration(
+                      labelText: 'Password',
+                      labelStyle: TextStyle(
+                          fontFamily: 'NunitoSans',
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14.0),
+                    ),
+                  ),
+                ],
+              ),
             ),
 
             // Bagian tombol
             SizedBox(
               width: 170.0,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () => Get.to(() => const Navbar()),
                 child: const Text(
                   'Login',
                   style: TextStyle(

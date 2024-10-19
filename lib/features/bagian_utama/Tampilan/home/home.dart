@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:manpro/features/bagian_awal/tampilan/login/login.dart';
+import 'package:manpro/features/bagian_utama/Tampilan/profile_yayasan/profile_yayasan.dart';
+import 'package:manpro/utils/constants/image_string.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
@@ -134,7 +138,7 @@ class Home extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(right: 13.0),
                 child: Container(
-                  height: 250.0,
+                  height: 275.0,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(30),
@@ -160,7 +164,7 @@ class Home extends StatelessWidget {
                                   height: 80,
                                   width: 80,
                                   child: IconButton(
-                                    onPressed: () {},
+                                    onPressed: () => Get.to(() => Login()),
                                     icon: Padding(
                                       padding:
                                           const EdgeInsets.only(right: 7.0),
@@ -181,6 +185,7 @@ class Home extends StatelessWidget {
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
+                                SizedBox(height: 10.0),
                               ],
                             ),
                             const Spacer(),
@@ -195,7 +200,7 @@ class Home extends StatelessWidget {
                                     onPressed: () {},
                                     icon: Padding(
                                       padding:
-                                          const EdgeInsets.only(left: 16.0),
+                                          const EdgeInsets.fromLTRB(13.0, 0.0, 0.0, 3.0),
                                       child: Transform.scale(
                                         scale: 1.18,
                                         child: Image.asset(
@@ -213,25 +218,26 @@ class Home extends StatelessWidget {
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
+                                SizedBox(height: 10.0),
                               ],
                             ),
                             const Spacer(),
 
-                            // Bagian UI Information
+                            // Bagian UI Profile Yayasan
                             Column(
                               children: [
                                 SizedBox(
                                   height: 80,
                                   width: 80,
                                   child: IconButton(
-                                    onPressed: () {},
+                                    onPressed: () => Get.to(() => ProfileYayasan()),
                                     icon: Padding(
                                       padding: const EdgeInsets.fromLTRB(
-                                          0.0, 10.0, 0.0, 0.0),
+                                          3.0, 0.0, 0.0, 0.0),
                                       child: Transform.scale(
-                                        scale: 1.12,
+                                        scale: 1.28,
                                         child: Image.asset(
-                                          'assets/icons/icon information.png',
+                                          YPKImages.icon_profile_yayasan,
                                           fit: BoxFit.contain,
                                         ),
                                       ),
@@ -239,10 +245,11 @@ class Home extends StatelessWidget {
                                   ),
                                 ),
                                 const Text(
-                                  'Information',
+                                  'Profile\nYayasan',
                                   style: TextStyle(
                                     fontFamily: 'NunitoSans',
                                     fontWeight: FontWeight.w500,
+                                    fontSize: 12.0,
                                   ),
                                 ),
                               ],
@@ -280,6 +287,7 @@ class Home extends StatelessWidget {
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
+                                SizedBox(height: 10.0),
                               ],
                             ),
                             const Spacer(),
@@ -350,6 +358,7 @@ class Home extends StatelessWidget {
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
+                                SizedBox(height: 10.0),
                               ],
                             ),
                           ],
