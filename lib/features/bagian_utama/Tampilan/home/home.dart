@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:manpro/features/bagian_awal/tampilan/login/login.dart';
+import 'package:manpro/features/bagian_utama/Tampilan/article/article.dart';
 import 'package:manpro/features/bagian_utama/Tampilan/profile_yayasan/profile_yayasan.dart';
 import 'package:manpro/utils/constants/image_string.dart';
 
@@ -197,7 +198,7 @@ class Home extends StatelessWidget {
                                   height: 80,
                                   width: 80,
                                   child: IconButton(
-                                    onPressed: () {},
+                                    onPressed: () => Get.to(() => Article()),
                                     icon: Padding(
                                       padding:
                                           const EdgeInsets.fromLTRB(13.0, 0.0, 0.0, 3.0),

@@ -20,4 +20,7 @@ class YPKImages {
   static const String icon_contact = 'assets/icons/contact.png';
   static const String icon_history = 'assets/icons/history.png';
   static const String icon_back_button = 'assets/icons/back button.png';
+
+  // -- App Images
+static const String gbr_event1 = 'assets/images/event1.jpg';
 }
