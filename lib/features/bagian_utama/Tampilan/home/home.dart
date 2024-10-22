@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:manpro/features/bagian_awal/tampilan/login/login.dart';
+import 'package:manpro/features/bagian_utama/Tampilan/profile/profile.dart';
 import 'package:manpro/features/bagian_utama/Tampilan/profile_yayasan/profile_yayasan.dart';
 import 'package:manpro/utils/constants/image_string.dart';
 
@@ -10,6 +11,68 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      endDrawer: Drawer(  // Changed from drawer to endDrawer
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,  // Customize header background
+              ),
+              child: Column(
+                children: [
+                  CircleAvatar(
+                    radius: 40.0,
+                    backgroundImage: NetworkImage('https://via.placeholder.com/150'), // Replace with real image
+                  ),
+                  SizedBox(height: 10.0),
+                  Text(
+                    "Jehezkiel Louis", // User's name
+                    style: TextStyle(color: Colors.white, fontSize: 18.0),
+                  ),
+                ],
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.person),
+              title: Text('My Profile'),
+              onTap: () {
+                Get.to(() => Profile());  // Navigate to profile page
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.home),
+              title: Text('Home'),
+              onTap: () {
+                Navigator.pop(context);  // Close drawer and stay on home
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.event),
+              title: Text('Attending Event'),
+              onTap: () {
+                Get.to(() => Login());  // Example navigation to Login or other page
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.info),
+              title: Text('About Us'),
+              onTap: () {
+                Get.to(() => ProfileYayasan());
+                // Navigate to About Us page
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.logout),
+              title: Text('Logout'),
+              onTap: () {
+                // Perform logout logic here
+                Get.to(() => Login());
+              },
+            ),
+          ],
+        ),
+      ),
       body: Container(
         // Background app
         decoration: const BoxDecoration(
@@ -26,7 +89,7 @@ class Home extends StatelessWidget {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  //Gambar logo yayasan
+                  // Gambar logo yayasan
                   Container(
                     padding: const EdgeInsets.only(left: 13.0),
                     width: 120,
@@ -41,14 +104,17 @@ class Home extends StatelessWidget {
                   ),
                   const Spacer(),
 
-                  // Pencetan garis tiga
-                  IconButton(
-                    onPressed: () {},
-                    icon: Image.asset('assets/icons/garis tiga.jpg'),
+                  // Pencetan garis tiga (Hamburger icon)
+                  Builder(
+                    builder: (context) => IconButton(
+                      onPressed: () {
+                        Scaffold.of(context).openEndDrawer();  // This opens the drawer from the right
+                      },
+                      icon: Icon(Icons.menu),  // Use the hamburger menu icon
+                    ),
                   ),
                 ],
               ),
-
               // Tulisan halo
               const Text(
                 'Halo, Jehezkiel Louis !',
@@ -61,7 +127,7 @@ class Home extends StatelessWidget {
               ),
               const SizedBox(height: 27.0),
 
-              //Tulisan event information
+              // Tulisan event information
               const Text(
                 'Event Information',
                 style: TextStyle(
@@ -92,22 +158,23 @@ class Home extends StatelessWidget {
                   child: Stack(
                     children: [
                       PageView.builder(
-                          itemCount: 5,
-                          itemBuilder: (context, index) {
-                            return Card(
-                              margin: const EdgeInsets.all(8.0),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15),
+                        itemCount: 5,
+                        itemBuilder: (context, index) {
+                          return Card(
+                            margin: const EdgeInsets.all(8.0),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(15),
+                              child: Image.network(
+                                'https://via.placeholder.com/350x150',
+                                fit: BoxFit.cover,
                               ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(15),
-                                child: Image.network(
-                                  'https://via.placeholder.com/350x150',
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            );
-                          }),
+                            ),
+                          );
+                        },
+                      ),
                       Positioned(
                         bottom: 10,
                         left: 0,
@@ -115,17 +182,17 @@ class Home extends StatelessWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: List.generate(
-                              5,
-                              (index) => Container(
-                                    margin: const EdgeInsets.symmetric(
-                                        horizontal: 2),
-                                    width: 8,
-                                    height: 8,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Colors.grey.withOpacity(0.7),
-                                    ),
-                                  )),
+                            5,
+                                (index) => Container(
+                              margin: const EdgeInsets.symmetric(horizontal: 2),
+                              width: 8,
+                              height: 8,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.grey.withOpacity(0.7),
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ],
@@ -155,7 +222,6 @@ class Home extends StatelessWidget {
                     child: Column(
                       children: [
                         Row(
-                          // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             // Bagian UI Events
                             Column(
@@ -167,7 +233,7 @@ class Home extends StatelessWidget {
                                     onPressed: () => Get.to(() => Login()),
                                     icon: Padding(
                                       padding:
-                                          const EdgeInsets.only(right: 7.0),
+                                      const EdgeInsets.only(right: 7.0),
                                       child: Transform.scale(
                                         scale: 1.55,
                                         child: Image.asset(
@@ -185,7 +251,6 @@ class Home extends StatelessWidget {
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
-                                SizedBox(height: 10.0),
                               ],
                             ),
                             const Spacer(),
@@ -200,7 +265,7 @@ class Home extends StatelessWidget {
                                     onPressed: () {},
                                     icon: Padding(
                                       padding:
-                                          const EdgeInsets.fromLTRB(13.0, 0.0, 0.0, 3.0),
+                                      const EdgeInsets.fromLTRB(13.0, 0.0, 0.0, 3.0),
                                       child: Transform.scale(
                                         scale: 1.18,
                                         child: Image.asset(
@@ -218,7 +283,6 @@ class Home extends StatelessWidget {
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
-                                SizedBox(height: 10.0),
                               ],
                             ),
                             const Spacer(),
@@ -257,7 +321,6 @@ class Home extends StatelessWidget {
                           ],
                         ),
                         Row(
-                          // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             // Bagian UI Donation
                             Column(
@@ -266,12 +329,12 @@ class Home extends StatelessWidget {
                                   height: 80,
                                   width: 80,
                                   child: IconButton(
-                                    onPressed: () {},
+                                    onPressed: () => Get.to(() => Login()),
                                     icon: Padding(
-                                      padding:
-                                          const EdgeInsets.only(right: 7.0),
+                                      padding: const EdgeInsets.fromLTRB(
+                                          0.0, 2.0, 0.0, 1.0),
                                       child: Transform.scale(
-                                        scale: 0.95,
+                                        scale: 1.28,
                                         child: Image.asset(
                                           'assets/icons/icon donation.png',
                                           fit: BoxFit.contain,
@@ -287,46 +350,39 @@ class Home extends StatelessWidget {
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
-                                SizedBox(height: 10.0),
                               ],
                             ),
                             const Spacer(),
 
-                            // Bagian UI Donation Gallery
-                            Container(
-                              margin:
-                                  const EdgeInsets.fromLTRB(0.0, 6.0, 3.0, 0.0),
-                              child: Column(
-                                children: [
-                                  SizedBox(
-                                    height: 80,
-                                    width: 80,
-                                    child: IconButton(
-                                      onPressed: () {},
-                                      icon: Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            0.0, 15.0, 1.0, 0.0),
-                                        child: Transform.scale(
-                                          scale: 1.45,
-                                          child: Image.asset(
-                                            'assets/icons/icon donation gallery.png',
-                                            fit: BoxFit.contain,
-                                          ),
+                            // Bagian UI Agenda
+                            Column(
+                              children: [
+                                SizedBox(
+                                  height: 80,
+                                  width: 80,
+                                  child: IconButton(
+                                    onPressed: () {},
+                                    icon: Padding(
+                                      padding:
+                                      const EdgeInsets.fromLTRB(13.0, 2.0, 0.0, 0.0),
+                                      child: Transform.scale(
+                                        scale: 1.18,
+                                        child: Image.asset(
+                                          'assets/icons/icon agenda.png',
+                                          fit: BoxFit.contain,
                                         ),
                                       ),
                                     ),
                                   ),
-                                  const Text(
-                                    'Donation\nGallery',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontFamily: 'NunitoSans',
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 12,
-                                    ),
+                                ),
+                                const Text(
+                                  'Agenda',
+                                  style: TextStyle(
+                                    fontFamily: 'NunitoSans',
+                                    fontWeight: FontWeight.w500,
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                             const Spacer(),
 
@@ -340,9 +396,9 @@ class Home extends StatelessWidget {
                                     onPressed: () {},
                                     icon: Padding(
                                       padding: const EdgeInsets.fromLTRB(
-                                          0.0, 5.0, 9.0, 0.0),
+                                          0.0, 0.0, 3.0, 0.0),
                                       child: Transform.scale(
-                                        scale: 0.85,
+                                        scale: 1.1,
                                         child: Image.asset(
                                           'assets/icons/icon report.png',
                                           fit: BoxFit.contain,
@@ -358,7 +414,6 @@ class Home extends StatelessWidget {
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
-                                SizedBox(height: 10.0),
                               ],
                             ),
                           ],
@@ -372,7 +427,6 @@ class Home extends StatelessWidget {
           ),
         ),
       ),
-      // bottomNavigationBar: BottomNavigationBar(),
     );
   }
 }
