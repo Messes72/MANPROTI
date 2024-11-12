@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:manpro/features/bagian_awal/tampilan/login/login.dart';
 import 'package:manpro/features/bagian_utama/Tampilan/article/article.dart';
+import 'package:manpro/features/bagian_utama/Tampilan/donation/donation.dart';
+import 'package:manpro/features/bagian_utama/Tampilan/event/event.dart';
 import 'package:manpro/features/bagian_utama/Tampilan/profile_yayasan/profile_yayasan.dart';
 import 'package:manpro/utils/constants/image_string.dart';
 
@@ -102,8 +103,8 @@ class Home extends StatelessWidget {
                               ),
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(15),
-                                child: Image.network(
-                                  'https://via.placeholder.com/350x150',
+                                child: Image.asset(
+                                  YPKImages.gbr_event1,
                                   fit: BoxFit.cover,
                                 ),
                               ),
@@ -133,7 +134,7 @@ class Home extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 62.5),
+              const SizedBox(height: 37.5),
 
               //Menu di home screen
               Padding(
@@ -165,7 +166,8 @@ class Home extends StatelessWidget {
                                   height: 80,
                                   width: 80,
                                   child: IconButton(
-                                    onPressed: () => Get.to(() => Login()),
+                                    onPressed: () =>
+                                        Get.to(() => const Event()),
                                     icon: Padding(
                                       padding:
                                           const EdgeInsets.only(right: 7.0),
@@ -186,7 +188,7 @@ class Home extends StatelessWidget {
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
-                                SizedBox(height: 10.0),
+                                const SizedBox(height: 10.0),
                               ],
                             ),
                             const Spacer(),
@@ -198,10 +200,11 @@ class Home extends StatelessWidget {
                                   height: 80,
                                   width: 80,
                                   child: IconButton(
-                                    onPressed: () => Get.to(() => Article()),
+                                    onPressed: () =>
+                                        Get.to(() => const Article()),
                                     icon: Padding(
-                                      padding:
-                                          const EdgeInsets.fromLTRB(13.0, 0.0, 0.0, 3.0),
+                                      padding: const EdgeInsets.fromLTRB(
+                                          13.0, 0.0, 0.0, 3.0),
                                       child: Transform.scale(
                                         scale: 1.18,
                                         child: Image.asset(
@@ -219,7 +222,7 @@ class Home extends StatelessWidget {
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
-                                SizedBox(height: 10.0),
+                                const SizedBox(height: 10.0),
                               ],
                             ),
                             const Spacer(),
@@ -231,7 +234,8 @@ class Home extends StatelessWidget {
                                   height: 80,
                                   width: 80,
                                   child: IconButton(
-                                    onPressed: () => Get.to(() => ProfileYayasan()),
+                                    onPressed: () =>
+                                        Get.to(() => const ProfileYayasan()),
                                     icon: Padding(
                                       padding: const EdgeInsets.fromLTRB(
                                           3.0, 0.0, 0.0, 0.0),
@@ -267,7 +271,7 @@ class Home extends StatelessWidget {
                                   height: 80,
                                   width: 80,
                                   child: IconButton(
-                                    onPressed: () {},
+                                    onPressed: () => Get.to(() => Donation()),
                                     icon: Padding(
                                       padding:
                                           const EdgeInsets.only(right: 7.0),
@@ -288,7 +292,7 @@ class Home extends StatelessWidget {
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
-                                SizedBox(height: 10.0),
+                                const SizedBox(height: 10.0),
                               ],
                             ),
                             const Spacer(),
@@ -359,7 +363,7 @@ class Home extends StatelessWidget {
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
-                                SizedBox(height: 10.0),
+                                const SizedBox(height: 10.0),
                               ],
                             ),
                           ],

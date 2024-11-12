@@ -1,7 +1,5 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:manpro/common/widgets/background_app.dart';
-import 'package:manpro/features/bagian_awal/tampilan/login/login.dart';
 
 // import 'package:manpro/features/bagian_awal/tampilan/signup/widgets/isi_signup.dart';
 import 'package:manpro/features/bagian_awal/tampilan/signup/widgets/signup_logo_app.dart';
@@ -181,11 +179,11 @@ class Signup extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SizedBox(height: 20.0),
+                    const SizedBox(height: 20.0),
 
                     // Bagian tulisan bawah
-                    SignupTulisanBawah(),
-                    SizedBox(height: 100.0)
+                    const SignupTulisanBawah(),
+                    const SizedBox(height: 100.0)
                   ],
                 ),
               ),

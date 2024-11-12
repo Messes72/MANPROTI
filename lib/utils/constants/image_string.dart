@@ -1,6 +1,5 @@
 // List of images in the app
 class YPKImages {
-
   // -- App Background
   static const String background = 'assets/images/background.jpg';
 
@@ -13,7 +12,8 @@ class YPKImages {
   static const String icon_article = 'assets/icons/icon article.png';
   static const String icon_information = 'assets/icons/icon information.png';
   static const String icon_donation = 'assets/icons/icon donation.png';
-  static const String icon_donation_gallery = 'assets/icons/icon donation gallery.png';
+  static const String icon_donation_gallery =
+      'assets/icons/icon donation gallery.png';
   static const String icon_report = 'assets/icons/icon report.png';
   static const String icon_forum = 'assets/icons/forum.png';
   static const String icon_profile_yayasan = 'assets/icons/profile yayasan.png';
@@ -22,5 +22,7 @@ class YPKImages {
   static const String icon_back_button = 'assets/icons/back button.png';
 
   // -- App Images
-static const String gbr_event1 = 'assets/images/event1.jpg';
+  static const String gbr_event1 = 'assets/images/event1.jpg';
+  static const String gbr_event2 = 'assets/images/event2.jpg';
+  static const String gbr_event3 = 'assets/images/event3.jpg';
 }

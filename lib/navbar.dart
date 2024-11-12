@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:manpro/features/bagian_awal/tampilan/login/login.dart';
 import 'package:manpro/features/bagian_utama/Tampilan/home/home.dart';
 import 'package:manpro/utils/constants/image_string.dart';
 

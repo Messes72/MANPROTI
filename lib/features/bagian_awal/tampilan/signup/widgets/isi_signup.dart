@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:manpro/features/bagian_awal/tampilan/login/login.dart';
-import 'package:manpro/features/bagian_awal/tampilan/signup/widgets/signup_form.dart';
 
 class IsiSignup extends StatelessWidget {
   const IsiSignup({
