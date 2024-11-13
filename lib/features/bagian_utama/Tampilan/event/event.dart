@@ -17,7 +17,7 @@ class Event extends StatelessWidget {
         'title': 'Acara Bhaktiku Negri',
         'date': '17 Maret 2024',
         'content':
-            "Webinar yang fokus membahas dan menyuarakan isu seputar Anak Berkebutuhan Khusus dilihat dari aspek parenting, keterampilan, pendidikan, komunikasi, kewirausahaan, dan lainnya. Kami mengundang para praktisi, artis, hingga pengambil kebijakan sebagai pemateri atau narasumber webinar, sedangkan ABK atau orang tuanya sebagai host atau moderator webinar untuk melatih kepercayaan diri dan keterampilan berkomunikasi Detail webinar kelas #Akademiability dapat dilihat di Channel Youtube Peduli Kasih ABK"
+        "Webinar yang fokus membahas dan menyuarakan isu seputar Anak Berkebutuhan Khusus dilihat dari aspek parenting, keterampilan, pendidikan, komunikasi, kewirausahaan, dan lainnya. Kami mengundang para praktisi, artis, hingga pengambil kebijakan sebagai pemateri atau narasumber webinar, sedangkan ABK atau orang tuanya sebagai host atau moderator webinar untuk melatih kepercayaan diri dan keterampilan berkomunikasi Detail webinar kelas #Akademiability dapat dilihat di Channel Youtube Peduli Kasih ABK"
       },
       {
         'image': YPKImages.gbr_event2,
@@ -58,33 +58,34 @@ class Event extends StatelessWidget {
                         size: 32.0,
                       ),
                     ),
-                    const Center(
-                      child: Text(
-                        'Events',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.w700,
-                          fontSize: 24.0,
-                          letterSpacing: -0.5,
-                        ),
+                    const SizedBox(height: 25.0),
+                    const Text(
+                      'Events',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: 'Montserrat',
+                        fontWeight: FontWeight.w700,
+                        fontSize: 24.0,
+                        letterSpacing: -0.5,
                       ),
                     ),
                     const SizedBox(height: 20),
                     // Dynamically generate event cards
-                    ...events.map((event) => Padding(
+                    ...events.map((event) =>
+                        Padding(
                           padding: const EdgeInsets.only(bottom: 20.0),
                           child: GestureDetector(
                             onTap: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => EventDetail(
-                                    title: event['title']!,
-                                    content: event['content']!,
-                                    image: event['image']!,
-                                    date: event['date']!, // Added missing date parameter
-                                  ),
+                                  builder: (context) =>
+                                      EventDetail(
+                                        title: event['title']!,
+                                        content: event['content']!,
+                                        image: event['image']!,
+                                        date: event['date']!, // Added missing date parameter
+                                      ),
                                 ),
                               );
                             },
@@ -124,7 +125,7 @@ class Event extends StatelessWidget {
               right: 0,
               child: Container(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                 color: Colors.black.withOpacity(0.5),
                 child: Column(
                   children: [
@@ -133,6 +134,8 @@ class Event extends StatelessWidget {
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 14,
+                        fontFamily: 'NunitoSans',
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -141,7 +144,8 @@ class Event extends StatelessWidget {
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                        fontFamily: 'NunitoSans',
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                   ],

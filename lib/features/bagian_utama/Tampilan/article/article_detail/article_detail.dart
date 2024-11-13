@@ -90,16 +90,15 @@ class ArticleDetail extends StatelessWidget {
                         size: 32.0,
                       ),
                     ),
-                    const Center(
-                      child: Text(
-                        'Articles',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.w700,
-                          fontSize: 24.0,
-                          letterSpacing: -0.5,
-                        ),
+                    const SizedBox(height: 25.0),
+                    const Text(
+                      'Articles',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: 'Montserrat',
+                        fontWeight: FontWeight.w700,
+                        fontSize: 24.0,
+                        letterSpacing: -0.5,
                       ),
                     ),
                     const SizedBox(height: 20),
@@ -169,6 +168,8 @@ class ArticleDetail extends StatelessWidget {
                             style: const TextStyle(
                               color: Colors.grey,
                               fontSize: 14,
+                              fontFamily: 'NunitoSans',
+                              fontWeight: FontWeight.w700,
                             ),
                           ),
                           const SizedBox(height: 8),
@@ -177,8 +178,8 @@ class ArticleDetail extends StatelessWidget {
                             article['title']!,
                             style: const TextStyle(
                               fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'Montserrat',
+                              fontFamily: 'NunitoSans',
+                              fontWeight: FontWeight.w700,
                             ),
                           ),
                           const SizedBox(height: 16),
@@ -188,6 +189,8 @@ class ArticleDetail extends StatelessWidget {
                             style: const TextStyle(
                               fontSize: 16,
                               height: 1.5,
+                              fontFamily: 'NunitoSans',
+                              fontWeight: FontWeight.w700,
                             ),
                           ),
                         ],

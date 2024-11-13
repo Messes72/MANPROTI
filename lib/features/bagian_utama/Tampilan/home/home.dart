@@ -5,6 +5,7 @@ import 'package:manpro/features/bagian_utama/Tampilan/donation/donation.dart';
 import 'package:manpro/features/bagian_utama/Tampilan/event/event.dart';
 import 'package:manpro/features/bagian_utama/Tampilan/profile_yayasan/profile_yayasan.dart';
 import 'package:manpro/utils/constants/image_string.dart';
+import 'package:manpro/features/bagian_utama/Tampilan/home/side_navbar.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
@@ -12,6 +13,8 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      endDrawer:
+          const SideNavbar(), // Menggunakan side navbar dari class SideNavbar di sebelah kanan
       body: Container(
         // Background app
         decoration: const BoxDecoration(
@@ -44,14 +47,20 @@ class Home extends StatelessWidget {
                   const Spacer(),
 
                   // Pencetan garis tiga
-                  IconButton(
-                    onPressed: () {},
-                    icon: Image.asset('assets/icons/garis tiga.jpg'),
+                  Builder(
+                    builder: (BuildContext context) {
+                      return IconButton(
+                        icon: Image.asset(
+                            'assets/icons/garis tiga.jpg'), // Ganti dengan path ikon kamu
+                        onPressed: () {
+                          Scaffold.of(context)
+                              .openEndDrawer(); // Membuka side navbar di sebelah kanan
+                        },
+                      );
+                    },
                   ),
                 ],
               ),
-
-              // Tulisan halo
               const Text(
                 'Halo, Jehezkiel Louis !',
                 style: TextStyle(
@@ -271,7 +280,7 @@ class Home extends StatelessWidget {
                                   height: 80,
                                   width: 80,
                                   child: IconButton(
-                                    onPressed: () => Get.to(() => Donation()),
+                                    onPressed: () => Get.to(() => const Donation()),
                                     icon: Padding(
                                       padding:
                                           const EdgeInsets.only(right: 7.0),

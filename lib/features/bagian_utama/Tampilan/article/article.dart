@@ -87,16 +87,15 @@ class _ArticleState extends State<Article> {
                         size: 32.0,
                       ),
                     ),
-                    const Center(
-                      child: Text(
-                        'Articles',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.w700,
-                          fontSize: 24.0,
-                          letterSpacing: -0.5,
-                        ),
+                    const SizedBox(height: 25.0),
+                    const Text(
+                      'Articles',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: 'Montserrat',
+                        fontWeight: FontWeight.w700,
+                        fontSize: 24.0,
+                        letterSpacing: -0.5,
                       ),
                     ),
                     const SizedBox(height: 20),
@@ -108,6 +107,10 @@ class _ArticleState extends State<Article> {
                         onChanged: _filterArticles,
                         decoration: InputDecoration(
                           hintText: "Search for an article...",
+                          hintStyle: const TextStyle(
+                            fontFamily: 'NunitoSans',
+                            fontWeight: FontWeight.w700,
+                          ),
                           prefixIcon: const Icon(Icons.search),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(30),
@@ -124,7 +127,8 @@ class _ArticleState extends State<Article> {
                         final article = _filteredArticles[index];
                         return GestureDetector(
                           onTap: () {
-                            Get.to(() => const ArticleDetail(), arguments: article);
+                            Get.to(() => const ArticleDetail(),
+                                arguments: article);
                           },
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
@@ -163,13 +167,17 @@ class _ArticleState extends State<Article> {
                                           Text(
                                             article['date']!,
                                             style: const TextStyle(
-                                                color: Colors.grey),
+                                              color: Colors.grey,
+                                              fontFamily: 'NunitoSans',
+                                              fontWeight: FontWeight.w700,
+                                            ),
                                           ),
                                           Text(
                                             article['title']!,
                                             style: const TextStyle(
                                               fontSize: 18,
-                                              fontWeight: FontWeight.bold,
+                                              fontFamily: 'NunitoSans',
+                                              fontWeight: FontWeight.w700,
                                             ),
                                           ),
                                         ],
@@ -179,7 +187,8 @@ class _ArticleState extends State<Article> {
                                   IconButton(
                                     icon: const Icon(Icons.arrow_forward),
                                     onPressed: () {
-                                      Get.to(() => const ArticleDetail(), arguments: article);
+                                      Get.to(() => const ArticleDetail(),
+                                          arguments: article);
                                     },
                                   )
                                 ],

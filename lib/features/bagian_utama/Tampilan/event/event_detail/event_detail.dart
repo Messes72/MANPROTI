@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:manpro/common/widgets/background_app.dart';
 import 'package:manpro/features/bagian_utama/Tampilan/event/event.dart';
-import 'package:manpro/navbar.dart';
 import 'package:manpro/utils/constants/image_string.dart';
 
 class EventDetail extends StatelessWidget {
@@ -96,16 +95,15 @@ class EventDetail extends StatelessWidget {
                         size: 32.0,
                       ),
                     ),
-                    const Center(
-                      child: Text(
-                        'Events',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.w700,
-                          fontSize: 24.0,
-                          letterSpacing: -0.5,
-                        ),
+                    const SizedBox(height: 25.0),
+                    const Text(
+                      'Events',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: 'Montserrat',
+                        fontWeight: FontWeight.w700,
+                        fontSize: 24.0,
+                        letterSpacing: -0.5,
                       ),
                     ),
                     const SizedBox(height: 20),
@@ -175,6 +173,8 @@ class EventDetail extends StatelessWidget {
                             style: const TextStyle(
                               color: Colors.grey,
                               fontSize: 14,
+                              fontFamily: 'NunitoSans',
+                              fontWeight: FontWeight.w700,
                             ),
                           ),
                           const SizedBox(height: 12),
@@ -182,13 +182,18 @@ class EventDetail extends StatelessWidget {
                             title,
                             style: const TextStyle(
                               fontSize: 24,
-                              fontWeight: FontWeight.bold,
+                              fontFamily: 'NunitoSans',
+                              fontWeight: FontWeight.w700,
                             ),
                           ),
                           const SizedBox(height: 8),
                           Text(
                             content,
-                            style: const TextStyle(fontSize: 16),
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontFamily: 'NunitoSans',
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
                         ],
                       ),

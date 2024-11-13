@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:manpro/common/widgets/background_app.dart';
+import 'package:manpro/features/bagian_utama/Tampilan/donation_history/donation_history.dart';
 import 'package:manpro/navbar.dart';
 import 'package:manpro/utils/constants/image_string.dart';
 
@@ -18,9 +19,8 @@ class _DonationState extends State<Donation> {
   final TextEditingController notesController = TextEditingController();
 
   final List<String> donationTypes = [
-    'Uang Tunai',
-    'Pakaian', 
-    'Makanan',
+    'Pakaian',
+    'Sembako',
     'Alat Tulis',
     'Lainnya'
   ];
@@ -28,8 +28,56 @@ class _DonationState extends State<Donation> {
   final List<String> shippingMethods = [
     'Antar Sendiri',
     'Kurir',
-    'Jemput di Lokasi'
   ];
+
+  void _submitDonation() {
+    if (selectedDonationType == null ||
+        selectedShippingMethod == null ||
+        quantityController.text.isEmpty ||
+        notesController.text.isEmpty) {
+      Get.snackbar(
+        'Error',
+        'Please fill in all fields',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        margin: const EdgeInsets.only(bottom: 15.0, left: 20.0, right: 20.0),
+      );
+      return;
+    }
+
+    // Create donation data
+    final Map<String, String> donationData = {
+      'type': selectedDonationType!,
+      'quantity': quantityController.text,
+      'shippingMethod': selectedShippingMethod!,
+      'notes': notesController.text,
+    };
+
+    // Navigate back to Navbar and switch to History tab
+    Get.offAll(
+      () => const Navbar(),
+      binding: BindingsBuilder(() {
+        final controller = Get.put(NavigationController());
+        controller.selectedIndex.value = 3; // Switch to History tab
+
+        // Add new donation to history
+        if (controller.screens[3] is DonationHistory) {
+          final historyScreen = controller.screens[3] as DonationHistory;
+          historyScreen.donationHistory.insert(0, donationData);
+        }
+      }),
+    );
+
+    Get.snackbar(
+      'Success',
+      'Donation submitted successfully',
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: Colors.green,
+      colorText: Colors.white,
+      margin: const EdgeInsets.only(bottom: 15.0, left: 20.0, right: 20.0),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,44 +88,39 @@ class _DonationState extends State<Donation> {
           SafeArea(
             child: SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.all(20.0),
+                padding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        IconButton(
-                          onPressed: () => Get.to(() => const Navbar()),
-                          icon: const ImageIcon(
-                            AssetImage(YPKImages.icon_back_button),
-                            size: 32.0,
-                          ),
-                        ),
-                        const Expanded(
-                          child: Text(
-                            'Donation',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontFamily: 'Montserrat',
-                              fontWeight: FontWeight.w700,
-                              fontSize: 24.0,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 40),
-                      ],
+                    IconButton(
+                      onPressed: () => Get.to(() => const Navbar()),
+                      icon: const ImageIcon(
+                        AssetImage(YPKImages.icon_back_button),
+                        size: 32.0,
+                      ),
                     ),
-                    const SizedBox(height: 30),
+                    const SizedBox(height: 25.0),
+                    const Text(
+                      'Donations',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: 'Montserrat',
+                        fontWeight: FontWeight.w700,
+                        fontSize: 24.0,
+                        letterSpacing: -0.5,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
                     Container(
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.9),
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(30),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.grey.withOpacity(0.2),
-                            spreadRadius: 2,
-                            blurRadius: 5,
+                            color: Colors.grey.withOpacity(0.3),
+                            spreadRadius: 3,
+                            blurRadius: 7,
                             offset: const Offset(0, 3),
                           ),
                         ],
@@ -85,28 +128,56 @@ class _DonationState extends State<Donation> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            'Category',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.purple,
+                          Container(
+                            height: 60.0,
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF7ABFB),
+                              borderRadius: BorderRadius.circular(27),
+                              border: Border.all(
+                                color: Colors.black,
+                                width: 2.0,
+                              ),
+                            ),
+                            child: const Center(
+                              child: Text(
+                                'Category',
+                                style: TextStyle(
+                                  fontSize: 23,
+                                  fontFamily: "Montserrat",
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black,
+                                ),
+                              ),
                             ),
                           ),
-                          const SizedBox(height: 10),
+                          const SizedBox(height: 20),
                           DropdownButtonFormField<String>(
                             decoration: InputDecoration(
                               hintText: 'Pilih Jenis Donasi',
+                              hintStyle: const TextStyle(
+                                fontFamily: 'NunitoSans',
+                                fontWeight: FontWeight.w700,
+                                color: Color(0xFF333333),
+                              ),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 15, vertical: 15),
                             ),
                             value: selectedDonationType,
                             items: donationTypes.map((String type) {
                               return DropdownMenuItem<String>(
                                 value: type,
-                                child: Text(type),
+                                child: Text(
+                                  type,
+                                  style: const TextStyle(
+                                    fontFamily: 'NunitoSans',
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.black,
+                                  ),
+                                ),
                               );
                             }).toList(),
                             onChanged: (String? newValue) {
@@ -116,28 +187,68 @@ class _DonationState extends State<Donation> {
                             },
                           ),
                           const SizedBox(height: 20),
-                          const Text(
-                            'Shipping Method',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.purple,
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          DropdownButtonFormField<String>(
+                          TextFormField(
+                            controller: quantityController,
+                            keyboardType: TextInputType.text,
                             decoration: InputDecoration(
-                              hintText: 'Pilih Metode Pengiriman',
+                              hintText: 'Quantity (example: 10kg, 10pcs, etc)',
+                              hintStyle: const TextStyle(
+                                fontFamily: 'NunitoSans',
+                                fontWeight: FontWeight.w700,
+                                color: Color(0xFF333333),
+                              ),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 15, vertical: 15),
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          TextFormField(
+                            controller: notesController,
+                            maxLines: 3,
+                            decoration: InputDecoration(
+                              hintText: 'Notes',
+                              hintStyle: const TextStyle(
+                                fontFamily: 'NunitoSans',
+                                fontWeight: FontWeight.w700,
+                                color: Color(0xFF333333),
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 15, vertical: 15),
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          DropdownButtonFormField<String>(
+                            decoration: InputDecoration(
+                              hintText: 'Pilih Pengiriman',
+                              hintStyle: const TextStyle(
+                                fontFamily: 'NunitoSans',
+                                fontWeight: FontWeight.w700,
+                                color: Color(0xFF333333),
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 15, vertical: 15),
                             ),
                             value: selectedShippingMethod,
                             items: shippingMethods.map((String method) {
                               return DropdownMenuItem<String>(
                                 value: method,
-                                child: Text(method),
+                                child: Text(
+                                  method,
+                                  style: const TextStyle(
+                                    fontFamily: 'NunitoSans',
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.black,
+                                  ),
+                                ),
                               );
                             }).toList(),
                             onChanged: (String? newValue) {
@@ -146,68 +257,28 @@ class _DonationState extends State<Donation> {
                               });
                             },
                           ),
-                          const SizedBox(height: 20),
-                          const Text(
-                            'Quantity',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.purple,
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          TextFormField(
-                            controller: quantityController,
-                            keyboardType: TextInputType.number,
-                            decoration: InputDecoration(
-                              hintText: 'Masukkan Jumlah',
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-                          const Text(
-                            'Notes',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.purple,
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          TextFormField(
-                            controller: notesController,
-                            maxLines: 3,
-                            decoration: InputDecoration(
-                              hintText: 'Tambahkan Catatan',
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                            ),
-                          ),
                           const SizedBox(height: 30),
                           SizedBox(
                             width: double.infinity,
                             child: ElevatedButton(
-                              onPressed: () {
-                                // Handle donation submission
-                              },
+                              onPressed: _submitDonation,
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.purple,
-                                padding: const EdgeInsets.symmetric(vertical: 15),
+                                backgroundColor: const Color(0xFFF7ABFB),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 15),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),
+                                  side: const BorderSide(
+                                      color: Colors.black, width: 1.5),
                                 ),
                               ),
                               child: const Text(
-                                'Submit Donation',
+                                'Confirm',
                                 style: TextStyle(
                                   fontSize: 16,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
+                                  fontFamily: "Montserrat",
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black,
                                 ),
                               ),
                             ),
