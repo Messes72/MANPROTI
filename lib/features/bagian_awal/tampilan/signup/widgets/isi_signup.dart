@@ -58,15 +58,6 @@ class IsiSignup extends StatelessWidget {
                   ),
                   TextFormField(
                     decoration: const InputDecoration(
-                      labelText: 'Alamat',
-                      labelStyle: TextStyle(
-                          fontFamily: 'NunitoSans',
-                          fontWeight: FontWeight.w500,
-                          fontSize: 14.0),
-                    ),
-                  ),
-                  TextFormField(
-                    decoration: const InputDecoration(
                       labelText: 'Email',
                       labelStyle: TextStyle(
                           fontFamily: 'NunitoSans',
@@ -76,34 +67,7 @@ class IsiSignup extends StatelessWidget {
                   ),
                   TextFormField(
                     decoration: const InputDecoration(
-                      labelText: 'No. Telpon',
-                      labelStyle: TextStyle(
-                          fontFamily: 'NunitoSans',
-                          fontWeight: FontWeight.w500,
-                          fontSize: 14.0),
-                    ),
-                  ),
-                  TextFormField(
-                    decoration: const InputDecoration(
-                      labelText: 'Tanggal Lahir',
-                      labelStyle: TextStyle(
-                          fontFamily: 'NunitoSans',
-                          fontWeight: FontWeight.w500,
-                          fontSize: 14.0),
-                    ),
-                  ),
-                  TextFormField(
-                    decoration: const InputDecoration(
                       labelText: 'Password',
-                      labelStyle: TextStyle(
-                          fontFamily: 'NunitoSans',
-                          fontWeight: FontWeight.w500,
-                          fontSize: 14.0),
-                    ),
-                  ),
-                  TextFormField(
-                    decoration: const InputDecoration(
-                      labelText: 'Re-confirm Password',
                       labelStyle: TextStyle(
                           fontFamily: 'NunitoSans',
                           fontWeight: FontWeight.w500,
