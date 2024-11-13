@@ -21,7 +21,6 @@ class ProfileYayasan extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-
                     // Tombol back
                     TombolBack(),
 
@@ -43,8 +42,3 @@ class ProfileYayasan extends StatelessWidget {
     );
   }
 }
-
-
-
-
-

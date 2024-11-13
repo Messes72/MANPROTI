@@ -1,7 +1,11 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:manpro/common/widgets/background_app.dart';
+
 import 'package:manpro/features/bagian_awal/tampilan/login/login.dart';
+
+
+// import 'package:manpro/features/bagian_awal/tampilan/signup/widgets/isi_signup.dart';
+
 import 'package:manpro/features/bagian_awal/tampilan/signup/widgets/signup_logo_app.dart';
 import 'package:manpro/features/bagian_awal/tampilan/signup/widgets/signup_tulisan_bawah.dart';
 import 'package:manpro/methods/api.dart';
@@ -182,8 +186,15 @@ class _RegisterState extends State<Signup> {
                       ),
                     ),
                     const SizedBox(height: 20.0),
+
                     SignupTulisanBawah(),
                     const SizedBox(height: 100.0),
+
+
+                    // Bagian tulisan bawah
+                    const SignupTulisanBawah(),
+                    const SizedBox(height: 100.0)
+
                   ],
                 ),
               ),

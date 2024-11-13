@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:manpro/features/bagian_awal/tampilan/login/login.dart';
-import 'package:manpro/features/bagian_awal/tampilan/signup/widgets/signup_form.dart';
 
 class IsiSignup extends StatelessWidget {
   const IsiSignup({
@@ -59,15 +58,6 @@ class IsiSignup extends StatelessWidget {
                   ),
                   TextFormField(
                     decoration: const InputDecoration(
-                      labelText: 'Alamat',
-                      labelStyle: TextStyle(
-                          fontFamily: 'NunitoSans',
-                          fontWeight: FontWeight.w500,
-                          fontSize: 14.0),
-                    ),
-                  ),
-                  TextFormField(
-                    decoration: const InputDecoration(
                       labelText: 'Email',
                       labelStyle: TextStyle(
                           fontFamily: 'NunitoSans',
@@ -77,34 +67,7 @@ class IsiSignup extends StatelessWidget {
                   ),
                   TextFormField(
                     decoration: const InputDecoration(
-                      labelText: 'No. Telpon',
-                      labelStyle: TextStyle(
-                          fontFamily: 'NunitoSans',
-                          fontWeight: FontWeight.w500,
-                          fontSize: 14.0),
-                    ),
-                  ),
-                  TextFormField(
-                    decoration: const InputDecoration(
-                      labelText: 'Tanggal Lahir',
-                      labelStyle: TextStyle(
-                          fontFamily: 'NunitoSans',
-                          fontWeight: FontWeight.w500,
-                          fontSize: 14.0),
-                    ),
-                  ),
-                  TextFormField(
-                    decoration: const InputDecoration(
                       labelText: 'Password',
-                      labelStyle: TextStyle(
-                          fontFamily: 'NunitoSans',
-                          fontWeight: FontWeight.w500,
-                          fontSize: 14.0),
-                    ),
-                  ),
-                  TextFormField(
-                    decoration: const InputDecoration(
-                      labelText: 'Re-confirm Password',
                       labelStyle: TextStyle(
                           fontFamily: 'NunitoSans',
                           fontWeight: FontWeight.w500,

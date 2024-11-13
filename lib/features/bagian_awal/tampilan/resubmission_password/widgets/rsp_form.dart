@@ -5,10 +5,10 @@ class CTextField extends StatefulWidget {
   final bool isPassword;
 
   const CTextField({
-    Key? key,
+    super.key,
     required this.label,
     this.isPassword = false,
-  }) : super(key: key);
+  });
 
   @override
   _CTextFieldState createState() => _CTextFieldState();
@@ -33,7 +33,7 @@ class _CTextFieldState extends State<CTextField> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(bottom: 8),
+      margin: const EdgeInsets.only(bottom: 8),
       child: Focus(
         onFocusChange: (hasFocus) {
           setState(() {
@@ -54,15 +54,15 @@ class _CTextFieldState extends State<CTextField> {
               fontSize: 14.0
             ),
             floatingLabelBehavior: FloatingLabelBehavior.auto,
-            enabledBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: Colors.black!),
+            enabledBorder: const UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.black),
             ),
-            focusedBorder: UnderlineInputBorder(
+            focusedBorder: const UnderlineInputBorder(
               borderSide: BorderSide(color: Colors.blue),
             ),
-            contentPadding: EdgeInsets.symmetric(vertical: 4),
+            contentPadding: const EdgeInsets.symmetric(vertical: 4),
           ),
-          style: TextStyle(fontSize: 16),
+          style: const TextStyle(fontSize: 16),
         ),
       ),
     );

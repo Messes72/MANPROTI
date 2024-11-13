@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:manpro/features/bagian_awal/tampilan/login/widgets/login_form.dart';
-import 'package:manpro/features/bagian_utama/Tampilan/home/home.dart';
 import 'package:manpro/navbar.dart';
 
 class IsiLogin extends StatelessWidget {

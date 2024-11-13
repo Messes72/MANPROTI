@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:manpro/features/bagian_awal/tampilan/login/login.dart';
 import 'package:manpro/features/bagian_utama/Tampilan/home/home.dart';
+import 'package:manpro/features/bagian_utama/Tampilan/donation_history/donation_history.dart';
 import 'package:manpro/utils/constants/image_string.dart';
 
 class Navbar extends StatelessWidget {
@@ -23,8 +23,7 @@ class Navbar extends StatelessWidget {
               controller.selectedIndex.value = index,
           destinations: [
             const NavigationDestination(
-                icon: Icon(Iconsax.home),
-                label: 'Home'),
+                icon: Icon(Iconsax.home), label: 'Home'),
             const NavigationDestination(
                 icon: Padding(
                   padding: EdgeInsets.only(top: 4.0),
@@ -68,8 +67,8 @@ class NavigationController extends GetxController {
 
   final screens = [
     const Home(),
-    Container(color: Colors.blue),
+    Container(color: Colors.green),
     Container(color: Colors.black),
-    Container(color: Colors.green)
+    DonationHistory()
   ];
 }

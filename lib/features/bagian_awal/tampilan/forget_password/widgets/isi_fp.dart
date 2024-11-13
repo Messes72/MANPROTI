@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:manpro/features/bagian_awal/tampilan/forget_password/widgets/fp_form.dart';
 import 'package:manpro/features/bagian_awal/tampilan/resubmission_password/resubmission_password.dart';
 
 class IsiFp extends StatelessWidget {
