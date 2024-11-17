@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:manpro/features/bagian_utama/Tampilan/event_history/event_history.dart';
 import 'package:manpro/features/bagian_utama/Tampilan/profile/profile.dart';
 import 'package:manpro/utils/constants/image_string.dart';
 
@@ -52,6 +53,38 @@ class SideNavbar extends StatelessWidget {
                 ),
                 label: const Text(
                   'My Profile',
+                  style: TextStyle(
+                    fontFamily: 'Montserrat',
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: Colors.black,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                    side: const BorderSide(color: Colors.black),
+                  ),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                ),
+              ),
+            ),
+          ),
+          // Tombol History Event
+          const SizedBox(height: 10),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: SizedBox(
+              width: double.infinity, // Set width to fill the available space
+              child: ElevatedButton.icon(
+                onPressed: () => Get.to(() => EventHistory(eventHistory: [])),
+                icon: const Icon(
+                  Icons.history,
+                  size: 24,
+                ),
+                label: const Text(
+                  'History Event',
                   style: TextStyle(
                     fontFamily: 'Montserrat',
                     fontWeight: FontWeight.w700,

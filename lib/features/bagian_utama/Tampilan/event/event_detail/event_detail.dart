@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:manpro/common/widgets/background_app.dart';
 import 'package:manpro/features/bagian_utama/Tampilan/event/event.dart';
+import 'package:manpro/features/bagian_utama/Tampilan/event/event_detail/regis_event/regis_event.dart';
 import 'package:manpro/utils/constants/image_string.dart';
 
 class EventDetail extends StatelessWidget {
@@ -9,7 +10,7 @@ class EventDetail extends StatelessWidget {
   final String content;
   final String image;
   final String date;
-  final List<String>? additionalImages; // Tambahkan parameter untuk gambar tambahan
+  final List<String>? additionalImages;
 
   const EventDetail({
     super.key,
@@ -17,7 +18,7 @@ class EventDetail extends StatelessWidget {
     required this.content,
     required this.image,
     required this.date,
-    this.additionalImages, // Parameter opsional untuk gambar tambahan
+    this.additionalImages,
   });
 
   void _showImageOverlay(
@@ -71,10 +72,9 @@ class EventDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // List of event images including the main image and additional images
     final List<String> eventImages = [
       image,
-      ...?additionalImages, // Menggunakan spread operator untuk menambahkan gambar tambahan jika ada
+      ...?additionalImages,
     ];
 
     return Scaffold(
@@ -107,7 +107,6 @@ class EventDetail extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    // Event Image Carousel
                     SizedBox(
                       height: 200,
                       child: Stack(
@@ -132,7 +131,6 @@ class EventDetail extends StatelessWidget {
                               );
                             },
                           ),
-                          // Dots indicator
                           Positioned(
                             bottom: 10,
                             left: 0,
@@ -158,7 +156,6 @@ class EventDetail extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    // Event Content
                     Container(
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.8),
@@ -198,6 +195,14 @@ class EventDetail extends StatelessWidget {
                         ],
                       ),
                     ),
+                    const SizedBox(height: 16),
+                    Center(
+                      child: ElevatedButton(
+                        onPressed: () => Get.to(() => RegisEvent(eventName: title)),
+                        child: const Text('Daftar Event'),
+                      ),
+                    ),
+                    const SizedBox(height: 30.0),
                   ],
                 ),
               ),

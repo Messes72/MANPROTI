@@ -1,12 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:manpro/common/widgets/background_app.dart';
+import 'package:manpro/features/bagian_utama/Tampilan/profile/edit_profile/edit_profile.dart';
 import 'package:manpro/navbar.dart';
 import 'package:manpro/utils/constants/image_string.dart';
-import 'package:manpro/features/bagian_utama/Tampilan/profile/edit_profile.dart'; // Import the edit profile page
 
-class Profile extends StatelessWidget {
+class Profile extends StatefulWidget {
   const Profile({super.key});
+
+  @override
+  _ProfileState createState() => _ProfileState();
+}
+
+class _ProfileState extends State<Profile> {
+  String firstName = "Jehezkiel";
+  String lastName = "Louis";
+  String email = "jehezkiel@gmail.com";
+  String phoneNumber = "08178787878";
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +38,7 @@ class Profile extends StatelessWidget {
                         size: 32.0,
                       ),
                     ),
-                    const SizedBox(height: 25.0),
+                    const SizedBox(height: 20.0),
                     const Center(
                       child: Text(
                         'My Profile',
@@ -41,7 +51,6 @@ class Profile extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 20),
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.all(20.0),
@@ -61,8 +70,7 @@ class Profile extends StatelessWidget {
                                 child: IconButton(
                                   icon: const ImageIcon(
                                     AssetImage(YPKImages.icon_edit_gbr),
-                                    size:
-                                        32.0, // You can change this size to edit the icon size
+                                    size: 32.0,
                                   ),
                                   onPressed: () {
                                     // Add edit profile picture functionality
@@ -73,22 +81,22 @@ class Profile extends StatelessWidget {
                           ),
                           const SizedBox(height: 20),
                           buildProfileField(
-                              "Jehezkiel",
+                              firstName,
                               const TextStyle(
                                   fontFamily: "NunitoSans",
                                   fontWeight: FontWeight.w700)),
                           buildProfileField(
-                              "Louis",
+                              lastName,
                               const TextStyle(
                                   fontFamily: "NunitoSans",
                                   fontWeight: FontWeight.w700)),
                           buildProfileField(
-                              "jehezkiel@gmail.com",
+                              email,
                               const TextStyle(
                                   fontFamily: "NunitoSans",
                                   fontWeight: FontWeight.w700)),
                           buildProfileField(
-                              "08178787878",
+                              phoneNumber,
                               const TextStyle(
                                   fontFamily: "NunitoSans",
                                   fontWeight: FontWeight.w700)),
@@ -97,12 +105,50 @@ class Profile extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               ElevatedButton(
-                                onPressed: () {
-                                  Get.to(() =>
-                                      const EditProfile()); // Navigate to the edit profile page
+                                onPressed: () async {
+                                  final result = await Get.to(() => EditProfile(
+                                        firstName: firstName,
+                                        lastName: lastName,
+                                        email: email,
+                                        phoneNumber: phoneNumber,
+                                      ));
+                                  if (result != null) {
+                                    bool isUpdated = false;
+                                    setState(() {
+                                      if (firstName != result['firstName']) {
+                                        firstName = result['firstName'];
+                                        isUpdated = true;
+                                      }
+                                      if (lastName != result['lastName']) {
+                                        lastName = result['lastName'];
+                                        isUpdated = true;
+                                      }
+                                      if (email != result['email']) {
+                                        email = result['email'];
+                                        isUpdated = true;
+                                      }
+                                      if (phoneNumber !=
+                                          result['phoneNumber']) {
+                                        phoneNumber = result['phoneNumber'];
+                                        isUpdated = true;
+                                      }
+                                    });
+                                    if (isUpdated) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                          content: Text(
+                                              'Profile updated successfully!'),
+                                          backgroundColor: Colors.green,
+                                          behavior: SnackBarBehavior.floating,
+                                          margin: EdgeInsets.only(bottom: 10.0),
+                                        ),
+                                      );
+                                    }
+                                  }
                                 },
                                 child: const Text(
-                                  'Edit profile detail',
+                                  'Edit profile',
                                   style: TextStyle(
                                     fontFamily: 'NunitoSans',
                                     fontWeight: FontWeight.w700,
