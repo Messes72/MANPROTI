@@ -55,7 +55,7 @@ class Signup extends StatelessWidget {
                     Container(
                       margin: const EdgeInsets.fromLTRB(30.0, 0.0, 30.0, 0.0),
                       // height: 550.0,
-                      height: 300.0,
+                      height: 450.0,
                       decoration: BoxDecoration(
                         color: Colors.indigo[100],
                         borderRadius: BorderRadius.circular(40.0),
@@ -93,6 +93,15 @@ class Signup extends StatelessWidget {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceEvenly,
                                 children: [
+                                  TextFormField(
+                                    decoration: const InputDecoration(
+                                      labelText: 'Nama Lengkap',
+                                      labelStyle: TextStyle(
+                                          fontFamily: 'NunitoSans',
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 14.0),
+                                    ),
+                                  ),
                                   TextFormField(
                                     decoration: const InputDecoration(
                                       labelText: 'Username',
@@ -138,6 +147,24 @@ class Signup extends StatelessWidget {
                                   //         fontSize: 14.0),
                                   //   ),
                                   // ),
+                                  TextFormField(
+                                    decoration: const InputDecoration(
+                                      labelText: 'Kota Asal',
+                                      labelStyle: TextStyle(
+                                          fontFamily: 'NunitoSans',
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 14.0),
+                                    ),
+                                  ),
+                                  TextFormField(
+                                    decoration: const InputDecoration(
+                                      labelText: 'No. Telpon',
+                                      labelStyle: TextStyle(
+                                          fontFamily: 'NunitoSans',
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 14.0),
+                                    ),
+                                  ),
                                   TextFormField(
                                     decoration: const InputDecoration(
                                       labelText: 'Password',
