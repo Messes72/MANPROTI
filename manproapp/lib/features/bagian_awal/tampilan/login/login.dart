@@ -161,7 +161,7 @@ class _LoginState extends State<Login> {
                           ],
                         ),
                         TextButton(
-                          onPressed: () => Get.to(() => const ForgetPassword()),
+                          onPressed: () => Get.to(() => ForgetPassword()),
                           style: TextButton.styleFrom(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 8.0, vertical: 4.0),

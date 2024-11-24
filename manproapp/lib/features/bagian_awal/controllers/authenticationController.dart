@@ -101,4 +101,47 @@ class AuthenticationController extends GetxController {
       print(e.toString());
     }
   }
+
+  Future forgetPassword({
+    required String email,
+    required String password,
+    required String password_confirmation,
+  }) async {
+    try {
+      isLoading.value = true;
+      var data = {
+        "email": email,
+        "password": password,
+        "password_confirmation": password_confirmation,
+      };
+
+      var response = await http.post(
+        Uri.parse(url + 'forget-password'),
+        headers: {
+          'Accept': 'application/json',
+        },
+        body: data,
+      );
+
+      if (response.statusCode == 200) {
+        isLoading.value = false;
+        Get.offAll(() => const Login());
+        Get.snackbar('Success', 'Password berhasil diubah',
+            margin: const EdgeInsets.only(bottom: 10.0),
+            snackPosition: SnackPosition.TOP,
+            backgroundColor: Colors.green,
+            colorText: Colors.white);
+      } else {
+        isLoading.value = false;
+        Get.snackbar('Error', json.decode(response.body)['message'],
+            margin: const EdgeInsets.only(bottom: 10.0),
+            snackPosition: SnackPosition.TOP,
+            backgroundColor: Colors.red,
+            colorText: Colors.white);
+      }
+    } catch (e) {
+      isLoading.value = false;
+      print(e.toString());
+    }
+  }
 }
