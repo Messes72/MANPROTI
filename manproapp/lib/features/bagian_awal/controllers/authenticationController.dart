@@ -33,7 +33,7 @@ class AuthenticationController extends GetxController {
       };
 
       var response = await http.post(
-        Uri.parse(url + 'register'),
+        Uri.parse('${url}register'),
         headers: {
           'Accept': 'application/json',
         },
@@ -76,7 +76,7 @@ class AuthenticationController extends GetxController {
       };
 
       var response = await http.post(
-        Uri.parse(url + 'login'),
+        Uri.parse('${url}login'),
         headers: {
           'Accept': 'application/json',
         },
@@ -116,7 +116,7 @@ class AuthenticationController extends GetxController {
       };
 
       var response = await http.post(
-        Uri.parse(url + 'forget-password'),
+        Uri.parse('${url}forget-password'),
         headers: {
           'Accept': 'application/json',
         },

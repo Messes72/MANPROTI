@@ -45,7 +45,7 @@ class LoginTulisanBawah extends StatelessWidget {
           ],
         ),
         TextButton(
-          onPressed: () => Get.to(() => ForgetPassword()),
+          onPressed: () => Get.to(() => const ForgetPassword()),
           style: TextButton.styleFrom(
             padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
             minimumSize: const Size(100, 40),

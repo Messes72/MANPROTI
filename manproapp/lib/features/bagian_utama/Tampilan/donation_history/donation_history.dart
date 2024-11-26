@@ -3,11 +3,25 @@ import 'package:get/get.dart';
 import 'package:manpro/common/widgets/background_app.dart';
 import 'package:manpro/navbar.dart';
 import 'package:manpro/utils/constants/image_string.dart';
+import 'package:manpro/features/bagian_utama/controllers/donationController.dart';
 
 class DonationHistory extends StatelessWidget {
   DonationHistory({super.key});
 
-  final List<Map<String, String>> donationHistory = Get.arguments ?? [];
+  final DonationController donationController = Get.put(DonationController());
+
+  Color getStatusColor(String status) {
+    switch (status.toLowerCase()) {
+      case 'pending':
+        return Colors.orange;
+      case 'success':
+        return Colors.green;
+      case 'failed':
+        return Colors.red;
+      default:
+        return Colors.grey;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,78 +58,123 @@ class DonationHistory extends StatelessWidget {
                   ),
                   const SizedBox(height: 20.0),
                   Expanded(
-                    child: donationHistory.isEmpty
-                        ? const Center(
-                            child: Text(
-                              'No donation history yet',
-                              style: TextStyle(
-                                fontSize: 16.0,
-                                fontFamily: 'Montserrat',
-                              ),
+                    child: Obx(() {
+                      if (donationController.isLoading.value) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+
+                      if (donationController.donations.isEmpty) {
+                        return const Center(
+                          child: Text(
+                            'No donation history yet',
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              fontFamily: 'Montserrat',
                             ),
-                          )
-                        : ListView.builder(
-                            itemCount: donationHistory.length,
-                            itemBuilder: (context, index) {
-                              final donation = donationHistory[index];
-                              return Container(
-                                margin: const EdgeInsets.only(bottom: 20),
-                                padding: const EdgeInsets.all(20),
-                                decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.9),
-                                  borderRadius: BorderRadius.circular(30),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.3),
-                                      spreadRadius: 3,
-                                      blurRadius: 7,
-                                      offset: const Offset(0, 3),
-                                    ),
-                                  ],
+                          ),
+                        );
+                      }
+
+                      return ListView.builder(
+                        itemCount: donationController.donations.length,
+                        itemBuilder: (context, index) {
+                          final donation = donationController.donations[index];
+                          return Container(
+                            margin: const EdgeInsets.only(bottom: 20),
+                            padding: const EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.9),
+                              borderRadius: BorderRadius.circular(30),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.3),
+                                  spreadRadius: 3,
+                                  blurRadius: 7,
+                                  offset: const Offset(0, 3),
                                 ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                              ],
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      'Type: ${donation['type']}',
+                                      'Type: ${donation.type}',
                                       style: const TextStyle(
                                         fontFamily: 'NunitoSans',
                                         fontWeight: FontWeight.w700,
                                         color: Colors.black,
                                       ),
                                     ),
-                                    const SizedBox(height: 10),
-                                    Text(
-                                      'Quantity: ${donation['quantity']}',
-                                      style: const TextStyle(
-                                        fontFamily: 'NunitoSans',
-                                        fontWeight: FontWeight.w700,
-                                        color: Colors.black,
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                        vertical: 6,
                                       ),
-                                    ),
-                                    const SizedBox(height: 10),
-                                    Text(
-                                      'Shipping Method: ${donation['shippingMethod']}',
-                                      style: const TextStyle(
-                                        fontFamily: 'NunitoSans',
-                                        fontWeight: FontWeight.w700,
-                                        color: Colors.black,
+                                      decoration: BoxDecoration(
+                                        color: getStatusColor(
+                                            donation.status ?? 'pending'),
+                                        borderRadius: BorderRadius.circular(15),
                                       ),
-                                    ),
-                                    const SizedBox(height: 10),
-                                    Text(
-                                      'Notes: ${donation['notes']}',
-                                      style: const TextStyle(
-                                        fontFamily: 'NunitoSans',
-                                        fontWeight: FontWeight.w700,
-                                        color: Colors.black,
+                                      child: Text(
+                                        donation.status?.toUpperCase() ??
+                                            'PENDING',
+                                        style: const TextStyle(
+                                          fontFamily: 'NunitoSans',
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.white,
+                                          fontSize: 12,
+                                        ),
                                       ),
                                     ),
                                   ],
                                 ),
-                              );
-                            },
-                          ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  'Quantity: ${donation.quantity}',
+                                  style: const TextStyle(
+                                    fontFamily: 'NunitoSans',
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  'Shipping Method: ${donation.shippingMethod}',
+                                  style: const TextStyle(
+                                    fontFamily: 'NunitoSans',
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  'Notes: ${donation.notes}',
+                                  style: const TextStyle(
+                                    fontFamily: 'NunitoSans',
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  'Created at: ${donation.createdAt}',
+                                  style: const TextStyle(
+                                    fontFamily: 'NunitoSans',
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.grey,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    }),
                   ),
                 ],
               ),

@@ -10,6 +10,7 @@ class EventDetail extends StatelessWidget {
   final String content;
   final String image;
   final String date;
+  final int eventId;
   final List<String>? additionalImages;
 
   const EventDetail({
@@ -18,11 +19,11 @@ class EventDetail extends StatelessWidget {
     required this.content,
     required this.image,
     required this.date,
+    required this.eventId,
     this.additionalImages,
   });
 
-  void _showImageOverlay(
-      BuildContext context, List<String> images, int initialIndex) {
+  void _showImageOverlay(BuildContext context, List<String> images, int initialIndex) {
     showDialog(
       context: context,
       builder: (context) => Dialog(
@@ -41,14 +42,16 @@ class EventDetail extends StatelessWidget {
                     height: MediaQuery.of(context).size.height,
                     color: Colors.black.withOpacity(0.5),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 40),
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
                       child: InteractiveViewer(
                         minScale: 0.5,
                         maxScale: 3.0,
-                        child: Image.asset(
+                        child: Image.network(
                           images[index],
                           fit: BoxFit.contain,
+                          errorBuilder: (context, error, stackTrace) {
+                            return const Center(child: Icon(Icons.error));
+                          },
                         ),
                       ),
                     ),
@@ -72,10 +75,7 @@ class EventDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<String> eventImages = [
-      image,
-      ...?additionalImages,
-    ];
+    final List<String> eventImages = [image, ...?additionalImages];
 
     return Scaffold(
       body: Stack(
@@ -115,15 +115,13 @@ class EventDetail extends StatelessWidget {
                             itemCount: eventImages.length,
                             itemBuilder: (context, index) {
                               return GestureDetector(
-                                onTap: () => _showImageOverlay(
-                                    context, eventImages, index),
+                                onTap: () => _showImageOverlay(context, eventImages, index),
                                 child: Container(
-                                  margin:
-                                      const EdgeInsets.symmetric(horizontal: 4),
+                                  margin: const EdgeInsets.symmetric(horizontal: 4),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(16),
                                     image: DecorationImage(
-                                      image: AssetImage(eventImages[index]),
+                                      image: NetworkImage(eventImages[index]),
                                       fit: BoxFit.cover,
                                     ),
                                   ),
@@ -140,8 +138,7 @@ class EventDetail extends StatelessWidget {
                               children: List.generate(
                                 eventImages.length,
                                 (index) => Container(
-                                  margin:
-                                      const EdgeInsets.symmetric(horizontal: 2),
+                                  margin: const EdgeInsets.symmetric(horizontal: 2),
                                   width: 8,
                                   height: 8,
                                   decoration: BoxDecoration(
@@ -198,8 +195,29 @@ class EventDetail extends StatelessWidget {
                     const SizedBox(height: 16),
                     Center(
                       child: ElevatedButton(
-                        onPressed: () => Get.to(() => RegisEvent(eventName: title)),
-                        child: const Text('Daftar Event'),
+                        onPressed: () => Get.to(() => RegisEvent(
+                          eventName: title,
+                          eventId: eventId,
+                        )),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFF7ABFB),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 32,
+                            vertical: 12,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        child: const Text(
+                          'Daftar Event',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                            fontFamily: 'Montserrat',
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
                       ),
                     ),
                     const SizedBox(height: 30.0),

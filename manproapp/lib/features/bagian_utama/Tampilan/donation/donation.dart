@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:manpro/common/widgets/background_app.dart';
-import 'package:manpro/features/bagian_utama/Tampilan/donation_history/donation_history.dart';
 import 'package:manpro/navbar.dart';
 import 'package:manpro/utils/constants/image_string.dart';
+import 'package:manpro/features/bagian_utama/controllers/donationController.dart';
+import 'package:manpro/features/bagian_utama/Tampilan/donation_history/donation_history.dart';
 
 class Donation extends StatefulWidget {
   const Donation({super.key});
@@ -30,7 +31,9 @@ class _DonationState extends State<Donation> {
     'Kurir',
   ];
 
-  void _submitDonation() {
+  final DonationController donationController = Get.put(DonationController());
+
+  void _submitDonation() async {
     if (selectedDonationType == null ||
         selectedShippingMethod == null ||
         quantityController.text.isEmpty ||
@@ -38,7 +41,7 @@ class _DonationState extends State<Donation> {
       Get.snackbar(
         'Error',
         'Please fill in all fields',
-        snackPosition: SnackPosition.BOTTOM,
+        snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.red,
         colorText: Colors.white,
         margin: const EdgeInsets.only(bottom: 15.0, left: 20.0, right: 20.0),
@@ -46,37 +49,15 @@ class _DonationState extends State<Donation> {
       return;
     }
 
-    // Create donation data
-    final Map<String, String> donationData = {
-      'type': selectedDonationType!,
-      'quantity': quantityController.text,
-      'shippingMethod': selectedShippingMethod!,
-      'notes': notesController.text,
-    };
-
-    // Navigate back to Navbar and switch to History tab
-    Get.offAll(
-      () => const Navbar(),
-      binding: BindingsBuilder(() {
-        final controller = Get.put(NavigationController());
-        controller.selectedIndex.value = 3; // Switch to History tab
-
-        // Add new donation to history
-        if (controller.screens[3] is DonationHistory) {
-          final historyScreen = controller.screens[3] as DonationHistory;
-          historyScreen.donationHistory.insert(0, donationData);
-        }
-      }),
+    await donationController.createDonation(
+      type: selectedDonationType!,
+      quantity: quantityController.text,
+      shippingMethod: selectedShippingMethod!,
+      notes: notesController.text,
     );
 
-    Get.snackbar(
-      'Success',
-      'Donation submitted successfully',
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: Colors.green,
-      colorText: Colors.white,
-      margin: const EdgeInsets.only(bottom: 15.0, left: 20.0, right: 20.0),
-    );
+    // After successful donation, navigate to donation history
+    Get.off(() => DonationHistory());
   }
 
   @override

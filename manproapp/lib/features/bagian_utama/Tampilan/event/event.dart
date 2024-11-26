@@ -4,41 +4,14 @@ import 'package:manpro/common/widgets/background_app.dart';
 import 'package:manpro/features/bagian_utama/Tampilan/event/event_detail/event_detail.dart';
 import 'package:manpro/navbar.dart';
 import 'package:manpro/utils/constants/image_string.dart';
+import 'package:manpro/features/bagian_utama/controllers/eventController.dart';
 
 class Event extends StatelessWidget {
   const Event({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // List of events, each with a unique image and title
-    final List<Map<String, String>> events = [
-      {
-        'image': YPKImages.gbr_event1,
-        'title': 'Acara Bhaktiku Negri',
-        'date': '17 Maret 2024',
-        'content':
-        "Webinar yang fokus membahas dan menyuarakan isu seputar Anak Berkebutuhan Khusus dilihat dari aspek parenting, keterampilan, pendidikan, komunikasi, kewirausahaan, dan lainnya. Kami mengundang para praktisi, artis, hingga pengambil kebijakan sebagai pemateri atau narasumber webinar, sedangkan ABK atau orang tuanya sebagai host atau moderator webinar untuk melatih kepercayaan diri dan keterampilan berkomunikasi Detail webinar kelas #Akademiability dapat dilihat di Channel Youtube Peduli Kasih ABK"
-      },
-      {
-        'image': YPKImages.gbr_event2,
-        'title': 'Acara Bhaktiku Negri 2',
-        'date': '18 Maret 2024',
-        'content': 'Ini adalah isi lengkap artikel Acara Bhaktiku Negri 2...'
-      },
-      {
-        'image': YPKImages.gbr_event3,
-        'title': 'Acara Bhaktiku Negri 3',
-        'date': '19 Maret 2024',
-        'content': 'Ini adalah isi lengkap artikel Acara Bhaktiku Negri 3...'
-      },
-      {
-        'image': YPKImages.gbr_event3,
-        'title': 'Acara Bhaktiku Negri 4',
-        'date': '20 Maret 2024',
-        'content': 'Ini adalah isi lengkap artikel Acara Bhaktiku Negri 4...'
-      },
-      // Additional events can be added here
-    ];
+    final eventController = Get.put(EventController());
 
     return Scaffold(
       body: Stack(
@@ -70,32 +43,46 @@ class Event extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    // Dynamically generate event cards
-                    ...events.map((event) =>
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 20.0),
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      EventDetail(
-                                        title: event['title']!,
-                                        content: event['content']!,
-                                        image: event['image']!,
-                                        date: event['date']!, // Added missing date parameter
-                                      ),
-                                ),
-                              );
-                            },
-                            child: buildArticleCard(
-                              event['image']!,
-                              event['title']!,
-                              event['date']!,
+                    Obx(() {
+                      if (eventController.isLoading.value) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      
+                      if (eventController.events.isEmpty) {
+                        return const Center(
+                          child: Text('No events available'),
+                        );
+                      }
+
+                      return Column(
+                        children: eventController.events.map((event) =>
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 20.0),
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => EventDetail(
+                                      title: event.title,
+                                      content: event.content,
+                                      image: event.image,
+                                      date: event.date,
+                                      eventId: event.id,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: buildArticleCard(
+                                event.image,
+                                event.title,
+                                event.date,
+                              ),
                             ),
                           ),
-                        )),
+                        ).toList(),
+                      );
+                    }),
                   ],
                 ),
               ),
@@ -113,19 +100,26 @@ class Event extends StatelessWidget {
         borderRadius: BorderRadius.circular(30),
         child: Stack(
           children: [
-            Image.asset(
+            Image.network(
               imagePath,
               width: 350,
               height: 200,
               fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  width: 350,
+                  height: 200,
+                  color: Colors.grey[300],
+                  child: const Icon(Icons.error),
+                );
+              },
             ),
             Positioned(
               bottom: 0,
               left: 0,
               right: 0,
               child: Container(
-                padding:
-                const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                 color: Colors.black.withOpacity(0.5),
                 child: Column(
                   children: [
