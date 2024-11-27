@@ -14,7 +14,7 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       endDrawer:
-          const SideNavbar(), // Menggunakan side navbar dari class SideNavbar di sebelah kanan
+          SideNavbar(), // Menggunakan side navbar dari class SideNavbar di sebelah kanan
       body: Container(
         // Background app
         decoration: const BoxDecoration(
@@ -280,7 +280,8 @@ class Home extends StatelessWidget {
                                   height: 80,
                                   width: 80,
                                   child: IconButton(
-                                    onPressed: () => Get.to(() => const Donation()),
+                                    onPressed: () =>
+                                        Get.to(() => const Donation()),
                                     icon: Padding(
                                       padding:
                                           const EdgeInsets.only(right: 7.0),

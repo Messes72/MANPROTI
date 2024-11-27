@@ -5,6 +5,7 @@ import 'package:manpro/features/bagian_utama/Tampilan/event/event_detail/event_d
 import 'package:manpro/navbar.dart';
 import 'package:manpro/utils/constants/image_string.dart';
 import 'package:manpro/features/bagian_utama/controllers/eventController.dart';
+import 'package:manpro/features/bagian_utama/Tampilan/event_category.dart';
 
 class Event extends StatelessWidget {
   const Event({super.key});
@@ -42,12 +43,16 @@ class Event extends StatelessWidget {
                         letterSpacing: -0.5,
                       ),
                     ),
+                    IconButton(
+                      onPressed: () => Get.to(() => EventCategory()),
+                      icon: const Icon(Icons.filter_list),
+                    ),
                     const SizedBox(height: 20),
                     Obx(() {
                       if (eventController.isLoading.value) {
                         return const Center(child: CircularProgressIndicator());
                       }
-                      
+
                       if (eventController.events.isEmpty) {
                         return const Center(
                           child: Text('No events available'),
@@ -55,32 +60,34 @@ class Event extends StatelessWidget {
                       }
 
                       return Column(
-                        children: eventController.events.map((event) =>
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 20.0),
-                            child: GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => EventDetail(
-                                      title: event.title,
-                                      content: event.content,
-                                      image: event.image,
-                                      date: event.date,
-                                      eventId: event.id,
-                                    ),
+                        children: eventController.events
+                            .map(
+                              (event) => Padding(
+                                padding: const EdgeInsets.only(bottom: 20.0),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => EventDetail(
+                                          title: event.title,
+                                          content: event.content,
+                                          image: event.image,
+                                          date: event.date,
+                                          eventId: event.id,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: buildArticleCard(
+                                    event.image,
+                                    event.title,
+                                    event.date,
                                   ),
-                                );
-                              },
-                              child: buildArticleCard(
-                                event.image,
-                                event.title,
-                                event.date,
+                                ),
                               ),
-                            ),
-                          ),
-                        ).toList(),
+                            )
+                            .toList(),
                       );
                     }),
                   ],
@@ -119,7 +126,8 @@ class Event extends StatelessWidget {
               left: 0,
               right: 0,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                 color: Colors.black.withOpacity(0.5),
                 child: Column(
                   children: [

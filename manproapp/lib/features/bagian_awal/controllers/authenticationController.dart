@@ -144,4 +144,48 @@ class AuthenticationController extends GetxController {
       print(e.toString());
     }
   }
+
+  Future<void> logout() async {
+    try {
+      isLoading.value = true;
+      final response = await http.post(
+        Uri.parse('${url}logout'),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${box.read('token')}'
+        },
+      );
+
+      if (response.statusCode == 200) {
+        box.remove('token');
+        box.remove('user');
+        
+        Get.snackbar(
+          'Success',
+          'Successfully logged out',
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
+        
+        Get.offAll(() => const Login());
+      } else {
+        Get.snackbar(
+          'Error',
+          'Failed to logout',
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+      }
+    } catch (e) {
+      print('Error during logout: $e');
+      Get.snackbar(
+        'Error',
+        'Something went wrong',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    } finally {
+      isLoading.value = false;
+    }
+  }
 }

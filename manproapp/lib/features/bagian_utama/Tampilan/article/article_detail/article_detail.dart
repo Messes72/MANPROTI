@@ -6,7 +6,8 @@ import 'package:manpro/common/widgets/background_app.dart';
 class ArticleDetail extends StatelessWidget {
   const ArticleDetail({super.key});
 
-  void _showImageOverlay(BuildContext context, List<String> images, int initialIndex, bool isAsset) {
+  void _showImageOverlay(BuildContext context, List<String> images,
+      int initialIndex, bool isAsset) {
     showDialog(
       context: context,
       builder: (context) => Dialog(
@@ -25,7 +26,8 @@ class ArticleDetail extends StatelessWidget {
                     height: MediaQuery.of(context).size.height,
                     color: Colors.black.withOpacity(0.5),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 40),
                       child: InteractiveViewer(
                         minScale: 0.5,
                         maxScale: 3.0,
@@ -33,10 +35,16 @@ class ArticleDetail extends StatelessWidget {
                             ? Image.asset(
                                 images[index],
                                 fit: BoxFit.contain,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return const Center(child: Icon(Icons.error));
+                                },
                               )
                             : Image.network(
                                 images[index],
                                 fit: BoxFit.contain,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return const Center(child: Icon(Icons.error));
+                                },
                               ),
                       ),
                     ),
@@ -60,14 +68,12 @@ class ArticleDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Retrieve article data passed as arguments
-    final Map<String, dynamic> article =
-        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    final Map<String, dynamic> article = Get.arguments as Map<String, dynamic>;
 
-    // Get list of article images including additional images
     final List<String> articleImages = [
       article['image']!,
-      ...?article['additionalImages'] as List<String>?,
+      if (article['additionalImages'] != null)
+        ...(article['additionalImages'] as List<String>),
     ];
 
     final bool isAsset = article['isAsset'] == 'true';
@@ -102,7 +108,6 @@ class ArticleDetail extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    // Article Image Carousel
                     SizedBox(
                       height: 200,
                       child: Stack(
@@ -111,14 +116,17 @@ class ArticleDetail extends StatelessWidget {
                             itemCount: articleImages.length,
                             itemBuilder: (context, index) {
                               return GestureDetector(
-                                onTap: () => _showImageOverlay(context, articleImages, index, isAsset),
+                                onTap: () => _showImageOverlay(
+                                    context, articleImages, index, isAsset),
                                 child: Container(
-                                  margin: const EdgeInsets.symmetric(horizontal: 4),
+                                  margin:
+                                      const EdgeInsets.symmetric(horizontal: 4),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(16),
                                     image: DecorationImage(
                                       image: isAsset
-                                          ? AssetImage(articleImages[index]) as ImageProvider
+                                          ? AssetImage(articleImages[index])
+                                              as ImageProvider
                                           : NetworkImage(articleImages[index]),
                                       fit: BoxFit.cover,
                                     ),
@@ -127,32 +135,32 @@ class ArticleDetail extends StatelessWidget {
                               );
                             },
                           ),
-                          // Dots indicator
-                          Positioned(
-                            bottom: 10,
-                            left: 0,
-                            right: 0,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: List.generate(
-                                articleImages.length,
-                                (index) => Container(
-                                  margin: const EdgeInsets.symmetric(horizontal: 2),
-                                  width: 8,
-                                  height: 8,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Colors.white.withOpacity(0.8),
+                          if (articleImages.length > 1)
+                            Positioned(
+                              bottom: 10,
+                              left: 0,
+                              right: 0,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: List.generate(
+                                  articleImages.length,
+                                  (index) => Container(
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 2),
+                                    width: 8,
+                                    height: 8,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.white.withOpacity(0.8),
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
                         ],
                       ),
                     ),
                     const SizedBox(height: 16),
-                    // Article Content Container
                     Container(
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.8),
@@ -162,9 +170,8 @@ class ArticleDetail extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Article Date
                           Text(
-                            article['date']!,
+                            article['date'] ?? '',
                             style: const TextStyle(
                               color: Colors.grey,
                               fontSize: 14,
@@ -173,9 +180,8 @@ class ArticleDetail extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 8),
-                          // Article Title
                           Text(
-                            article['title']!,
+                            article['title'] ?? '',
                             style: const TextStyle(
                               fontSize: 24,
                               fontFamily: 'NunitoSans',
@@ -183,9 +189,8 @@ class ArticleDetail extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 16),
-                          // Article Content
                           Text(
-                            article['content']!,
+                            article['content'] ?? '',
                             style: const TextStyle(
                               fontSize: 16,
                               height: 1.5,

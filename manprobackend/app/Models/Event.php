@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 class Event extends Model
 {
@@ -10,11 +11,73 @@ class Event extends Model
         'title',
         'content',
         'image',
-        'date'
+        'additional_images',
+        'date',
+        'category_id',
+        'status',
+        'capacity',
+        'enable_reminder',
+        'reminder_at',
+        'share_url',
+        'registration_end_date'
     ];
+
+    protected $casts = [
+        'additional_images' => 'array',
+        'date' => 'date',
+        'reminder_at' => 'datetime',
+        'registration_end_date' => 'datetime',
+        'enable_reminder' => 'boolean'
+    ];
+
+    public function category()
+    {
+        return $this->belongsTo(EventCategory::class);
+    }
 
     public function registrations()
     {
         return $this->hasMany(EventRegistration::class);
+    }
+
+    public function getAvailableSpotsAttribute()
+    {
+        return $this->capacity - $this->registrations()->count();
+    }
+
+    public function scopeFilter($query, array $filters)
+    {
+        $query->when($filters['search'] ?? false, fn($query, $search) =>
+            $query->where('title', 'like', '%' . $search . '%')
+        );
+
+        $query->when($filters['category'] ?? false, fn($query, $category) =>
+            $query->whereHas('category', fn($query) =>
+                $query->where('slug', $category)
+            )
+        );
+
+        $query->when($filters['status'] ?? false, fn($query, $status) =>
+            $query->where('status', $status)
+        );
+
+        $query->when($filters['date'] ?? false, fn($query, $date) =>
+            $query->whereDate('date', $date)
+        );
+    }
+
+    public function updateStatus()
+    {
+        $now = Carbon::now();
+        
+        if ($this->date->isPast()) {
+            $this->status = 'completed';
+        } elseif ($this->date->isToday()) {
+            $this->status = 'ongoing';
+        } else {
+            $this->status = 'upcoming';
+        }
+        
+        $this->save();
     }
 }

@@ -9,21 +9,37 @@ use App\Http\Requests\EventRegistrationRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class EventController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $events = Event::latest()->get()->map(function ($event) {
-            return [
-                'id' => $event->id,
-                'title' => $event->title,
-                'content' => $event->content,
-                'image' => $event->image,
-                'date' => $event->date,
-                'created_at' => $event->created_at->format('Y-m-d H:i:s')
-            ];
-        });
+        $events = Event::with('category')
+            ->filter($request->only(['search', 'category', 'status', 'date']))
+            ->latest()
+            ->get()
+            ->map(function ($event) {
+                $imageUrl = $event->image;
+                if (!filter_var($event->image, FILTER_VALIDATE_URL)) {
+                    $imageUrl = asset('storage/' . $event->image);
+                }
+
+                return [
+                    'id' => $event->id,
+                    'title' => $event->title,
+                    'content' => $event->content,
+                    'image' => $imageUrl,
+                    'date' => $event->date->format('d F Y'),
+                    'category' => $event->category?->name,
+                    'status' => $event->status,
+                    'available_spots' => $event->available_spots,
+                    'total_capacity' => $event->capacity,
+                    'share_url' => $event->share_url,
+                    'created_at' => $event->created_at->format('Y-m-d H:i:s')
+                ];
+            });
+
         return response()->json([
             'message' => 'Events retrieved successfully',
             'data' => $events
@@ -32,16 +48,25 @@ class EventController extends Controller
 
     public function show(Event $event)
     {
+        $imageUrl = $event->image;
+        if (!filter_var($event->image, FILTER_VALIDATE_URL)) {
+            $imageUrl = asset('storage/' . $event->image);
+        }
+
         return response()->json([
             'message' => 'Event details retrieved successfully',
             'data' => [
                 'id' => $event->id,
                 'title' => $event->title,
                 'content' => $event->content,
-                'image' => $event->image,
-                'date' => $event->date,
+                'image' => $imageUrl,
+                'date' => $event->date->format('d F Y'),
                 'created_at' => $event->created_at->format('Y-m-d H:i:s'),
-                'registrations_count' => $event->registrations()->count()
+                'registrations_count' => $event->registrations()->count(),
+                'additional_images' => $event->additional_images ?
+                    collect($event->additional_images)->map(function ($image) {
+                        return asset('storage/' . $image);
+                    }) : null
             ]
         ]);
     }
@@ -104,5 +129,98 @@ class EventController extends Controller
             'message' => 'Email not found in database. Please use your registered email.',
             'valid' => false
         ], 404);
+    }
+
+    public function cancelRegistration(EventRegistration $registration)
+    {
+        try {
+            // Verifikasi bahwa user yang request adalah pemilik registrasi
+            if ($registration->user_id != auth()->id()) {
+                return response()->json([
+                    'message' => 'Unauthorized to cancel this registration'
+                ], 403);
+            }
+
+            $registration->delete();
+
+            return response()->json([
+                'message' => 'Registration cancelled successfully'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Failed to cancel registration',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function toggleReminder($eventId)
+    {
+        $event = Event::findOrFail($eventId);
+        $event->enable_reminder = !$event->enable_reminder;
+        $event->save();
+
+        return response()->json([
+            'message' => 'Reminder settings updated',
+            'enable_reminder' => $event->enable_reminder
+        ]);
+    }
+
+    public function update(Request $request, Event $event)
+    {
+        $request->validate([
+            'category_id' => 'exists:event_categories,id',
+            'title' => 'string|min:3|max:255',
+            'content' => 'string|min:10',
+            'image' => 'nullable|image|mimes:jpg,png,jpeg',
+            'additional_images.*' => 'nullable|image|mimes:jpg,png,jpeg',
+            'date' => 'date',
+            'capacity' => 'integer|min:0'
+        ]);
+
+        $data = $request->only([
+            'category_id',
+            'title',
+            'content',
+            'date',
+            'capacity'
+        ]);
+
+        if ($request->hasFile('image')) {
+            // Hapus gambar lama jika ada
+            if ($event->image) {
+                Storage::disk('public')->delete($event->image);
+            }
+            $data['image'] = $request->file('image')->store('events', 'public');
+        }
+
+        if ($request->hasFile('additional_images')) {
+            $additionalImages = [];
+            foreach ($request->file('additional_images') as $image) {
+                $additionalImages[] = $image->store('events', 'public');
+            }
+            $data['additional_images'] = $additionalImages;
+        }
+
+        $event->update($data);
+
+        return response()->json([
+            'message' => 'Event updated successfully',
+            'data' => $event
+        ]);
+    }
+
+    public function generateShareUrl($eventId)
+    {
+        $event = Event::findOrFail($eventId);
+        // Generate unique share URL
+        $shareUrl = url("/events/{$event->id}");
+        $event->share_url = $shareUrl;
+        $event->save();
+
+        return response()->json([
+            'message' => 'Share URL generated',
+            'share_url' => $shareUrl
+        ]);
     }
 }

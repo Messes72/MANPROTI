@@ -86,4 +86,21 @@ class AuthenticationController extends Controller
             return Response::json(['data' => $data], 200);
         } else return abort(404);
     }
+
+    public function logout(Request $request)
+    {
+        try {
+            // Revoke the user's current token
+            $request->user()->currentAccessToken()->delete();
+
+            return response()->json([
+                'message' => 'Successfully logged out'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error during logout',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

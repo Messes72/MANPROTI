@@ -12,6 +12,7 @@ class EventController extends GetxController {
   final events = <Event>[].obs;
   final eventHistory = <EventRegistration>[].obs;
   final box = GetStorage();
+  final selectedCategory = RxString('');
 
   @override
   void onInit() {
@@ -21,11 +22,16 @@ class EventController extends GetxController {
   }
 
   // Mengambil daftar event
-  Future<void> getEvents() async {
+  Future<void> getEvents({String? category}) async {
     try {
       isLoading.value = true;
+      String endpoint = '${url}events/list';
+      if (category != null && category.isNotEmpty) {
+        endpoint += '?category=$category';
+      }
+
       final response = await http.get(
-        Uri.parse('${url}events/list'),
+        Uri.parse(endpoint),
         headers: {
           'Accept': 'application/json',
           'Authorization': 'Bearer ${box.read('token')}'
@@ -112,7 +118,7 @@ class EventController extends GetxController {
   }) async {
     try {
       isLoading.value = true;
-      
+
       // Validasi email terlebih dahulu
       final validateResponse = await http.post(
         Uri.parse('${url}validate-email'),
@@ -126,7 +132,8 @@ class EventController extends GetxController {
       );
 
       if (validateResponse.statusCode != 200) {
-        throw json.decode(validateResponse.body)['message'] ?? 'Email validation failed';
+        throw json.decode(validateResponse.body)['message'] ??
+            'Email validation failed';
       }
 
       final response = await http.post(
@@ -152,7 +159,8 @@ class EventController extends GetxController {
         await getEventHistory();
         Get.off(() => EventHistory());
       } else {
-        final message = json.decode(response.body)['message'] ?? 'Registration failed';
+        final message =
+            json.decode(response.body)['message'] ?? 'Registration failed';
         throw message;
       }
     } catch (e) {
@@ -202,5 +210,57 @@ class EventController extends GetxController {
   Future<void> refreshData() async {
     await getEvents();
     await getEventHistory();
+  }
+
+  Future<void> filterByCategory(String category) async {
+    selectedCategory.value = category;
+    await getEvents(category: category);
+  }
+
+  void resetFilter() {
+    selectedCategory.value = '';
+    getEvents();
+  }
+
+  Future<void> cancelEventRegistration(int registrationId) async {
+    try {
+      isLoading.value = true;
+      final response = await http.delete(
+        Uri.parse('${url}events/registration/$registrationId'),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${box.read('token')}'
+        },
+      );
+
+      if (response.statusCode == 200) {
+        Get.snackbar(
+          'Success',
+          'Event registration cancelled successfully',
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
+        // Refresh event history
+        await getEventHistory();
+      } else {
+        print('Error response: ${response.body}');
+        Get.snackbar(
+          'Error',
+          'Failed to cancel registration',
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+      }
+    } catch (e) {
+      print('Error cancelling registration: $e');
+      Get.snackbar(
+        'Error',
+        'Something went wrong',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    } finally {
+      isLoading.value = false;
+    }
   }
 }

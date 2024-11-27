@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:manpro/features/bagian_awal/controllers/authenticationController.dart';
 import 'package:manpro/features/bagian_utama/Tampilan/event_history/event_history.dart';
 import 'package:manpro/features/bagian_utama/Tampilan/profile/profile.dart';
 import 'package:manpro/utils/constants/image_string.dart';
 
 class SideNavbar extends StatelessWidget {
-  const SideNavbar({super.key});
+  SideNavbar({super.key});
+
+  final AuthenticationController _authenticationController =
+      Get.put(AuthenticationController());
 
   @override
   Widget build(BuildContext context) {
@@ -108,33 +112,43 @@ class SideNavbar extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20),
             child: SizedBox(
-              width: double.infinity, // Set width to fill the available space
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  // Aksi ketika tombol logout ditekan
-                },
-                icon: const Icon(
-                  Icons.exit_to_app,
-                  size: 24,
-                ),
-                label: const Text(
-                  'Logout',
-                  style: TextStyle(
-                    fontFamily: 'Montserrat',
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: Colors.black,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30.0),
-                    side: const BorderSide(color: Colors.black),
-                  ),
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-                ),
-              ),
+              width: double.infinity,
+              child: Obx(() => ElevatedButton.icon(
+                    onPressed: _authenticationController.isLoading.value
+                        ? null // Disable button while loading
+                        : () => _authenticationController.logout(),
+                    icon: _authenticationController.isLoading.value
+                        ? const SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                            ),
+                          )
+                        : const Icon(
+                            Icons.exit_to_app,
+                            size: 24,
+                          ),
+                    label: Text(
+                      _authenticationController.isLoading.value
+                          ? 'Logging out...'
+                          : 'Logout',
+                      style: const TextStyle(
+                        fontFamily: 'Montserrat',
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                        side: const BorderSide(color: Colors.black),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 12, horizontal: 20),
+                    ),
+                  )),
             ),
           ),
         ],

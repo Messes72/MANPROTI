@@ -116,6 +116,70 @@ class EventHistory extends StatelessWidget {
                                     color: Colors.black,
                                   ),
                                 ),
+                                const SizedBox(height: 15),
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: TextButton.icon(
+                                    onPressed: () {
+                                      Get.dialog(
+                                        AlertDialog(
+                                          title: const Text(
+                                            'Cancel Registration',
+                                            style: TextStyle(
+                                              fontFamily: 'Montserrat',
+                                              fontWeight: FontWeight.w700,
+                                              fontSize: 20.0,
+                                            ),
+                                          ),
+                                          content: const Text(
+                                            'Are you sure you want to cancel this registration?',
+                                            style: TextStyle(
+                                              fontFamily: 'NunitoSans',
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 16.0,
+                                            ),
+                                          ),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () => Get.back(),
+                                              child: const Text(
+                                                'No',
+                                                style: TextStyle(
+                                                  fontFamily: 'NunitoSans',
+                                                  fontWeight: FontWeight.w700,
+                                                ),
+                                              ),
+                                            ),
+                                            TextButton(
+                                              onPressed: () {
+                                                Get.back();
+                                                eventController
+                                                    .cancelEventRegistration(
+                                                        registration.id);
+                                              },
+                                              style: TextButton.styleFrom(
+                                                foregroundColor: Colors.red,
+                                              ),
+                                              child: const Text(
+                                                'Yes',
+                                                style: TextStyle(
+                                                  fontFamily: 'NunitoSans',
+                                                  fontWeight: FontWeight.w700,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                    icon: const Icon(Icons.cancel_outlined,
+                                        color: Colors.red),
+                                    label: const Text(
+                                      'Cancel Registration',
+                                      style: TextStyle(color: Colors.red),
+                                    ),
+                                  ),
+                                ),
                               ],
                             ),
                           );

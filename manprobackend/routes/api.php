@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthenticationController;
 use App\Http\Controllers\DonationController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\EventCategoryController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -37,9 +39,37 @@ Route::middleware('auth:sanctum')->group(function () {
     // Event protected routes
     Route::get('/event/history', [EventController::class, 'history']);
     Route::post('/events/register', [EventController::class, 'register']);
+    Route::delete('/events/registration/{registration}', [EventController::class, 'cancelRegistration']);
+    Route::post('/events/{event}/toggle-reminder', [EventController::class, 'toggleReminder']);
+    Route::get('/events/{event}/share', [EventController::class, 'generateShareUrl']);
 });
 
 // Admin routes (tambahkan middleware admin jika diperlukan)
 Route::post('/events', [EventController::class, 'store']);
 
 Route::post('/validate-email', [EventController::class, 'validateEmail']);
+
+// Public article routes
+Route::get('/articles/list', [ArticleController::class, 'index']);
+Route::get('/articles/{article}', [ArticleController::class, 'show']);
+
+// Admin article routes (add middleware as needed)
+Route::post('/articles', [ArticleController::class, 'store']);
+
+Route::get('/event-categories', [EventCategoryController::class, 'index']);
+
+// Event category routes (admin only)
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::post('/event-categories', [EventCategoryController::class, 'store']);
+    Route::put('/event-categories/{category}', [EventCategoryController::class, 'update']);
+    Route::delete('/event-categories/{category}', [EventCategoryController::class, 'destroy']);
+});
+
+// Admin routes untuk event
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::put('/events/{event}', [EventController::class, 'update']);
+});
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/logout', [AuthenticationController::class, 'logout']);
+});
