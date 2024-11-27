@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:manpro/features/bagian_awal/controllers/authenticationController.dart';
+import 'package:manpro/features/bagian_utama/controllers/profileController.dart';
 import 'package:manpro/features/bagian_utama/Tampilan/event_history/event_history.dart';
 import 'package:manpro/features/bagian_utama/Tampilan/profile/profile.dart';
 import 'package:manpro/utils/constants/image_string.dart';
@@ -10,6 +11,7 @@ class SideNavbar extends StatelessWidget {
 
   final AuthenticationController _authenticationController =
       Get.put(AuthenticationController());
+  final ProfileController _profileController = Get.find<ProfileController>();
 
   @override
   Widget build(BuildContext context) {
@@ -17,20 +19,19 @@ class SideNavbar extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Bagian atas profil pengguna
-          const UserAccountsDrawerHeader(
+          // User profile section at the top
+          Obx(() => UserAccountsDrawerHeader(
             decoration: BoxDecoration(
-              color:
-                  Color.fromARGB(255, 246, 141, 252), // Change the color here
+              color: Color.fromARGB(255, 246, 141, 252),
               border: Border(
                 bottom: BorderSide(
-                  color: Colors.black, // Outline hitam
+                  color: Colors.black,
                   width: 1.0,
                 ),
               ),
             ),
             accountName: Text(
-              'Jehezkiel Louis',
+              _profileController.userData['nama_lengkap'] ?? 'User',
               style: TextStyle(
                 fontFamily: 'Montserrat',
                 fontWeight: FontWeight.w700,
@@ -38,12 +39,11 @@ class SideNavbar extends StatelessWidget {
                 color: Colors.black,
               ),
             ),
-            accountEmail: null, // Kosongkan jika tidak ada email
+            accountEmail: null,
             currentAccountPicture: CircleAvatar(
-              backgroundImage: AssetImage(
-                  YPKImages.gbr_event1), // Ganti dengan path gambar profil
+              backgroundImage: AssetImage(YPKImages.gbr_event1),
             ),
-          ),
+          )),
           // Tombol My Profile
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),

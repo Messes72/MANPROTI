@@ -7,6 +7,7 @@ use App\Http\Controllers\DonationController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\EventCategoryController;
+use App\Http\Controllers\ProfileController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -28,6 +29,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/donations', [DonationController::class, 'donasi']);
     Route::get('/donations/history', [DonationController::class, 'history']);
     Route::patch('/donations/{donation}/status', [DonationController::class, 'updateStatus']);
+    Route::get('/profile', [ProfileController::class, 'show']);
+    Route::post('/profile/update', [ProfileController::class, 'update']);
 });
 
 // Event routes (public)

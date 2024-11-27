@@ -263,4 +263,26 @@ class EventController extends GetxController {
       isLoading.value = false;
     }
   }
+
+  Future<void> getActiveEventImages() async {
+    try {
+      isLoading.value = true;
+      final response = await http.get(
+        Uri.parse('${url}events/list'),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${box.read('token')}'
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body)['data'];
+        events.value = data.map((json) => Event.fromJson(json)).toList();
+      }
+    } catch (e) {
+      print('Error fetching event images: $e');
+    } finally {
+      isLoading.value = false;
+    }
+  }
 }
