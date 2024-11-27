@@ -5,15 +5,31 @@ class KontakYayasanContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        buildContactInfo('Alamat:', 'Jl. Kebahagiaan No. 123, Jakarta'),
-        const SizedBox(height: 15.0),
-        buildContactInfo('Email:', 'panti@contoh.com'),
-        const SizedBox(height: 15.0),
-        buildContactInfo('No Telp:', '+62 812 3456 7890'),
-      ],
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(30),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 6,
+            blurRadius: 7,
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            buildContactInfo('Alamat:', 'Jl. Kebahagiaan No. 123, Jakarta'),
+            const SizedBox(height: 15.0),
+            buildContactInfo('Email:', 'panti@contoh.com'),
+            const SizedBox(height: 15.0),
+            buildContactInfo('No Telp:', '+62 812 3456 7890'),
+          ],
+        ),
+      ),
     );
   }
 
@@ -25,8 +41,9 @@ class KontakYayasanContent extends StatelessWidget {
           'lorem ipsum',
           style: TextStyle(
             fontSize: 18.0,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
+            fontFamily: 'NunitoSans',
+            fontWeight: FontWeight.w700,
+            color: Colors.black,
           ),
         ),
         Expanded(
@@ -34,7 +51,9 @@ class KontakYayasanContent extends StatelessWidget {
             value,
             style: const TextStyle(
               fontSize: 18.0,
-              color: Colors.white,
+              fontFamily: 'NunitoSans',
+              fontWeight: FontWeight.w700,
+              color: Colors.black,
             ),
           ),
         ),
