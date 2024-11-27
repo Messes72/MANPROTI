@@ -10,9 +10,13 @@ class BackgroundAPP extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage(YPKImages.background),
-          fit: BoxFit.cover,
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Color(0xFFEFCFF5), // Light pink
+            Color(0xFFFCFCFC), // White
+          ],
         ),
       ),
     );
