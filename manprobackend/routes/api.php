@@ -13,11 +13,9 @@ use App\Models\Feed;
 
 
 
-// Route::get('/user', function (Request $request) {
-//     return $request->user();
-// })->middleware('auth:sanctum');
-
-Route::post('/feed/store', [FeedController::class, 'store'])->middleware('auth:sanctum');
+Route::get('/user', function (Request $request) {
+    return $request->user();
+})->middleware('auth:sanctum');
 
 Route::get('/test', function () {
     return response([
@@ -30,6 +28,11 @@ Route::post('/login', [AuthenticationController::class, 'login']);
 Route::get('/get/login/{id}', [AuthenticationController::class, 'getLogin']);
 Route::post('/forget-password', [AuthenticationController::class, 'forgetPassword']);
 
+// Feed routes (protected by auth middleware)
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/feed/store', [FeedController::class, 'store']);
+    Route::post('/feed/like/{feed_id}', [FeedController::class, 'likePost']);
+});
 
 // Donation routes (protected by auth middleware)
 Route::middleware('auth:sanctum')->group(function () {
