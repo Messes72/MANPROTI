@@ -5,6 +5,7 @@ import 'package:manpro/features/bagian_utama/Tampilan/contact/contact.dart';
 import 'package:manpro/features/bagian_utama/Tampilan/home/home.dart';
 import 'package:manpro/features/bagian_utama/Tampilan/donation_history/donation_history.dart';
 import 'package:manpro/utils/constants/image_string.dart';
+import 'package:manpro/features/bagian_utama/Tampilan/forum/forum.dart';
 
 class Navbar extends StatelessWidget {
   const Navbar({super.key});
@@ -68,7 +69,7 @@ class NavigationController extends GetxController {
 
   final screens = [
     const Home(),
-    Container(color: Colors.green),
+    const Forum(),
     const KontakYayasan(),
     DonationHistory()
   ];
