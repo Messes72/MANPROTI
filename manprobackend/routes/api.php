@@ -8,10 +8,16 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\EventCategoryController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Feed\FeedController;
+use App\Models\Feed;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+
+
+// Route::get('/user', function (Request $request) {
+//     return $request->user();
+// })->middleware('auth:sanctum');
+
+Route::post('/feed/store', [FeedController::class, 'store'])->middleware('auth:sanctum');
 
 Route::get('/test', function () {
     return response([
@@ -23,6 +29,7 @@ Route::post('/register', [AuthenticationController::class, 'register']);
 Route::post('/login', [AuthenticationController::class, 'login']);
 Route::get('/get/login/{id}', [AuthenticationController::class, 'getLogin']);
 Route::post('/forget-password', [AuthenticationController::class, 'forgetPassword']);
+
 
 // Donation routes (protected by auth middleware)
 Route::middleware('auth:sanctum')->group(function () {

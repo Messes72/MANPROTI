@@ -6,11 +6,13 @@ import 'package:get/get.dart';
 import 'package:manpro/features/bagian_utama/Tampilan/forum/post_field.dart';
 import 'package:manpro/features/bagian_utama/Tampilan/forum/post_data.dart';
 
+
 class Forum extends StatelessWidget {
   const Forum({super.key});
 
   @override
   Widget build(BuildContext context) {
+
     final TextEditingController _postController = TextEditingController();
     return Scaffold(
       body: Stack(
@@ -43,7 +45,7 @@ class Forum extends StatelessWidget {
                     ),
                     const SizedBox(height: 10),
                     const Text(
-                      'Selamat datang di forum kami! Silakan berbagi pendapat Anda.',
+                      'Selamat datang di forum kami! Silahkan berbagi pendapat Anda.',
                       textAlign: TextAlign.left,
                       style: TextStyle(
                         fontFamily: 'Montserrat',
