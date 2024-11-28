@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:manpro/common/widgets/background_app.dart';
 import 'package:manpro/features/bagian_utama/Tampilan/contact/contact_yayasan_content.dart';
 import 'package:manpro/features/bagian_utama/Tampilan/contact/tulisan_contact.dart';
-import 'package:manpro/features/bagian_utama/Tampilan/profile_yayasan/widgets/tombol_back.dart';
 import 'package:get/get.dart';
 import 'package:manpro/navbar.dart';
 import 'package:manpro/utils/constants/image_string.dart';
