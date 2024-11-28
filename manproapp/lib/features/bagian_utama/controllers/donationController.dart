@@ -4,17 +4,23 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:manpro/features/bagian_utama/models/donationModel.dart';
+import 'package:manpro/features/bagian_utama/models/donationTypeModel.dart';
+import 'package:manpro/features/bagian_utama/models/shippingMethodModel.dart';
 import 'package:manpro/utils/constants/api_constants.dart';
 
 class DonationController extends GetxController {
   final isLoading = false.obs;
   final donations = <DonationModel>[].obs;
   final box = GetStorage();
+  final donationTypes = <DonationType>[].obs;
+  final shippingMethods = <ShippingMethod>[].obs;
 
   @override
   void onInit() {
     super.onInit();
     getDonationHistory();
+    getDonationTypes();
+    getShippingMethods();
   }
 
   Future<void> createDonation({
@@ -151,6 +157,94 @@ class DonationController extends GetxController {
     } catch (e) {
       isLoading.value = false;
       print(e.toString());
+    }
+  }
+
+  Future<void> getDonationTypes() async {
+    try {
+      var response = await http.get(
+        Uri.parse('${url}donation-types'),
+        headers: {'Accept': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        var data = json.decode(response.body)['data'] as List;
+        donationTypes.value = data
+            .map((type) => DonationType(
+                  id: type['id'],
+                  name: type['name'],
+                ))
+            .toList();
+      }
+    } catch (e) {
+      print('Error getting donation types: $e');
+    }
+  }
+
+  Future<void> getShippingMethods() async {
+    try {
+      var response = await http.get(
+        Uri.parse('${url}shipping-methods'),
+        headers: {'Accept': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        var data = json.decode(response.body)['data'] as List;
+        shippingMethods.value = data
+            .map((method) => ShippingMethod(
+                  id: method['id'],
+                  name: method['name'],
+                ))
+            .toList();
+      }
+    } catch (e) {
+      print('Error getting shipping methods: $e');
+    }
+  }
+
+  Future<void> cancelDonation(int donationId) async {
+    try {
+      isLoading.value = true;
+      final token = box.read('token');
+
+      var response = await http.patch(
+        Uri.parse('${url}donations/$donationId/cancel'),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        Get.snackbar(
+          'Success',
+          'Donation cancelled successfully',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
+        getDonationHistory(); // Refresh the list
+      } else {
+        var errorMessage = json.decode(response.body)['message'];
+        Get.snackbar(
+          'Error',
+          errorMessage,
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+      }
+    } catch (e) {
+      print('Error cancelling donation: $e');
+      Get.snackbar(
+        'Error',
+        'Failed to cancel donation',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    } finally {
+      isLoading.value = false;
     }
   }
 }

@@ -8,7 +8,11 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\EventCategoryController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\DonationTypeController;
+use App\Http\Controllers\ShippingMethodController;
 
+// Public test routes
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
@@ -19,60 +23,88 @@ Route::get('/test', function () {
     ], 200);
 });
 
+// Authentication routes
 Route::post('/register', [AuthenticationController::class, 'register']);
 Route::post('/login', [AuthenticationController::class, 'login']);
 Route::get('/get/login/{id}', [AuthenticationController::class, 'getLogin']);
 Route::post('/forget-password', [AuthenticationController::class, 'forgetPassword']);
 
-// Donation routes (protected by auth middleware)
+// Protected authentication routes
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/donations', [DonationController::class, 'donasi']);
-    Route::get('/donations/history', [DonationController::class, 'history']);
-    Route::patch('/donations/{donation}/status', [DonationController::class, 'updateStatus']);
-    Route::get('/profile', [ProfileController::class, 'show']);
-    Route::post('/profile/update', [ProfileController::class, 'update']);
+    Route::post('/logout', [AuthenticationController::class, 'logout']);
 });
 
-// Event routes (public)
+// Public event routes
 Route::get('/events/list', [EventController::class, 'index']);
 Route::get('/events/{event}', [EventController::class, 'show']);
+Route::post('/validate-email', [EventController::class, 'validateEmail']);
+Route::get('/event-categories', [EventCategoryController::class, 'index']);
 
-// Event routes (protected)
+// Protected event routes
 Route::middleware('auth:sanctum')->group(function () {
-    // Event protected routes
     Route::get('/event/history', [EventController::class, 'history']);
     Route::post('/events/register', [EventController::class, 'register']);
     Route::delete('/events/registration/{registration}', [EventController::class, 'cancelRegistration']);
     Route::post('/events/{event}/toggle-reminder', [EventController::class, 'toggleReminder']);
     Route::get('/events/{event}/share', [EventController::class, 'generateShareUrl']);
+    Route::put('/events/{event}', [EventController::class, 'update']);
 });
 
-// Admin routes (tambahkan middleware admin jika diperlukan)
+// Admin event routes
 Route::post('/events', [EventController::class, 'store']);
 
-Route::post('/validate-email', [EventController::class, 'validateEmail']);
-
-// Public article routes
-Route::get('/articles/list', [ArticleController::class, 'index']);
-Route::get('/articles/{article}', [ArticleController::class, 'show']);
-
-// Admin article routes (add middleware as needed)
-Route::post('/articles', [ArticleController::class, 'store']);
-
-Route::get('/event-categories', [EventCategoryController::class, 'index']);
-
-// Event category routes (admin only)
+// Protected event category routes (admin only)
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/event-categories', [EventCategoryController::class, 'store']);
     Route::put('/event-categories/{category}', [EventCategoryController::class, 'update']);
     Route::delete('/event-categories/{category}', [EventCategoryController::class, 'destroy']);
 });
 
-// Admin routes untuk event
-Route::middleware(['auth:sanctum'])->group(function () {
-    Route::put('/events/{event}', [EventController::class, 'update']);
+// Public article routes
+Route::get('/articles/list', [ArticleController::class, 'index']);
+Route::get('/articles/{article}', [ArticleController::class, 'show']);
+
+// Admin article routes
+Route::post('/articles', [ArticleController::class, 'store']);
+
+// Protected donation routes
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/donations', [DonationController::class, 'donasi']);
+    Route::get('/donations/history', [DonationController::class, 'history']);
+    Route::patch('/donations/{donation}/status', [DonationController::class, 'updateStatus']);
+    Route::patch('/donations/{donation}/cancel', [DonationController::class, 'cancel']);
 });
 
+// Public donation type routes
+Route::get('/donation-types', [DonationTypeController::class, 'index']);
+
+// Protected donation type routes (admin only)
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::post('/donation-types', [DonationTypeController::class, 'store']);
+    Route::put('/donation-types/{type}', [DonationTypeController::class, 'update']);
+    Route::delete('/donation-types/{type}', [DonationTypeController::class, 'destroy']);
+});
+
+// Protected profile routes
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/logout', [AuthenticationController::class, 'logout']);
+    Route::get('/profile', [ProfileController::class, 'show']);
+    Route::post('/profile/update', [ProfileController::class, 'update']);
+});
+
+// Public contact routes
+Route::get('/contact', [ContactController::class, 'show']);
+
+// Protected contact routes (admin only)
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::post('/contact', [ContactController::class, 'update']);
+});
+
+// Public shipping method routes
+Route::get('/shipping-methods', [ShippingMethodController::class, 'index']);
+
+// Protected shipping method routes (admin only)
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::post('/shipping-methods', [ShippingMethodController::class, 'store']);
+    Route::put('/shipping-methods/{method}', [ShippingMethodController::class, 'update']);
+    Route::delete('/shipping-methods/{method}', [ShippingMethodController::class, 'destroy']);
 });

@@ -19,18 +19,6 @@ class _DonationState extends State<Donation> {
   final TextEditingController quantityController = TextEditingController();
   final TextEditingController notesController = TextEditingController();
 
-  final List<String> donationTypes = [
-    'Pakaian',
-    'Sembako',
-    'Alat Tulis',
-    'Lainnya'
-  ];
-
-  final List<String> shippingMethods = [
-    'Antar Sendiri',
-    'Kurir',
-  ];
-
   final DonationController donationController = Get.put(DonationController());
 
   void _submitDonation() async {
@@ -148,19 +136,12 @@ class _DonationState extends State<Donation> {
                                   horizontal: 15, vertical: 15),
                             ),
                             value: selectedDonationType,
-                            items: donationTypes.map((String type) {
-                              return DropdownMenuItem<String>(
-                                value: type,
-                                child: Text(
-                                  type,
-                                  style: const TextStyle(
-                                    fontFamily: 'NunitoSans',
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              );
-                            }).toList(),
+                            items: donationController.donationTypes
+                                .map((type) => DropdownMenuItem<String>(
+                                      value: type.name,
+                                      child: Text(type.name),
+                                    ))
+                                .toList(),
                             onChanged: (String? newValue) {
                               setState(() {
                                 selectedDonationType = newValue;
@@ -219,19 +200,12 @@ class _DonationState extends State<Donation> {
                                   horizontal: 15, vertical: 15),
                             ),
                             value: selectedShippingMethod,
-                            items: shippingMethods.map((String method) {
-                              return DropdownMenuItem<String>(
-                                value: method,
-                                child: Text(
-                                  method,
-                                  style: const TextStyle(
-                                    fontFamily: 'NunitoSans',
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              );
-                            }).toList(),
+                            items: donationController.shippingMethods
+                                .map((method) => DropdownMenuItem<String>(
+                                      value: method.name,
+                                      child: Text(method.name),
+                                    ))
+                                .toList(),
                             onChanged: (String? newValue) {
                               setState(() {
                                 selectedShippingMethod = newValue;

@@ -65,4 +65,35 @@ class DonationController extends Controller
             'data' => $donation
         ]);
     }
+
+    public function cancel(Donation $donation)
+    {
+        try {
+            // Check if donation belongs to authenticated user
+            if ($donation->user_id !== auth()->id()) {
+                return response()->json([
+                    'message' => 'Unauthorized to cancel this donation'
+                ], 403);
+            }
+
+            // Check if donation can be cancelled (only pending donations)
+            if ($donation->status !== 'pending') {
+                return response()->json([
+                    'message' => 'Only pending donations can be cancelled'
+                ], 422);
+            }
+
+            $donation->update(['status' => 'cancelled']);
+
+            return response()->json([
+                'message' => 'Donation cancelled successfully',
+                'data' => $donation
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Failed to cancel donation',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

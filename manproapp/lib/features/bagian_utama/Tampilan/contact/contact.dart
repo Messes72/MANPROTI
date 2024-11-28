@@ -9,30 +9,30 @@ class KontakYayasan extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: Stack(
         children: [
-          BackgroundAPP(),
+          const BackgroundAPP(),
           SafeArea(
             child: SingleChildScrollView(
               child: Padding(
-                padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+                padding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Tombol back
-                    TombolBack(),
+                    const TombolBack(),
 
                     // Tulisan Kontak Yayasan
-                    TulisanKontak(),
-                    SizedBox(
+                    const TulisanKontak(),
+                    const SizedBox(
                       height: 35.0,
                     ),
 
                     // Kontak Yayasan
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20.0),
-                      child: KontakYayasanContent(),
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      child: ContactYayasanContent(),
                     ),
                   ],
                 ),

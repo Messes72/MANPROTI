@@ -21,7 +21,7 @@ class SideNavbar extends StatelessWidget {
         children: [
           // User profile section at the top
           Obx(() => UserAccountsDrawerHeader(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Color.fromARGB(255, 246, 141, 252),
               border: Border(
                 bottom: BorderSide(
@@ -32,7 +32,7 @@ class SideNavbar extends StatelessWidget {
             ),
             accountName: Text(
               _profileController.userData['nama_lengkap'] ?? 'User',
-              style: TextStyle(
+              style: const TextStyle(
                 fontFamily: 'Montserrat',
                 fontWeight: FontWeight.w700,
                 fontSize: 18,
@@ -40,7 +40,7 @@ class SideNavbar extends StatelessWidget {
               ),
             ),
             accountEmail: null,
-            currentAccountPicture: CircleAvatar(
+            currentAccountPicture: const CircleAvatar(
               backgroundImage: AssetImage(YPKImages.gbr_event1),
             ),
           )),

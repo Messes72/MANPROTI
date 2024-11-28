@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:manpro/common/widgets/background_app.dart';
+import 'package:manpro/features/bagian_utama/models/donationModel.dart';
 import 'package:manpro/navbar.dart';
 import 'package:manpro/utils/constants/image_string.dart';
 import 'package:manpro/features/bagian_utama/controllers/donationController.dart';
@@ -21,6 +22,160 @@ class DonationHistory extends StatelessWidget {
       default:
         return Colors.grey;
     }
+  }
+
+  Widget _buildDonationCard(DonationModel donation) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 20),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.9),
+        borderRadius: BorderRadius.circular(30),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.3),
+            spreadRadius: 3,
+            blurRadius: 7,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Type: ${donation.type}',
+                style: const TextStyle(
+                  fontFamily: 'NunitoSans',
+                  fontWeight: FontWeight.w700,
+                  color: Colors.black,
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
+                decoration: BoxDecoration(
+                  color: getStatusColor(donation.status ?? 'pending'),
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: Text(
+                  donation.status?.toUpperCase() ?? 'PENDING',
+                  style: const TextStyle(
+                    fontFamily: 'NunitoSans',
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Text(
+            'Quantity: ${donation.quantity}',
+            style: const TextStyle(
+              fontFamily: 'NunitoSans',
+              fontWeight: FontWeight.w700,
+              color: Colors.black,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            'Shipping Method: ${donation.shippingMethod}',
+            style: const TextStyle(
+              fontFamily: 'NunitoSans',
+              fontWeight: FontWeight.w700,
+              color: Colors.black,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            'Notes: ${donation.notes}',
+            style: const TextStyle(
+              fontFamily: 'NunitoSans',
+              fontWeight: FontWeight.w700,
+              color: Colors.black,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            'Created at: ${donation.createdAt}',
+            style: const TextStyle(
+              fontFamily: 'NunitoSans',
+              fontWeight: FontWeight.w700,
+              color: Colors.grey,
+              fontSize: 12,
+            ),
+          ),
+          if (donation.status?.toLowerCase() == 'pending')
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton.icon(
+                onPressed: () {
+                  Get.dialog(
+                    AlertDialog(
+                      title: const Text(
+                        'Cancel Donation',
+                        style: TextStyle(
+                          fontFamily: 'Montserrat',
+                          fontWeight: FontWeight.w700,
+                          fontSize: 20.0,
+                        ),
+                      ),
+                      content: const Text(
+                        'Are you sure you want to cancel this donation?',
+                        style: TextStyle(
+                          fontFamily: 'NunitoSans',
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16.0,
+                        ),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Get.back(),
+                          child: const Text(
+                            'No',
+                            style: TextStyle(
+                              fontFamily: 'NunitoSans',
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Get.back();
+                            donationController.cancelDonation(donation.id!);
+                          },
+                          style: TextButton.styleFrom(
+                            foregroundColor: Colors.red,
+                          ),
+                          child: const Text(
+                            'Yes',
+                            style: TextStyle(
+                              fontFamily: 'NunitoSans',
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.cancel_outlined, color: Colors.red),
+                label: const Text(
+                  'Cancel Donation',
+                  style: TextStyle(color: Colors.red),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -79,99 +234,7 @@ class DonationHistory extends StatelessWidget {
                         itemCount: donationController.donations.length,
                         itemBuilder: (context, index) {
                           final donation = donationController.donations[index];
-                          return Container(
-                            margin: const EdgeInsets.only(bottom: 20),
-                            padding: const EdgeInsets.all(20),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.9),
-                              borderRadius: BorderRadius.circular(30),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.3),
-                                  spreadRadius: 3,
-                                  blurRadius: 7,
-                                  offset: const Offset(0, 3),
-                                ),
-                              ],
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      'Type: ${donation.type}',
-                                      style: const TextStyle(
-                                        fontFamily: 'NunitoSans',
-                                        fontWeight: FontWeight.w700,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 12,
-                                        vertical: 6,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: getStatusColor(
-                                            donation.status ?? 'pending'),
-                                        borderRadius: BorderRadius.circular(15),
-                                      ),
-                                      child: Text(
-                                        donation.status?.toUpperCase() ??
-                                            'PENDING',
-                                        style: const TextStyle(
-                                          fontFamily: 'NunitoSans',
-                                          fontWeight: FontWeight.w700,
-                                          color: Colors.white,
-                                          fontSize: 12,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 10),
-                                Text(
-                                  'Quantity: ${donation.quantity}',
-                                  style: const TextStyle(
-                                    fontFamily: 'NunitoSans',
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                const SizedBox(height: 10),
-                                Text(
-                                  'Shipping Method: ${donation.shippingMethod}',
-                                  style: const TextStyle(
-                                    fontFamily: 'NunitoSans',
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                const SizedBox(height: 10),
-                                Text(
-                                  'Notes: ${donation.notes}',
-                                  style: const TextStyle(
-                                    fontFamily: 'NunitoSans',
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                const SizedBox(height: 10),
-                                Text(
-                                  'Created at: ${donation.createdAt}',
-                                  style: const TextStyle(
-                                    fontFamily: 'NunitoSans',
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.grey,
-                                    fontSize: 12,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
+                          return _buildDonationCard(donation);
                         },
                       );
                     }),
