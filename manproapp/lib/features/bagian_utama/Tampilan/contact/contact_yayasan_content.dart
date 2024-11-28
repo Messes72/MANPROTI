@@ -11,10 +11,22 @@ class KontakYayasanContent extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           buildContactInfo('Alamat:', 'Jl. Kebahagiaan No. 123, Jakarta'),
-          const SizedBox(height: 20.0), // Jarak antar item
+          const SizedBox(height: 20.0),
+          buildContactInfo('Kode Pos:', '12345'),
+          const SizedBox(height: 20.0),
           buildContactInfo('Email:', 'panti@contoh.com'),
-          const SizedBox(height: 20.0), // Jarak antar item
+          const SizedBox(height: 20.0),
           buildContactInfo('No Telp:', '+62 812 3456 7890'),
+          const SizedBox(height: 20.0),
+          buildContactInfo('WhatsApp:', '+62 857 1234 5678'),
+          const SizedBox(height: 20.0),
+          buildContactInfo('Website:', 'https://www.ypedulikasihabk.org/'),
+          const SizedBox(height: 20.0),
+          buildContactInfo('Jam Buka:', 'Senin - Jumat, 08:00 - 17:00'),
+          const SizedBox(height: 20.0),
+          buildContactInfo('Instagram:', '@ypedulikasihabk'),
+          const SizedBox(height: 20.0),
+          buildContactInfo('Facebook:', '@ypedulikasihabk'),
         ],
       ),
     );
@@ -39,7 +51,7 @@ class KontakYayasanContent extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            width: 80, // Lebar tetap untuk label agar sejajar
+            width: 100, // Lebar tetap untuk label agar sejajar
             child: Text(
               label,
               style: const TextStyle(
@@ -51,13 +63,26 @@ class KontakYayasanContent extends StatelessWidget {
           ),
           const SizedBox(width: 8.0), // Spasi antara label dan value
           Expanded(
-            child: Text(
-              value,
-              style: const TextStyle(
-                fontSize: 16.0,
-                color: Colors.black54,
-              ),
-            ),
+            child: label == "Jam Buka:"
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: value.split(',').map((day) {
+                      return Text(
+                        day.trim(),
+                        style: const TextStyle(
+                          fontSize: 16.0,
+                          color: Colors.black54,
+                        ),
+                      );
+                    }).toList(),
+                  )
+                : Text(
+                    value,
+                    style: const TextStyle(
+                      fontSize: 16.0,
+                      color: Colors.black54,
+                    ),
+                  ),
           ),
         ],
       ),
