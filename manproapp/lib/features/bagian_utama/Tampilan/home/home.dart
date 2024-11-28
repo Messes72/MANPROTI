@@ -3,12 +3,33 @@ import 'package:get/get.dart';
 import 'package:manpro/features/bagian_utama/Tampilan/article/article.dart';
 import 'package:manpro/features/bagian_utama/Tampilan/donation/donation.dart';
 import 'package:manpro/features/bagian_utama/Tampilan/event/event.dart';
+import 'package:manpro/features/bagian_utama/Tampilan/event/event_detail/event_detail.dart';
 import 'package:manpro/features/bagian_utama/Tampilan/profile_yayasan/profile_yayasan.dart';
+import 'package:manpro/features/bagian_utama/controllers/eventController.dart';
 import 'package:manpro/utils/constants/image_string.dart';
 import 'package:manpro/features/bagian_utama/Tampilan/home/side_navbar.dart';
+import 'package:manpro/features/bagian_utama/controllers/profileController.dart';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
   const Home({super.key});
+
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  final profileController = Get.put(ProfileController());
+  final eventController = Get.put(EventController());
+  final currentPage = 0.obs;
+  final pageController = PageController();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      eventController.getActiveEventImages();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,15 +82,15 @@ class Home extends StatelessWidget {
                   ),
                 ],
               ),
-              const Text(
-                'Halo, Jehezkiel Louis !',
-                style: TextStyle(
-                  fontFamily: 'Montserrat',
-                  fontWeight: FontWeight.w700,
-                  fontSize: 24.0,
-                  letterSpacing: -0.5,
-                ),
-              ),
+              Obx(() => Text(
+                    'Halo, ${profileController.userData['nama_lengkap'] ?? 'User'} !',
+                    style: const TextStyle(
+                      fontFamily: 'Montserrat',
+                      fontWeight: FontWeight.w700,
+                      fontSize: 24.0,
+                      letterSpacing: -0.5,
+                    ),
+                  )),
               const SizedBox(height: 27.0),
 
               //Tulisan event information
@@ -102,42 +123,75 @@ class Home extends StatelessWidget {
                   ),
                   child: Stack(
                     children: [
-                      PageView.builder(
-                          itemCount: 5,
+                      Obx(() {
+                        if (eventController.isLoading.value) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        }
+
+                        return PageView.builder(
+                          controller: pageController,
+                          onPageChanged: (index) {
+                            currentPage.value = index;
+                          },
+                          itemCount: eventController.events.length,
                           itemBuilder: (context, index) {
-                            return Card(
-                              margin: const EdgeInsets.all(8.0),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(15),
-                                child: Image.asset(
-                                  YPKImages.gbr_event1,
-                                  fit: BoxFit.cover,
+                            final event = eventController.events[index];
+                            return GestureDetector(
+                              onTap: () {
+                                Get.to(() => EventDetail(
+                                      title: event.title,
+                                      content: event.content,
+                                      image: event.image,
+                                      date: event.date,
+                                      eventId: event.id,
+                                    ));
+                              },
+                              child: Card(
+                                margin: const EdgeInsets.all(8.0),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(15),
+                                  child: Image.network(
+                                    event.image,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Image.asset(
+                                        YPKImages.gbr_event1,
+                                        fit: BoxFit.cover,
+                                      );
+                                    },
+                                  ),
                                 ),
                               ),
                             );
-                          }),
+                          },
+                        );
+                      }),
                       Positioned(
                         bottom: 10,
                         left: 0,
                         right: 0,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: List.generate(
-                              5,
-                              (index) => Container(
-                                    margin: const EdgeInsets.symmetric(
-                                        horizontal: 2),
-                                    width: 8,
-                                    height: 8,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Colors.grey.withOpacity(0.7),
-                                    ),
-                                  )),
-                        ),
+                        child: Obx(() => Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: List.generate(
+                                eventController.events.length,
+                                (index) => Container(
+                                  margin:
+                                      const EdgeInsets.symmetric(horizontal: 2),
+                                  width: currentPage.value == index ? 12 : 8,
+                                  height: currentPage.value == index ? 12 : 8,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: currentPage.value == index
+                                        ? Colors.black.withOpacity(0.9)
+                                        : Colors.grey.withOpacity(0.7),
+                                  ),
+                                ),
+                              ),
+                            )),
                       ),
                     ],
                   ),

@@ -4,6 +4,7 @@ import 'package:manpro/common/widgets/background_app.dart';
 import 'package:manpro/features/bagian_utama/Tampilan/profile/edit_profile/edit_profile.dart';
 import 'package:manpro/navbar.dart';
 import 'package:manpro/utils/constants/image_string.dart';
+import 'package:manpro/features/bagian_utama/controllers/profileController.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -14,10 +15,7 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  String firstName = "Jehezkiel";
-  String lastName = "Louis";
-  String email = "jehezkiel@gmail.com";
-  String phoneNumber = "08178787878";
+  final ProfileController profileController = Get.put(ProfileController());
 
   @override
   Widget build(BuildContext context) {
@@ -26,160 +24,148 @@ class _ProfileState extends State<Profile> {
         children: [
           const BackgroundAPP(),
           SafeArea(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    IconButton(
-                      onPressed: () => Get.to(() => const Navbar()),
-                      icon: const ImageIcon(
-                        AssetImage(YPKImages.icon_back_button),
-                        size: 32.0,
-                      ),
-                    ),
-                    const SizedBox(height: 20.0),
-                    const Center(
-                      child: Text(
-                        'My Profile',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.w700,
-                          fontSize: 24.0,
-                          letterSpacing: -0.5,
+            child: Obx(() {
+              if (profileController.isLoading.value) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              final user = profileController.userData;
+
+              return SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      IconButton(
+                        onPressed: () => Get.to(() => const Navbar()),
+                        icon: const ImageIcon(
+                          AssetImage(YPKImages.icon_back_button),
+                          size: 32.0,
                         ),
                       ),
-                    ),
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Stack(
-                            children: [
-                              const CircleAvatar(
-                                radius: 100,
-                                backgroundImage:
-                                    AssetImage(YPKImages.gbr_event1),
-                              ),
-                              Positioned(
-                                bottom: 0,
-                                right: 0,
-                                child: IconButton(
-                                  icon: const ImageIcon(
-                                    AssetImage(YPKImages.icon_edit_gbr),
-                                    size: 32.0,
-                                  ),
-                                  onPressed: () {
-                                    // Add edit profile picture functionality
-                                  },
-                                ),
-                              ),
-                            ],
+                      const SizedBox(height: 20.0),
+                      const Center(
+                        child: Text(
+                          'My Profile',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontFamily: 'Montserrat',
+                            fontWeight: FontWeight.w700,
+                            fontSize: 24.0,
+                            letterSpacing: -0.5,
                           ),
-                          const SizedBox(height: 20),
-                          buildProfileField(
-                              firstName,
-                              const TextStyle(
-                                  fontFamily: "NunitoSans",
-                                  fontWeight: FontWeight.w700)),
-                          buildProfileField(
-                              lastName,
-                              const TextStyle(
-                                  fontFamily: "NunitoSans",
-                                  fontWeight: FontWeight.w700)),
-                          buildProfileField(
-                              email,
-                              const TextStyle(
-                                  fontFamily: "NunitoSans",
-                                  fontWeight: FontWeight.w700)),
-                          buildProfileField(
-                              phoneNumber,
-                              const TextStyle(
-                                  fontFamily: "NunitoSans",
-                                  fontWeight: FontWeight.w700)),
-                          const SizedBox(height: 20),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              ElevatedButton(
-                                onPressed: () async {
-                                  final result = await Get.to(() => EditProfile(
-                                        firstName: firstName,
-                                        lastName: lastName,
-                                        email: email,
-                                        phoneNumber: phoneNumber,
-                                      ));
-                                  if (result != null) {
-                                    bool isUpdated = false;
-                                    setState(() {
-                                      if (firstName != result['firstName']) {
-                                        firstName = result['firstName'];
-                                        isUpdated = true;
-                                      }
-                                      if (lastName != result['lastName']) {
-                                        lastName = result['lastName'];
-                                        isUpdated = true;
-                                      }
-                                      if (email != result['email']) {
-                                        email = result['email'];
-                                        isUpdated = true;
-                                      }
-                                      if (phoneNumber !=
-                                          result['phoneNumber']) {
-                                        phoneNumber = result['phoneNumber'];
-                                        isUpdated = true;
-                                      }
-                                    });
-                                    if (isUpdated) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        const SnackBar(
-                                          content: Text(
-                                              'Profile updated successfully!'),
-                                          backgroundColor: Colors.green,
-                                          behavior: SnackBarBehavior.floating,
-                                          margin: EdgeInsets.only(bottom: 10.0),
-                                        ),
-                                      );
-                                    }
-                                  }
-                                },
-                                child: const Text(
-                                  'Edit profile',
-                                  style: TextStyle(
-                                    fontFamily: 'NunitoSans',
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 20),
-                            ],
-                          ),
-                        ],
+                        ),
                       ),
-                    ),
-                  ],
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(20.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Stack(
+                              children: [
+                                const CircleAvatar(
+                                  radius: 100,
+                                  backgroundImage:
+                                      AssetImage(YPKImages.gbr_event1),
+                                ),
+                                Positioned(
+                                  bottom: 0,
+                                  right: 0,
+                                  child: IconButton(
+                                    icon: const ImageIcon(
+                                      AssetImage(YPKImages.icon_edit_gbr),
+                                      size: 32.0,
+                                    ),
+                                    onPressed: () {
+                                      // Add edit profile picture functionality
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 20),
+                            buildProfileField(
+                              'Nama Lengkap',
+                              user['nama_lengkap'] ?? '',
+                              const TextStyle(
+                                fontFamily: "NunitoSans",
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            buildProfileField(
+                              'Username',
+                              user['username'] ?? '',
+                              const TextStyle(
+                                fontFamily: "NunitoSans",
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            buildProfileField(
+                              'Email',
+                              user['email'] ?? '',
+                              const TextStyle(
+                                fontFamily: "NunitoSans",
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            buildProfileField(
+                              'Kota Asal',
+                              user['kota_asal'] ?? '',
+                              const TextStyle(
+                                fontFamily: "NunitoSans",
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            buildProfileField(
+                              'No Telpon',
+                              user['no_telpon'] ?? '',
+                              const TextStyle(
+                                fontFamily: "NunitoSans",
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            ElevatedButton(
+                              onPressed: () => Get.to(() => EditProfile(
+                                    userData: Map<String, dynamic>.from(
+                                        profileController.userData),
+                                  )),
+                              child: const Text(
+                                'Edit Profile',
+                                style: TextStyle(
+                                  fontFamily: 'NunitoSans',
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ),
+              );
+            }),
           ),
         ],
       ),
     );
   }
 
-  Widget buildProfileField(String value, TextStyle style) {
+  Widget buildProfileField(String label, String value, TextStyle style) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.only(bottom: 20.0),
       child: TextField(
         readOnly: true,
+        controller: TextEditingController(text: value),
         decoration: InputDecoration(
-          hintText: value,
-          hintStyle: style,
+          labelText: label,
+          labelStyle: const TextStyle(
+            fontFamily: 'NunitoSans',
+            fontWeight: FontWeight.w700,
+          ),
           border: const OutlineInputBorder(),
         ),
       ),
