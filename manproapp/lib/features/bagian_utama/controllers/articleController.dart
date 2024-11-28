@@ -32,9 +32,9 @@ class ArticleController extends GetxController {
         articles.value =
             articlesJson.map((json) => Article.fromJson(json)).toList();
 
-        articles.forEach((article) {
+        for (var article in articles) {
           print('Article image path: ${article.image}');
-        });
+        }
       } else {
         print('Failed to load articles: ${response.body}');
       }
