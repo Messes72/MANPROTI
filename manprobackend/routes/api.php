@@ -29,10 +29,12 @@ Route::get('/get/login/{id}', [AuthenticationController::class, 'getLogin']);
 Route::post('/forget-password', [AuthenticationController::class, 'forgetPassword']);
 
 // Feed routes (protected by auth middleware)
-Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/feed/store', [FeedController::class, 'store']);
-    Route::post('/feed/like/{feed_id}', [FeedController::class, 'likePost']);
-});
+Route::get('/feeds', [FeedController::class, 'index'])->middleware('auth:sanctum');
+Route::post('/feed/store', [FeedController::class, 'store'])->middleware('auth:sanctum');
+Route::post('/feed/like/{feed_id}', [FeedController::class, 'likePost'])->middleware('auth:sanctum');
+Route::post('/feed/comment/{feed_id}', [FeedController::class, 'comment'])->middleware('auth:sanctum'); // Untuk menambahkan komentar
+Route::get('/feed/comments/{feed_id}', [FeedController::class, 'getComments'])->middleware('auth:sanctum'); // Untuk mendapatkan komentar
+
 
 // Donation routes (protected by auth middleware)
 Route::middleware('auth:sanctum')->group(function () {
