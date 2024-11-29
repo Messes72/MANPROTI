@@ -12,7 +12,13 @@ class Event extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final eventController = Get.put(EventController());
+    final eventController = Get.find<EventController>();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (eventController.events.isEmpty) {
+        eventController.getEvents();
+      }
+    });
 
     return Scaffold(
       body: Stack(
@@ -66,6 +72,11 @@ class Event extends StatelessWidget {
                                 padding: const EdgeInsets.only(bottom: 20.0),
                                 child: GestureDetector(
                                   onTap: () {
+                                    print('Event tapped:');
+                                    print('- Title: ${event.title}');
+                                    print('- Image: ${event.image}');
+                                    print('- Additional Images: ${event.additionalImages}');
+                                    
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -75,6 +86,9 @@ class Event extends StatelessWidget {
                                           image: event.image,
                                           date: event.date,
                                           eventId: event.id,
+                                          category: event.category?.name ?? 'Uncategorized',
+                                          status: event.status,
+                                          additionalImages: event.additionalImages,
                                         ),
                                       ),
                                     );
@@ -83,6 +97,7 @@ class Event extends StatelessWidget {
                                     event.image,
                                     event.title,
                                     event.date,
+                                    event.category?.name ?? 'Uncategorized',
                                   ),
                                 ),
                               ),
@@ -100,7 +115,7 @@ class Event extends StatelessWidget {
     );
   }
 
-  Widget buildArticleCard(String imagePath, String title, String date) {
+  Widget buildArticleCard(String imagePath, String title, String date, String category) {
     return Align(
       alignment: const FractionalOffset(0.5, 0.2),
       child: ClipRRect(
@@ -126,19 +141,40 @@ class Event extends StatelessWidget {
               left: 0,
               right: 0,
               child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                 color: Colors.black.withOpacity(0.5),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      date,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontFamily: 'NunitoSans',
-                        fontWeight: FontWeight.w700,
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          date,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontFamily: 'NunitoSans',
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            category,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontFamily: 'NunitoSans',
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 4),
                     Text(

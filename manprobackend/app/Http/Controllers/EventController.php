@@ -31,7 +31,11 @@ class EventController extends Controller
                     'content' => $event->content,
                     'image' => $imageUrl,
                     'date' => $event->date->format('d F Y'),
-                    'category' => $event->category?->name,
+                    'category' => $event->category ? [
+                        'id' => $event->category->id,
+                        'name' => $event->category->name,
+                        'slug' => $event->category->slug,
+                    ] : null,
                     'status' => $event->status,
                     'available_spots' => $event->available_spots,
                     'total_capacity' => $event->capacity,
@@ -48,6 +52,8 @@ class EventController extends Controller
 
     public function show(Event $event)
     {
+        $event->load('category');
+        
         $imageUrl = $event->image;
         if (!filter_var($event->image, FILTER_VALIDATE_URL)) {
             $imageUrl = asset('storage/' . $event->image);
@@ -61,6 +67,11 @@ class EventController extends Controller
                 'content' => $event->content,
                 'image' => $imageUrl,
                 'date' => $event->date->format('d F Y'),
+                'category' => $event->category ? [
+                    'id' => $event->category->id,
+                    'name' => $event->category->name,
+                    'slug' => $event->category->slug,
+                ] : null,
                 'created_at' => $event->created_at->format('Y-m-d H:i:s'),
                 'registrations_count' => $event->registrations()->count(),
                 'additional_images' => $event->additional_images ?

@@ -1,3 +1,6 @@
+import 'package:manpro/features/bagian_utama/models/eventCategoryModel.dart';
+import 'dart:convert';
+
 class Event {
   final int id;
   final String title;
@@ -7,6 +10,8 @@ class Event {
   final String createdAt;
   final int? registrationsCount;
   final List<String>? additionalImages;
+  final EventCategory? category;
+  final String status;
 
   Event({
     required this.id,
@@ -17,9 +22,44 @@ class Event {
     required this.createdAt,
     this.registrationsCount,
     this.additionalImages,
+    this.category,
+    required this.status,
   });
 
   factory Event.fromJson(Map<String, dynamic> json) {
+    print('Parsing event JSON for ID: ${json['id']}');
+    print('Raw additional_images: ${json['additional_images']}');
+
+    List<String>? parseAdditionalImages(dynamic value) {
+      if (value == null) return null;
+
+      try {
+        if (value is String) {
+          // Handle JSON string
+          final decoded = jsonDecode(value);
+          if (decoded is List) {
+            return List<String>.from(decoded);
+          }
+          return null;
+        } else if (value is List) {
+          // Handle array directly
+          return List<String>.from(value);
+        } else if (value is String && value.startsWith('[')) {
+          // Handle JSON array string
+          final decoded = jsonDecode(value);
+          return List<String>.from(decoded);
+        }
+      } catch (e) {
+        print('Error parsing additional_images: $e');
+        print('Value type: ${value.runtimeType}');
+        print('Value: $value');
+      }
+      return null;
+    }
+
+    final additionalImages = parseAdditionalImages(json['additional_images']);
+    print('Parsed additional_images: $additionalImages');
+
     return Event(
       id: json['id'],
       title: json['title'],
@@ -28,9 +68,11 @@ class Event {
       date: json['date'],
       createdAt: json['created_at'],
       registrationsCount: json['registrations_count'],
-      additionalImages: json['additional_images'] != null
-          ? List<String>.from(json['additional_images'])
+      additionalImages: additionalImages,
+      category: json['category'] != null
+          ? EventCategory.fromJson(json['category'])
           : null,
+      status: json['status'] ?? 'upcoming',
     );
   }
 
@@ -44,7 +86,41 @@ class Event {
       'created_at': createdAt,
       'registrations_count': registrationsCount,
       'additional_images': additionalImages,
+      'category': category?.toJson(),
+      'status': status,
     };
+  }
+
+  bool get isCompleted => status == 'completed';
+  bool get isOngoing => status == 'ongoing';
+  bool get isUpcoming => status == 'upcoming';
+
+  bool get canRegister {
+    try {
+      // Parse date in format "d F Y" (e.g., "22 August 2024")
+      final parts = date.split(' ');
+      if (parts.length != 3) return false;
+      
+      final day = int.parse(parts[0]);
+      final month = _parseMonth(parts[1]);
+      final year = int.parse(parts[2]);
+      
+      final eventDate = DateTime(year, month, day);
+      final now = DateTime.now();
+      return now.isBefore(eventDate) && status == 'upcoming';
+    } catch (e) {
+      print('Error parsing date: $e');
+      return false;
+    }
+  }
+
+  static int _parseMonth(String month) {
+    const months = {
+      'January': 1, 'February': 2, 'March': 3, 'April': 4,
+      'May': 5, 'June': 6, 'July': 7, 'August': 8,
+      'September': 9, 'October': 10, 'November': 11, 'December': 12
+    };
+    return months[month] ?? 1;  // Default to January if month not found
   }
 }
 

@@ -11,16 +11,33 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('events', function (Blueprint $table) {
+        // Create event categories table
+        Schema::create('event_categories', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->text('content');
-            $table->string('image');
-            $table->date('date');
+            $table->string('name');
+            $table->string('slug');
             $table->timestamps();
         });
 
-        // Tabel untuk registrasi event
+        // Create events table with all features
+        Schema::create('events', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('category_id')->nullable()->constrained('event_categories')->onDelete('set null');
+            $table->string('title');
+            $table->text('content');
+            $table->string('image');
+            $table->json('additional_images')->nullable();
+            $table->date('date');
+            $table->enum('status', ['upcoming', 'ongoing', 'completed'])->default('upcoming');
+            $table->integer('capacity')->default(0);
+            $table->boolean('enable_reminder')->default(true);
+            $table->timestamp('reminder_at')->nullable();
+            $table->string('share_url')->nullable();
+            $table->timestamp('registration_end_date')->nullable();
+            $table->timestamps();
+        });
+
+        // Create event registrations table
         Schema::create('event_registrations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('event_id')->constrained()->onDelete('cascade');
@@ -38,5 +55,6 @@ return new class extends Migration
     {
         Schema::dropIfExists('event_registrations');
         Schema::dropIfExists('events');
+        Schema::dropIfExists('event_categories');
     }
 };

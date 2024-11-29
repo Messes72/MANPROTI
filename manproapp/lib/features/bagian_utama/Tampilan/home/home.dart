@@ -18,19 +18,41 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  // =========== CONTROLLERS ===========
   final profileController = Get.put(ProfileController());
-  final eventController = Get.put(EventController());
+  late final EventController eventController;
+  
+  // =========== UI CONTROLLERS ===========
   final currentPage = 0.obs;
   final pageController = PageController();
 
+  // =========== LIFECYCLE METHODS ===========
   @override
   void initState() {
     super.initState();
+    _initializeControllers();
+  }
+
+  @override
+  void dispose() {
+    pageController.dispose();
+    super.dispose();
+  }
+
+  // =========== INITIALIZATION ===========
+  void _initializeControllers() {
+    // Initialize EventController once
+    eventController = Get.put(EventController());
+    
+    // Load events after widget is built
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      eventController.getActiveEventImages();
+      if (eventController.events.isEmpty) {
+        eventController.getActiveEventImages();
+      }
     });
   }
 
+  // =========== BUILD METHOD ===========
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -145,6 +167,9 @@ class _HomeState extends State<Home> {
                                       image: event.image,
                                       date: event.date,
                                       eventId: event.id,
+                                      category: event.category?.name ?? 'Uncategorized',
+                                      status: event.status,
+                                      additionalImages: event.additionalImages,
                                     ));
                               },
                               child: Card(

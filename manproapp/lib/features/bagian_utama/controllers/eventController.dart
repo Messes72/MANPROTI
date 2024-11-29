@@ -3,17 +3,25 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
-import 'package:manpro/features/bagian_utama/Tampilan/event_history/event_history.dart';
 import 'package:manpro/utils/constants/api_constants.dart';
 import 'package:manpro/features/bagian_utama/models/eventModel.dart';
+import 'package:manpro/features/bagian_utama/Tampilan/event_history/event_history.dart';
 
 class EventController extends GetxController {
+  // =========== VARIABLES ===========
+  // Singleton instance
+  static EventController get instance => Get.find<EventController>();
+  
+  // State variables
   final isLoading = false.obs;
   final events = <Event>[].obs;
   final eventHistory = <EventRegistration>[].obs;
-  final box = GetStorage();
   final selectedCategory = RxString('');
+  
+  // Storage
+  final box = GetStorage();
 
+  // =========== LIFECYCLE METHODS ===========
   @override
   void onInit() {
     super.onInit();
@@ -21,15 +29,20 @@ class EventController extends GetxController {
     getEventHistory();
   }
 
-  // Mengambil daftar event
+  // =========== EVENT LIST METHODS ===========
+  /// Fetches and sorts the list of events
   Future<void> getEvents({String? category}) async {
     try {
+      if (isLoading.value) return;
       isLoading.value = true;
+      
+      // Build API endpoint
       String endpoint = '${url}events/list';
       if (category != null && category.isNotEmpty) {
         endpoint += '?category=$category';
       }
 
+      // Make API call
       final response = await http.get(
         Uri.parse(endpoint),
         headers: {
@@ -39,26 +52,66 @@ class EventController extends GetxController {
       );
 
       if (response.statusCode == 200) {
-        final List<dynamic> data = json.decode(response.body)['data'];
-        events.value = data.map((json) => Event.fromJson(json)).toList();
+        // Parse response
+        final responseJson = json.decode(response.body);
+        final List<dynamic> data = responseJson['data'];
+        
+        // Convert JSON to Event objects
+        final parsedEvents = data.map((json) => Event.fromJson(json)).toList();
+        
+        // Sort events by date (newest first)
+        _sortEvents(parsedEvents);
+
+        // Update events list
+        events.clear();
+        events.addAll(parsedEvents);
       }
     } catch (e) {
-      print('Error fetching events: ${e.toString()}');
-      Get.snackbar(
-        'Error',
-        'Failed to load events',
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      print('Error fetching events: $e');
     } finally {
       isLoading.value = false;
     }
   }
 
-  // Mendapatkan detail event
+  /// Fetches events for the home screen carousel
+  Future<void> getActiveEventImages() async {
+    try {
+      if (isLoading.value) return;
+      isLoading.value = true;
+      
+      final response = await http.get(
+        Uri.parse('${url}events/list'),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${box.read('token')}'
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final responseJson = json.decode(response.body);
+        final List<dynamic> data = responseJson['data'];
+        
+        // Parse and sort events
+        final parsedEvents = data.map((json) => Event.fromJson(json)).toList();
+        _sortEvents(parsedEvents);
+
+        // Update events list
+        events.clear();
+        events.addAll(parsedEvents);
+      }
+    } catch (e) {
+      print('Error fetching event images: $e');
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  // =========== EVENT DETAIL METHODS ===========
+  /// Fetches detailed information for a specific event
   Future<Event?> getEventDetail(int eventId) async {
     try {
       isLoading.value = true;
+      
       final response = await http.get(
         Uri.parse('${url}events/$eventId'),
         headers: {
@@ -73,20 +126,26 @@ class EventController extends GetxController {
       }
       return null;
     } catch (e) {
-      print('Error fetching event detail: ${e.toString()}');
-      Get.snackbar(
-        'Error',
-        'Failed to load event detail',
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      print('Error fetching event detail: $e');
       return null;
     } finally {
       isLoading.value = false;
     }
   }
 
-  // Validasi email
+  /// Refreshes event detail and updates the events list
+  Future<void> refreshEventDetail(int eventId) async {
+    final event = await getEventDetail(eventId);
+    if (event != null) {
+      final index = events.indexWhere((e) => e.id == eventId);
+      if (index != -1) {
+        events[index] = event;
+      }
+    }
+  }
+
+  // =========== EVENT REGISTRATION METHODS ===========
+  /// Validates user email for event registration
   Future<bool> validateEmail(String email) async {
     try {
       final response = await http.post(
@@ -95,22 +154,17 @@ class EventController extends GetxController {
           'Accept': 'application/json',
           'Authorization': 'Bearer ${box.read('token')}'
         },
-        body: {
-          'email': email,
-        },
+        body: {'email': email},
       );
 
-      if (response.statusCode == 200) {
-        return true;
-      }
-      return false;
+      return response.statusCode == 200;
     } catch (e) {
-      print('Error validating email: ${e.toString()}');
+      print('Error validating email: $e');
       return false;
     }
   }
 
-  // Mendaftar event dengan validasi email
+  /// Registers user for an event
   Future<void> registerEvent({
     required int eventId,
     required String name,
@@ -119,23 +173,22 @@ class EventController extends GetxController {
     try {
       isLoading.value = true;
 
-      // Validasi email terlebih dahulu
-      final validateResponse = await http.post(
-        Uri.parse('${url}validate-email'),
-        headers: {
-          'Accept': 'application/json',
-          'Authorization': 'Bearer ${box.read('token')}'
-        },
-        body: {
-          'email': email,
-        },
-      );
-
-      if (validateResponse.statusCode != 200) {
-        throw json.decode(validateResponse.body)['message'] ??
-            'Email validation failed';
+      // Check if event exists and is open for registration
+      final event = await getEventDetail(eventId);
+      if (event == null) {
+        throw 'Event not found';
+      }
+      if (!event.canRegister) {
+        throw 'Registration is closed for this event';
       }
 
+      // Validate email
+      final isEmailValid = await validateEmail(email);
+      if (!isEmailValid) {
+        throw 'Email validation failed';
+      }
+
+      // Register for event
       final response = await http.post(
         Uri.parse('${url}events/register'),
         headers: {
@@ -158,13 +211,9 @@ class EventController extends GetxController {
         );
         await getEventHistory();
         Get.off(() => EventHistory());
-      } else {
-        final message =
-            json.decode(response.body)['message'] ?? 'Registration failed';
-        throw message;
       }
     } catch (e) {
-      print('Error registering for event: ${e.toString()}');
+      print('Error registering for event: $e');
       Get.snackbar(
         'Error',
         e.toString(),
@@ -176,10 +225,12 @@ class EventController extends GetxController {
     }
   }
 
-  // Mengambil riwayat event
+  // =========== EVENT HISTORY METHODS ===========
+  /// Fetches user's event registration history
   Future<void> getEventHistory() async {
     try {
       isLoading.value = true;
+      
       final response = await http.get(
         Uri.parse('${url}event/history'),
         headers: {
@@ -190,11 +241,10 @@ class EventController extends GetxController {
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body)['data'];
-        eventHistory.value =
-            data.map((json) => EventRegistration.fromJson(json)).toList();
+        eventHistory.value = data.map((json) => EventRegistration.fromJson(json)).toList();
       }
     } catch (e) {
-      print('Error fetching event history: ${e.toString()}');
+      print('Error fetching event history: $e');
       Get.snackbar(
         'Error',
         'Failed to load event history',
@@ -206,25 +256,11 @@ class EventController extends GetxController {
     }
   }
 
-  // Method untuk refresh data
-  Future<void> refreshData() async {
-    await getEvents();
-    await getEventHistory();
-  }
-
-  Future<void> filterByCategory(String category) async {
-    selectedCategory.value = category;
-    await getEvents(category: category);
-  }
-
-  void resetFilter() {
-    selectedCategory.value = '';
-    getEvents();
-  }
-
+  /// Cancels an event registration
   Future<void> cancelEventRegistration(int registrationId) async {
     try {
       isLoading.value = true;
+      
       final response = await http.delete(
         Uri.parse('${url}events/registration/$registrationId'),
         headers: {
@@ -240,10 +276,8 @@ class EventController extends GetxController {
           backgroundColor: Colors.green,
           colorText: Colors.white,
         );
-        // Refresh event history
         await getEventHistory();
       } else {
-        print('Error response: ${response.body}');
         Get.snackbar(
           'Error',
           'Failed to cancel registration',
@@ -264,25 +298,54 @@ class EventController extends GetxController {
     }
   }
 
-  Future<void> getActiveEventImages() async {
-    try {
-      isLoading.value = true;
-      final response = await http.get(
-        Uri.parse('${url}events/list'),
-        headers: {
-          'Accept': 'application/json',
-          'Authorization': 'Bearer ${box.read('token')}'
-        },
-      );
-
-      if (response.statusCode == 200) {
-        final List<dynamic> data = json.decode(response.body)['data'];
-        events.value = data.map((json) => Event.fromJson(json)).toList();
+  // =========== HELPER METHODS ===========
+  /// Sorts events by date (newest first)
+  void _sortEvents(List<Event> eventList) {
+    eventList.sort((a, b) {
+      try {
+        final partsA = a.date.split(' ');
+        final partsB = b.date.split(' ');
+        
+        if (partsA.length != 3 || partsB.length != 3) return 0;
+        
+        final yearA = int.parse(partsA[2]);
+        final yearB = int.parse(partsB[2]);
+        if (yearA != yearB) return yearB.compareTo(yearA);
+        
+        final monthA = _parseMonth(partsA[1]);
+        final monthB = _parseMonth(partsB[1]);
+        if (monthA != monthB) return monthB.compareTo(monthA);
+        
+        final dayA = int.parse(partsA[0]);
+        final dayB = int.parse(partsB[0]);
+        return dayB.compareTo(dayA);
+      } catch (e) {
+        print('Error sorting dates: $e');
+        return 0;
       }
-    } catch (e) {
-      print('Error fetching event images: $e');
-    } finally {
-      isLoading.value = false;
-    }
+    });
+  }
+
+  /// Converts month name to number (e.g., "January" -> 1)
+  int _parseMonth(String month) {
+    const months = {
+      'January': 1, 'February': 2, 'March': 3, 'April': 4,
+      'May': 5, 'June': 6, 'July': 7, 'August': 8,
+      'September': 9, 'October': 10, 'November': 11, 'December': 12
+    };
+    return months[month] ?? 1;  // Default to January if month not found
+  }
+
+  // =========== CATEGORY METHODS ===========
+  /// Filters events by category
+  Future<void> filterByCategory(String category) async {
+    selectedCategory.value = category;
+    await getEvents(category: category);
+  }
+
+  /// Resets category filter
+  void resetFilter() {
+    selectedCategory.value = '';
+    getEvents();
   }
 }
