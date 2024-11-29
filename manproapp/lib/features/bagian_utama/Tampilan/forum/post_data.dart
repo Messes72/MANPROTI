@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:manpro/features/bagian_utama/models/post_Model.dart';
 
 class PostData extends StatelessWidget {
-  const PostData({super.key});
+  const PostData({super.key, required this.post});
+
+  final PostModel post;
 
   @override
   Widget build(BuildContext context) {
@@ -17,18 +20,18 @@ class PostData extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Judul Postingan', style: TextStyle(
+            Text(post.user!.username!, style: TextStyle(
               fontFamily: 'Montserrat',
               fontWeight: FontWeight.w700,
               fontSize: 16.0,
             ),),
-            Text('Nama Pembuat', style: TextStyle(
+            Text(post.user!.email!, style: TextStyle(
               fontFamily: 'Montserrat',
               fontWeight: FontWeight.w400,
               fontSize: 14.0,
             ),),
             const SizedBox(height: 10,),
-            Text('Isi Postingan', style: TextStyle(
+            Text(post.content!, style: TextStyle(
               fontFamily: 'Montserrat',
               fontWeight: FontWeight.w400,
               fontSize: 12.0,

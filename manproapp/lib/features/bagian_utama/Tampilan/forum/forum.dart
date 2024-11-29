@@ -5,15 +5,21 @@ import 'package:manpro/utils/constants/image_string.dart';
 import 'package:get/get.dart';
 import 'package:manpro/features/bagian_utama/Tampilan/forum/post_field.dart';
 import 'package:manpro/features/bagian_utama/Tampilan/forum/post_data.dart';
+import 'package:manpro/features/bagian_utama/controllers/postController.dart';
 
-
-class Forum extends StatelessWidget {
+class Forum extends StatefulWidget {
   const Forum({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  State<Forum> createState() => _ForumState();
+}
 
-    final TextEditingController _postController = TextEditingController();
+class _ForumState extends State<Forum> {
+  final PostController _postController = Get.put(PostController());
+  final TextEditingController _textController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
@@ -62,7 +68,7 @@ class Forum extends StatelessWidget {
                           children: [
                             PostField(
                               hintText: 'Tulis pesan Anda...',
-                          controller: _postController,
+                          controller: _textController,
                         ),
                         const SizedBox(height: 20),
                         ElevatedButton(
@@ -94,11 +100,26 @@ class Forum extends StatelessWidget {
                           ),
                           ),
                           const SizedBox(height: 20,),
-                          PostData(),
-                          const SizedBox(height: 20,),
-                          PostData(),
-                          const SizedBox(height: 20,),
-                          PostData(),
+                          Obx(() {
+                              return _postController.isLoading.value ?
+                              const Center(child: CircularProgressIndicator(),
+                              ) 
+                              : ListView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: _postController.posts.value.length,
+                                itemBuilder: (context, index) {
+                                  return Column(
+                                    children: [
+                                      PostData(
+                                        post: _postController.posts.value[index]),
+                                      const SizedBox(height: 20), // Added space between boxes
+                                    ],
+                                  );
+                                },
+                              );
+                            }
+                          ),
                           ],
                         ),
                       ),
