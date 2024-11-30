@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 class Article {
+  final int id;
   final String title;
   final String date;
   final String image;
@@ -7,6 +10,7 @@ class Article {
   final List<String>? additionalImages;
 
   Article({
+    required this.id,
     required this.title,
     required this.date,
     required this.image,
@@ -17,25 +21,46 @@ class Article {
 
   factory Article.fromJson(Map<String, dynamic> json) {
     return Article(
+      id: json['id'] ?? 0,
       title: json['title'] ?? '',
       date: json['date'] ?? '',
       image: json['image'] ?? '',
       content: json['content'] ?? '',
       isAsset: json['isAsset'] ?? 'false',
-      additionalImages: json['additionalImages'] != null
-          ? List<String>.from(json['additionalImages'])
-          : null,
+      additionalImages: _parseAdditionalImages(json['additional_images']),
     );
+  }
+
+  static List<String>? _parseAdditionalImages(dynamic value) {
+    if (value == null) return null;
+
+    try {
+      if (value is String) {
+        // Try to parse JSON string
+        final decoded = jsonDecode(value);
+        if (decoded is List) {
+          return List<String>.from(decoded);
+        }
+        return null;
+      } else if (value is List) {
+        // Direct list
+        return List<String>.from(value);
+      }
+    } catch (e) {
+      print('Error parsing additional_images: $e');
+    }
+    return null;
   }
 
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'title': title,
       'date': date,
       'image': image,
       'content': content,
       'isAsset': isAsset,
-      'additionalImages': additionalImages,
+      'additional_images': additionalImages,
     };
   }
 }

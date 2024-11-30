@@ -150,7 +150,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::delete('/{method}', 'destroyShippingMethod')->name('destroy');
         });
 
-    // Article Management Routes
+    /*
+    |--------------------------------------------------------------------------
+    | Article Management Routes
+    |--------------------------------------------------------------------------
+    |
+    */
     Route::prefix('articles')->name('articles.')->group(function () {
         Route::get('/', [ArticleManagementController::class, 'index'])->name('index');
         Route::get('/create', [ArticleManagementController::class, 'create'])->name('create');
