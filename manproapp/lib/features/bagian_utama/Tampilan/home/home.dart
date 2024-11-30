@@ -21,7 +21,7 @@ class _HomeState extends State<Home> {
   // =========== CONTROLLERS ===========
   final profileController = Get.put(ProfileController());
   late final EventController eventController;
-  
+
   // =========== UI CONTROLLERS ===========
   final currentPage = 0.obs;
   final pageController = PageController();
@@ -43,7 +43,7 @@ class _HomeState extends State<Home> {
   void _initializeControllers() {
     // Initialize EventController once
     eventController = Get.put(EventController());
-    
+
     // Load events after widget is built
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (eventController.events.isEmpty) {
@@ -166,8 +166,12 @@ class _HomeState extends State<Home> {
                                       content: event.content,
                                       image: event.image,
                                       date: event.date,
+                                      registrationsCount:
+                                          event.registrationsCount,
+                                      time: event.time,
                                       eventId: event.id,
-                                      category: event.category?.name ?? 'Uncategorized',
+                                      category: event.category?.name ??
+                                          'Uncategorized',
                                       status: event.status,
                                       additionalImages: event.additionalImages,
                                     ));

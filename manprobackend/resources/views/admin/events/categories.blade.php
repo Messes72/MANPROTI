@@ -1,19 +1,43 @@
 @extends('base.base')
 
 @section('title', 'Event Categories')
-@section('header', 'Event Categories')
+@section('header', 'Event Categories Management')
 
 @section('content')
 <div class="bg-white shadow-sm rounded-lg">
-    <!-- Header with Add Button -->
-    <div class="py-6 px-4 sm:px-6 border-b border-gray-200">
+    <!-- Header -->
+    <div class="py-6 px-6 border-b border-gray-200">
         <div class="flex items-center justify-between">
             <h2 class="text-xl font-semibold text-gray-800">Categories</h2>
-            <button type="button" onclick="openModal()" 
-                class="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                Add Category
-            </button>
+            <div class="flex space-x-3">
+                <a href="{{ route('admin.events.index') }}" 
+                    class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Back to Events
+                </a>
+            </div>
         </div>
+    </div>
+
+    <!-- Add New Form -->
+    <div class="p-6 border-b border-gray-200">
+        <h3 class="text-lg font-medium text-gray-900 mb-4">Add New Category</h3>
+        <form id="addCategoryForm" onsubmit="saveCategory(event)">
+            @csrf
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="col-span-3">
+                    <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Category Name</label>
+                    <input type="text" name="name" id="name" required
+                        class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+                    <p class="mt-1 text-sm text-red-600 hidden" id="nameError"></p>
+                </div>
+                <div class="col-span-1 flex items-end">
+                    <button type="submit" 
+                        class="w-full inline-flex justify-center items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Add Category
+                    </button>
+                </div>
+            </div>
+        </form>
     </div>
 
     <!-- Categories Table -->
@@ -30,20 +54,20 @@
             <tbody class="bg-white divide-y divide-gray-200">
                 @forelse($categories as $category)
                     <tr id="category-{{ $category->id }}">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                            {{ $category->name }}
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-900">{{ $category->name }}</div>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {{ $category->slug }}
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-500">{{ $category->slug }}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                                 {{ $category->events_count }} events
                             </span>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <button onclick="editCategory({{ $category->id }}, '{{ $category->name }}')" 
-                                class="text-indigo-600 hover:text-indigo-900">Edit</button>
+                                class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</button>
                             @if($category->events_count == 0)
                                 <button onclick="deleteCategory({{ $category->id }})" 
                                     class="text-red-600 hover:text-red-900">Delete</button>
@@ -69,33 +93,30 @@
     @endif
 </div>
 
-<!-- Modal -->
-<div id="categoryModal" class="fixed inset-0 bg-gray-500 bg-opacity-75 hidden" aria-hidden="true">
-    <div class="flex items-center justify-center min-h-screen p-4">
-        <div class="bg-white rounded-lg max-w-md w-full p-6">
-            <div class="mb-4">
-                <h3 class="text-lg font-medium text-gray-900" id="modalTitle">Add Category</h3>
-            </div>
-
+<!-- Edit Modal -->
+<div id="categoryModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+            <h3 class="text-lg font-medium text-gray-900 mb-4" id="modalTitle">Edit Category</h3>
             <form id="categoryForm" onsubmit="saveCategory(event)" class="space-y-4">
                 @csrf
                 <input type="hidden" id="categoryId">
                 
                 <div>
-                    <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
-                    <input type="text" name="name" id="name" required
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                    <p class="mt-1 text-sm text-red-600 hidden" id="nameError"></p>
+                    <label for="edit_name" class="block text-sm font-medium text-gray-700 mb-1">Category Name</label>
+                    <input type="text" name="name" id="edit_name" required
+                        class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+                    <p class="mt-1 text-sm text-red-600 hidden" id="editNameError"></p>
                 </div>
 
-                <div class="mt-5 flex justify-end space-x-3">
+                <div class="flex justify-end space-x-3">
                     <button type="button" onclick="closeModal()"
-                        class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        class="inline-flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                         Cancel
                     </button>
                     <button type="submit"
-                        class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        Save
+                        class="inline-flex justify-center items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Update
                     </button>
                 </div>
             </form>
@@ -106,38 +127,36 @@
 @push('scripts')
 <script>
     const modal = document.getElementById('categoryModal');
-    const form = document.getElementById('categoryForm');
+    const editForm = document.getElementById('categoryForm');
+    const addForm = document.getElementById('addCategoryForm');
+    const editNameInput = document.getElementById('edit_name');
     const nameInput = document.getElementById('name');
     const categoryIdInput = document.getElementById('categoryId');
     const modalTitle = document.getElementById('modalTitle');
     const nameError = document.getElementById('nameError');
-
-    function openModal() {
-        modal.classList.remove('hidden');
-        modalTitle.textContent = 'Add Category';
-        form.reset();
-        categoryIdInput.value = '';
-        nameError.classList.add('hidden');
-    }
+    const editNameError = document.getElementById('editNameError');
 
     function closeModal() {
         modal.classList.add('hidden');
-        form.reset();
-        nameError.classList.add('hidden');
+        editForm.reset();
+        editNameError.classList.add('hidden');
     }
 
     function editCategory(id, name) {
         modalTitle.textContent = 'Edit Category';
         categoryIdInput.value = id;
-        nameInput.value = name;
-        nameError.classList.add('hidden');
+        editNameInput.value = name;
+        editNameError.classList.add('hidden');
         modal.classList.remove('hidden');
     }
 
     async function saveCategory(event) {
         event.preventDefault();
+        const form = event.target;
         const id = categoryIdInput.value;
         const isEdit = !!id;
+        const nameInputToUse = isEdit ? editNameInput : nameInput;
+        const errorElement = isEdit ? editNameError : nameError;
         
         try {
             const response = await fetch(
@@ -151,7 +170,7 @@
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
                     body: JSON.stringify({
-                        name: nameInput.value
+                        name: nameInputToUse.value
                     })
                 }
             );
@@ -165,8 +184,8 @@
             // Success - refresh the page
             window.location.reload();
         } catch (error) {
-            nameError.textContent = error.message;
-            nameError.classList.remove('hidden');
+            errorElement.textContent = error.message;
+            errorElement.classList.remove('hidden');
         }
     }
 

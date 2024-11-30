@@ -159,14 +159,14 @@ class AuthenticationController extends GetxController {
       if (response.statusCode == 200) {
         box.remove('token');
         box.remove('user');
-        
+
         Get.snackbar(
           'Success',
           'Successfully logged out',
           backgroundColor: Colors.green,
           colorText: Colors.white,
         );
-        
+
         Get.offAll(() => const Login());
       } else {
         Get.snackbar(

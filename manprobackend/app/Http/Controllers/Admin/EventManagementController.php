@@ -13,13 +13,25 @@ use Illuminate\Support\Str;
 
 class EventManagementController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $events = Event::with('category')
-            ->latest()
-            ->paginate(10);
+        $query = Event::with('category');
 
-        return view('admin.events.index', compact('events'));
+        // Apply filters
+        if ($request->status) {
+            $query->where('status', $request->status);
+        }
+        if ($request->category) {
+            $query->where('category_id', $request->category);
+        }
+        if ($request->date) {
+            $query->whereDate('date', $request->date);
+        }
+
+        $events = $query->latest()->paginate(10);
+        $categories = EventCategory::all();
+
+        return view('admin.events.index', compact('events', 'categories'));
     }
 
     public function create()
@@ -33,7 +45,11 @@ class EventManagementController extends Controller
         try {
             $data = $request->validated();
             
-            // Handle main image upload
+            // Combine date and time
+            $data['date'] = date('Y-m-d H:i:s', strtotime($data['date'] . ' ' . $data['time']));
+            unset($data['time']); // Remove separate time field
+            
+            // Handle image upload
             if ($request->hasFile('image')) {
                 $data['image'] = $request->file('image')->store('events', 'public');
             }
@@ -47,7 +63,7 @@ class EventManagementController extends Controller
                 $data['additional_images'] = $additionalImages;
             }
 
-            Event::create($data);
+            $event = Event::create($data);
 
             return redirect()->route('admin.events.index')
                 ->with('success', 'Event created successfully');
@@ -63,46 +79,38 @@ class EventManagementController extends Controller
         return view('admin.events.edit', compact('event', 'categories'));
     }
 
-    public function update(Request $request, Event $event)
+    public function update(EventRequest $request, Event $event)
     {
         try {
-            $validated = $request->validate([
-                'title' => 'required|string|max:255',
-                'content' => 'required|string',
-                'date' => 'required|date_format:Y-m-d',
-                'category_id' => 'required|exists:event_categories,id',
-                'status' => 'required|in:upcoming,ongoing,completed',
-                'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-                'additional_images.*' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
-            ]);
+            $data = $request->validated();
+            
+            // Combine date and time
+            $data['date'] = date('Y-m-d H:i:s', strtotime($data['date'] . ' ' . $data['time']));
+            unset($data['time']); // Remove separate time field
 
-            $data = [
-                'title' => $validated['title'],
-                'content' => $validated['content'],
-                'date' => $validated['date'],
-                'category_id' => $validated['category_id'],
-                'status' => $validated['status']
-            ];
-
-            // Handle main image upload
+            // Handle image upload
             if ($request->hasFile('image')) {
                 // Delete old image
                 if ($event->image) {
-                    Storage::delete(str_replace('/storage/', 'public/', $event->image));
+                    Storage::disk('public')->delete($event->image);
                 }
-                
-                $imagePath = $request->file('image')->store('public/events');
-                $data['image'] = Storage::url($imagePath);
+                $data['image'] = $request->file('image')->store('events', 'public');
             }
 
             // Handle additional images
             if ($request->hasFile('additional_images')) {
+                // Delete old additional images
+                if ($event->additional_images) {
+                    foreach ($event->additional_images as $image) {
+                        Storage::disk('public')->delete($image);
+                    }
+                }
+                
                 $additionalImages = [];
                 foreach ($request->file('additional_images') as $image) {
-                    $path = $image->store('public/events');
-                    $additionalImages[] = Storage::url($path);
+                    $additionalImages[] = $image->store('events', 'public');
                 }
-                $data['additional_images'] = json_encode($additionalImages);
+                $data['additional_images'] = $additionalImages;
             }
 
             $event->update($data);
@@ -110,8 +118,8 @@ class EventManagementController extends Controller
             return redirect()->route('admin.events.index')
                 ->with('success', 'Event updated successfully');
         } catch (\Exception $e) {
-            return back()->withInput()
-                ->with('error', 'Error updating event: ' . $e->getMessage());
+            return back()->with('error', 'Error updating event: ' . $e->getMessage())
+                ->withInput();
         }
     }
 

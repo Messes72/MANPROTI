@@ -27,6 +27,7 @@ class EventRequest extends FormRequest
             'image' => 'required|image|mimes:jpg,png,jpeg',
             'additional_images.*' => 'nullable|image|mimes:jpg,png,jpeg',
             'date' => 'required|date',
+            'time' => 'required|date_format:H:i',
             'category_id' => 'required|exists:event_categories,id',
             'capacity' => 'nullable|integer|min:0'
         ];

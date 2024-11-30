@@ -153,8 +153,12 @@ class _ArticleState extends State<Article> {
                                 ),
                                 trailing: const Icon(Icons.arrow_forward),
                                 onTap: () {
-                                  Get.to(() => const ArticleDetail(),
-                                      arguments: article.toJson());
+                                  Get.to(() => ArticleDetail(
+                                        title: article.title,
+                                        content: article.content,
+                                        image: article.image,
+                                        date: article.date,
+                                      ));
                                 },
                               ),
                             ),

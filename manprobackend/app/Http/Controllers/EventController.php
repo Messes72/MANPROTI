@@ -25,20 +25,23 @@ class EventController extends Controller
                     $imageUrl = asset('storage/' . $event->image);
                 }
 
+                $registrationsCount = $event->registrations()->count();
+
                 return [
                     'id' => $event->id,
                     'title' => $event->title,
                     'content' => $event->content,
                     'image' => $imageUrl,
                     'date' => $event->date->format('d F Y'),
+                    'time' => $event->date->format('H:i'),
                     'category' => $event->category ? [
                         'id' => $event->category->id,
                         'name' => $event->category->name,
                         'slug' => $event->category->slug,
                     ] : null,
                     'status' => $event->status,
-                    'available_spots' => $event->available_spots,
-                    'total_capacity' => $event->capacity,
+                    'registrations_count' => $registrationsCount,
+                    'capacity' => $event->capacity,
                     'share_url' => $event->share_url,
                     'created_at' => $event->created_at->format('Y-m-d H:i:s')
                 ];
@@ -59,6 +62,8 @@ class EventController extends Controller
             $imageUrl = asset('storage/' . $event->image);
         }
 
+        $registrationsCount = $event->registrations()->count();
+
         return response()->json([
             'message' => 'Event details retrieved successfully',
             'data' => [
@@ -67,13 +72,16 @@ class EventController extends Controller
                 'content' => $event->content,
                 'image' => $imageUrl,
                 'date' => $event->date->format('d F Y'),
+                'time' => $event->date->format('H:i'),
                 'category' => $event->category ? [
                     'id' => $event->category->id,
                     'name' => $event->category->name,
                     'slug' => $event->category->slug,
                 ] : null,
+                'status' => $event->status,
+                'registrations_count' => $registrationsCount,
+                'capacity' => $event->capacity,
                 'created_at' => $event->created_at->format('Y-m-d H:i:s'),
-                'registrations_count' => $event->registrations()->count(),
                 'additional_images' => $event->additional_images ?
                     collect($event->additional_images)->map(function ($image) {
                         return asset('storage/' . $image);

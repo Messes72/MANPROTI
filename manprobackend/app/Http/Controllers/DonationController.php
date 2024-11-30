@@ -54,8 +54,27 @@ class DonationController extends Controller
     public function updateStatus(Request $request, Donation $donation)
     {
         $request->validate([
-            'status' => 'required|in:pending,success,failed'
+            'status' => 'required|in:pending,accepted,success,failed'
         ]);
+
+        // Only allow status changes in the correct flow
+        if ($donation->status === 'pending' && $request->status !== 'accepted') {
+            return response()->json([
+                'message' => 'Pending donations can only be accepted'
+            ], 422);
+        }
+
+        if ($donation->status === 'accepted' && !in_array($request->status, ['success', 'failed'])) {
+            return response()->json([
+                'message' => 'Accepted donations can only be marked as success or failed'
+            ], 422);
+        }
+
+        if (in_array($donation->status, ['success', 'failed'])) {
+            return response()->json([
+                'message' => 'Cannot update status of completed donations'
+            ], 422);
+        }
 
         $donation->status = $request->status;
         $donation->save();
