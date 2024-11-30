@@ -68,42 +68,51 @@ class _ForumState extends State<Forum> {
                           children: [
                             PostField(
                               hintText: 'Tulis pesan Anda...',
-                          controller: _textController,
-                        ),
-                        const SizedBox(height: 20),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.grey.withOpacity(0.5),
-                            elevation: 0,
-                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
+                              controller: _textController,
+                              obscureText: false,
                             ),
-                          ),
-                          onPressed: () {},
-                          child: const Text(
-                            'Kirim',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontFamily: 'Montserrat',
-                              fontWeight: FontWeight.w700,
-                              fontSize: 16.0,
+                            const SizedBox(height: 20),
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.grey.withOpacity(0.5),
+                                elevation: 0,
+                                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                              ),
+                              onPressed: () async {
+                                await _postController.createPost(
+                                  content: _textController.text.trim()
+                                  );
+                                _textController.clear();
+                                _postController.getAllPosts();
+                              },
+                              child: Obx(() {
+                                return _postController.isLoading.value ? 
+                                const Center(child: CircularProgressIndicator()) 
+                                : Text('Post',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontFamily: 'Montserrat',
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 16.0,
+                                  ),
+                                );
+                              }),
                             ),
-                          ),
-                          ),
-                          const SizedBox(height: 30,),
-                          Text('Forum Terbaru',
-                          style: TextStyle(
-                            fontFamily: 'Montserrat',
-                            fontWeight: FontWeight.w700,
-                            fontSize: 20.0,
-                          ),
-                          ),
-                          const SizedBox(height: 20,),
-                          Obx(() {
-                              return _postController.isLoading.value ?
-                              const Center(child: CircularProgressIndicator(),
-                              ) 
+                            const SizedBox(height: 30),
+                            Text('Forum Terbaru',
+                              style: TextStyle(
+                                fontFamily: 'Montserrat',
+                                fontWeight: FontWeight.w700,
+                                fontSize: 20.0,
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            Obx(() {
+                              return _postController.isLoading.value ? 
+                              const Center(child: CircularProgressIndicator()) 
                               : ListView.builder(
                                 shrinkWrap: true,
                                 physics: const NeverScrollableScrollPhysics(),
@@ -118,16 +127,15 @@ class _ForumState extends State<Forum> {
                                   );
                                 },
                               );
-                            }
-                          ),
+                            }),
                           ],
                         ),
                       ),
                     ),
                   ],
+                ),
               ),
             ),
-          ),
           ),
         ],
       ),

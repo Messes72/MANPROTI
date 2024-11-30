@@ -1,43 +1,105 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:manpro/features/bagian_utama/models/post_Model.dart';
 import 'dart:convert';
 import 'package:manpro/utils/constants/api_constants.dart';
-
+import 'package:manpro/features/bagian_utama/models/comment_Model.dart';
 
 class PostController extends GetxController {
-Rx<List<PostModel>> posts = Rx<List<PostModel>>([]);
-final isLoading = false.obs;
-final box = GetStorage();
+  Rx<List<PostModel>> posts = Rx<List<PostModel>>([]);
+  Rx<List<CommentModel>> comments = Rx<List<CommentModel>>([]);
+  final isLoading = false.obs;
+  final box = GetStorage();
 
-@override
-void onInit(){
-  getAllPosts();
-  super.onInit();
-}
+  @override
+  void onInit() {
+    getAllPosts();
+    super.onInit();
+  }
 
-Future getAllPosts() async {
-  try{
-    isLoading.value = true;
-    var response = await http.get(Uri.parse('${url}feeds'),headers: {
+  Future getAllPosts() async {
+    try {
+      posts.value.clear();
+      isLoading.value = true;
+      var response = await http.get(Uri.parse('${url}feeds'), headers: {
         'Accept': 'application/json',
         'Authorization': 'Bearer ${box.read('token')}',
       });
-    if(response.statusCode == 200){
-      isLoading.value = false;
-      for(var item in json.decode(response.body)['feeds']){
-        posts.value.add(PostModel.fromJson(item));
+      if (response.statusCode == 200) {
+        isLoading.value = false;
+        for (var item in json.decode(response.body)['feeds']) {
+          posts.value.add(PostModel.fromJson(item));
+        }
+      } else {
+        isLoading.value = false;
+        print(json.decode(response.body));
       }
-    }else{
+    } catch (e) {
+      isLoading.value = false;
+      print(e.toString());
+    }
+  }
+
+  Future createPost({
+    required String content,
+  }) async {
+    try {
+      var data = {
+        'content': content,
+      };
+
+      var response = await http.post(
+        Uri.parse('${url}feed/store'),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${box.read('token')}',
+        },
+        body: data,
+      );
+
+      if (response.statusCode == 201) {
+        print(json.decode(response.body));
+      } else {
+        Get.snackbar('Error', 
+        json.decode(response.body)['message'],
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future getComments(id) async {
+   try {
+    comments.value.clear();
+    isLoading.value = true;
+
+    var response = await http.get(
+      Uri.parse('${url}feed/comments/$id'), 
+      headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${box.read('token')}',
+    }
+    );
+
+    if (response.statusCode == 200) {
+      isLoading.value = false;
+     final content = json.decode(response.body)['comments'];
+     for (var item in content) {
+      comments.value.add(CommentModel.fromJson(item));
+     }
+    } else {
       isLoading.value = false;
       print(json.decode(response.body));
     }
-  } catch (e){
-    isLoading.value = false;
+
+   } catch (e) {
     print(e.toString());
+   }
   }
-}
-
-
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:manpro/features/bagian_utama/models/post_Model.dart';
+import 'package:manpro/features/bagian_utama/Tampilan/forum/post_details.dart';
 
 class PostData extends StatelessWidget {
   const PostData({super.key, required this.post});
@@ -40,9 +42,11 @@ class PostData extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                IconButton(onPressed: () {}, icon: Icon(Icons.reply)),
                 IconButton(onPressed: () {}, icon: Icon(Icons.favorite)),
-                IconButton(onPressed: () {}, icon: Icon(Icons.comment)),
+                IconButton(onPressed: () {
+                  Get.to(() => PostDetails(
+                    post: post,));
+                }, icon: Icon(Icons.comment)),
               ],
             ),
           ],

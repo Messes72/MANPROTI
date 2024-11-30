@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class PostField extends StatelessWidget {
-  const PostField({super.key, required this.hintText, required this.controller});
+  const PostField({super.key, required this.hintText, required this.controller, required bool obscureText});
 
   final String hintText;
   final TextEditingController controller;
