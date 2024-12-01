@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:manpro/features/bagian_utama/Tampilan/contact/contact.dart';
+import 'package:manpro/features/bagian_utama/Tampilan/forum/forum.dart';
 import 'package:manpro/features/bagian_utama/Tampilan/home/home.dart';
 import 'package:manpro/features/bagian_utama/Tampilan/donation_history/donation_history.dart';
 import 'package:manpro/utils/constants/image_string.dart';
@@ -68,8 +69,18 @@ class NavigationController extends GetxController {
 
   final screens = [
     const Home(),
-    Container(color: Colors.green),
+    const Forum(),
     const KontakYayasan(),
     DonationHistory()
   ];
+
+  @override
+  void onInit() {
+    super.onInit();
+    // Handle initial index from arguments only when first created
+    final arguments = Get.arguments;
+    if (arguments != null && arguments is int) {
+      selectedIndex.value = arguments;
+    }
+  }
 }

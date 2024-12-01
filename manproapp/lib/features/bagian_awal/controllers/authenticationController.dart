@@ -83,10 +83,20 @@ class AuthenticationController extends GetxController {
         body: data,
       );
 
+      print('Login response: ${response.body}');
+
       if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
         isLoading.value = false;
-        token.value = json.decode(response.body)['token'];
+        token.value = responseData['token'];
         box.write('token', token.value);
+
+        // Store user data
+        if (responseData['user'] != null) {
+          box.write('user', responseData['user']);
+          print('Stored user data: ${responseData['user']}');
+        }
+
         Get.offAll(() => const Navbar());
       } else {
         isLoading.value = false;

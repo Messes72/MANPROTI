@@ -11,6 +11,10 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DonationTypeController;
 use App\Http\Controllers\ShippingMethodController;
+use App\Http\Controllers\DonationGoalController;
+use App\Http\Controllers\API\DonationGalleryController;
+use App\Http\Controllers\FoundationProfileController;
+use App\Http\Controllers\PostController;
 
 // Public test routes
 Route::get('/user', function (Request $request) {
@@ -107,4 +111,25 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/shipping-methods', [ShippingMethodController::class, 'store']);
     Route::put('/shipping-methods/{method}', [ShippingMethodController::class, 'update']);
     Route::delete('/shipping-methods/{method}', [ShippingMethodController::class, 'destroy']);
+});
+
+// Public donation goals routes
+Route::get('/donation-goals', [DonationGoalController::class, 'index']);
+
+// Donation Gallery
+Route::get('/donation-gallery', [App\Http\Controllers\DonationGalleryController::class, 'index']);
+
+// Foundation Profile
+Route::get('/foundation-profile', [FoundationProfileController::class, 'index']);
+
+// Forum Routes
+Route::middleware('auth:sanctum')->group(function () {
+    Route::prefix('posts')->group(function () {
+        Route::get('/', [PostController::class, 'index']);
+        Route::post('/', [PostController::class, 'store']);
+        Route::get('/{postId}/comments', [PostController::class, 'getComments']);
+        Route::post('/{postId}/comments', [PostController::class, 'storeComment']);
+        Route::post('/{postId}/toggle-like', [PostController::class, 'toggleLike']);
+        Route::delete('/{postId}', [PostController::class, 'destroy']);
+    });
 });

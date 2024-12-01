@@ -8,17 +8,16 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('contacts', function (Blueprint $table) {
+        Schema::create('donation_goals', function (Blueprint $table) {
             $table->id();
-            $table->string('alamat')->nullable();
-            $table->string('email')->nullable();
-            $table->string('no_telp')->nullable();
+            $table->foreignId('donation_type_id')->constrained('donation_types')->onDelete('cascade');
+            $table->integer('target_quantity');
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('contacts');
+        Schema::dropIfExists('donation_goals');
     }
-};
+}; 

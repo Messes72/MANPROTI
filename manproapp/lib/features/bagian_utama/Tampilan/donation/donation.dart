@@ -4,7 +4,6 @@ import 'package:manpro/common/widgets/background_app.dart';
 import 'package:manpro/navbar.dart';
 import 'package:manpro/utils/constants/image_string.dart';
 import 'package:manpro/features/bagian_utama/controllers/donationController.dart';
-import 'package:manpro/features/bagian_utama/Tampilan/donation_history/donation_history.dart';
 import 'package:manpro/features/bagian_utama/models/donationModel.dart';
 
 class Donation extends StatefulWidget {
@@ -122,8 +121,8 @@ class _DonationState extends State<Donation> {
         ),
       );
 
-      // Navigate to history screen after successful submission
-      Get.off(() => DonationHistory());
+      // Go back to main screen and switch to history tab
+      Get.offAll(() => const Navbar(), arguments: 3);
     } finally {
       setState(() => isSubmitting = false);
     }

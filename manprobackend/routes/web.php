@@ -5,6 +5,12 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\EventManagementController;
 use App\Http\Controllers\Admin\DonationManagementController;
 use App\Http\Controllers\Admin\ArticleManagementController;
+use App\Http\Controllers\Admin\ContactManagementController;
+use App\Http\Controllers\Admin\DonationGoalController;
+use App\Http\Controllers\Admin\DonationGalleryController;
+use App\Http\Controllers\Admin\FoundationProfileController;
+use App\Http\Controllers\Admin\UserManagementController;
+use App\Http\Controllers\Admin\ForumManagementController;
 
 /*
 |--------------------------------------------------------------------------
@@ -163,5 +169,42 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/{article}/edit', [ArticleManagementController::class, 'edit'])->name('edit');
         Route::put('/{article}', [ArticleManagementController::class, 'update'])->name('update');
         Route::delete('/{article}', [ArticleManagementController::class, 'destroy'])->name('destroy');
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Contact Management Routes
+    |--------------------------------------------------------------------------
+    |
+    */
+    Route::get('/contact', [ContactManagementController::class, 'index'])->name('contact.index');
+    Route::put('/contact', [ContactManagementController::class, 'update'])->name('contact.update');
+
+    // Donation Goals Routes
+    Route::get('/donations/goals', [DonationGoalController::class, 'index'])->name('donations.goals');
+    Route::post('/donations/goals', [DonationGoalController::class, 'store'])->name('donations.goals.store');
+    Route::put('/donations/goals/{goal}', [DonationGoalController::class, 'update'])->name('donations.goals.update');
+    Route::delete('/donations/goals/{goal}', [DonationGoalController::class, 'destroy'])->name('donations.goals.destroy');
+
+    // Donation Gallery Management
+    Route::get('/donation-gallery', [DonationGalleryController::class, 'index'])->name('donation-gallery.index');
+    Route::post('/donation-gallery', [DonationGalleryController::class, 'store'])->name('donation-gallery.store');
+    Route::delete('/donation-gallery/{id}', [DonationGalleryController::class, 'destroy'])->name('donation-gallery.destroy');
+
+    // Foundation Profile Management
+    Route::get('/foundation/profile', [FoundationProfileController::class, 'index'])->name('foundation.profile');
+    Route::put('/foundation/profile', [FoundationProfileController::class, 'update'])->name('foundation.profile.update');
+
+    // User Management
+    Route::get('/users', [UserManagementController::class, 'index'])->name('users.index');
+    Route::get('/users/{id}', [UserManagementController::class, 'show'])->name('users.show');
+    Route::put('/users/{id}/toggle-admin', [UserManagementController::class, 'toggleAdmin'])->name('users.toggle-admin');
+
+    // Forum Management
+    Route::prefix('forum')->name('forum.')->group(function () {
+        Route::get('/', [ForumManagementController::class, 'index'])->name('index');
+        Route::get('/{id}', [ForumManagementController::class, 'show'])->name('show');
+        Route::delete('/{id}', [ForumManagementController::class, 'destroyPost'])->name('destroy-post');
+        Route::delete('/comment/{id}', [ForumManagementController::class, 'destroyComment'])->name('destroy-comment');
     });
 });

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:manpro/features/bagian_utama/Tampilan/article/article.dart';
 import 'package:manpro/features/bagian_utama/Tampilan/donation/donation.dart';
+import 'package:manpro/features/bagian_utama/Tampilan/donation/donation_gallery/donation_gallery.dart';
+import 'package:manpro/features/bagian_utama/Tampilan/donation/donation_goal/donation_goal.dart';
 import 'package:manpro/features/bagian_utama/Tampilan/event/event.dart';
 import 'package:manpro/features/bagian_utama/Tampilan/event/event_detail/event_detail.dart';
 import 'package:manpro/features/bagian_utama/Tampilan/profile_yayasan/profile_yayasan.dart';
@@ -400,7 +402,8 @@ class _HomeState extends State<Home> {
                                     height: 80,
                                     width: 80,
                                     child: IconButton(
-                                      onPressed: () {},
+                                      onPressed: () =>
+                                          Get.to(() => const DonationGallery()),
                                       icon: Padding(
                                         padding: const EdgeInsets.fromLTRB(
                                             0.0, 15.0, 1.0, 0.0),
@@ -435,7 +438,8 @@ class _HomeState extends State<Home> {
                                   height: 80,
                                   width: 80,
                                   child: IconButton(
-                                    onPressed: () {},
+                                    onPressed: () =>
+                                        Get.to(() => DonationGoal()),
                                     icon: Padding(
                                       padding: const EdgeInsets.fromLTRB(
                                           0.0, 5.0, 9.0, 0.0),
