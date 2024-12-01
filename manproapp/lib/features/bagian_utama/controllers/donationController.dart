@@ -129,6 +129,33 @@ class DonationController extends GetxController {
       );
       return false;
     }
+
+    // Validate quantity format
+    final RegExp quantityRegex = RegExp(
+      r'^\d+\s*(kg|pcs|items?|box(es)?|pack(s)?|buah|lembar|pasang|set)$',
+      caseSensitive: false,
+    );
+    if (!quantityRegex.hasMatch(donation.quantity)) {
+      Get.snackbar(
+        'Error',
+        'Invalid quantity format. Please use format like: 10kg, 5pcs, etc.',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      return false;
+    }
+
+    // Validate notes length
+    if (donation.notes.length > 500) {
+      Get.snackbar(
+        'Error',
+        'Notes cannot exceed 500 characters',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      return false;
+    }
+
     return true;
   }
 
@@ -138,18 +165,30 @@ class DonationController extends GetxController {
     try {
       isLoading.value = true;
       final token = box.read('token');
+      
+      if (token == null) {
+        throw Exception('Authentication token not found. Please login again.');
+      }
 
       final response = await http.post(
         Uri.parse('${url}donations'),
         headers: {
           'Accept': 'application/json',
+          'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
         },
-        body: donation.toJson(),
+        body: json.encode(donation.toJson()),
+      ).timeout(
+        const Duration(seconds: 15),
+        onTimeout: () {
+          throw Exception('Connection timeout. Please check your internet connection.');
+        },
       );
 
+      final responseData = json.decode(response.body);
+      
       if (response.statusCode == 201) {
-        getDonations();
+        await getDonations();
         Get.back();
         Get.snackbar(
           'Success',
@@ -158,15 +197,10 @@ class DonationController extends GetxController {
           colorText: Colors.white,
         );
       } else {
-        throw json.decode(response.body)['message'];
+        throw responseData['message'] ?? 'Failed to create donation';
       }
     } catch (e) {
-      Get.snackbar(
-        'Error',
-        e.toString(),
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      handleError(e);
     } finally {
       isLoading.value = false;
     }
@@ -214,14 +248,22 @@ class DonationController extends GetxController {
       final response = await http.get(
         Uri.parse('${url}donation-types'),
         headers: {'Accept': 'application/json'},
+      ).timeout(
+        const Duration(seconds: 10),
+        onTimeout: () {
+          throw Exception('Connection timeout. Please check your internet connection.');
+        },
       );
+
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body)['data'];
-        donationTypes.value =
-            data.map((json) => DonationType.fromJson(json)).toList();
+        donationTypes.value = data.map((json) => DonationType.fromJson(json)).toList();
+      } else {
+        throw Exception('Failed to load donation types');
       }
     } catch (e) {
       print('Error getting donation types: $e');
+      handleError(e);
     }
   }
 
@@ -230,14 +272,22 @@ class DonationController extends GetxController {
       final response = await http.get(
         Uri.parse('${url}shipping-methods'),
         headers: {'Accept': 'application/json'},
+      ).timeout(
+        const Duration(seconds: 10),
+        onTimeout: () {
+          throw Exception('Connection timeout. Please check your internet connection.');
+        },
       );
+
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body)['data'];
-        shippingMethods.value =
-            data.map((json) => ShippingMethod.fromJson(json)).toList();
+        shippingMethods.value = data.map((json) => ShippingMethod.fromJson(json)).toList();
+      } else {
+        throw Exception('Failed to load shipping methods');
       }
     } catch (e) {
       print('Error getting shipping methods: $e');
+      handleError(e);
     }
   }
 }

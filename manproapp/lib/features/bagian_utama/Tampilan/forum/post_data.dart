@@ -35,7 +35,7 @@ class _PostDataState extends State<PostData> {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.7),
+        color: Colors.white.withOpacity(0.9),
         borderRadius: BorderRadius.circular(10),
         boxShadow: [
           BoxShadow(

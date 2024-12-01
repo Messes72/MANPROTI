@@ -4,9 +4,15 @@ import '../Models/donation_gallery.dart';
 import '../../../utils/constants/api_constants.dart';
 
 class DonationGalleryController {
-  Future<List<DonationGallery>> getGalleryImages() async {
+  Future<List<DonationGallery>> getGalleryImages({int? page, int? limit}) async {
     try {
-      final response = await http.get(Uri.parse('${url}donation-gallery'));
+      final queryParams = {
+        if (page != null) 'page': page.toString(),
+        if (limit != null) 'per_page': limit.toString(),
+      };
+
+      final uri = Uri.parse('${url}donation-gallery').replace(queryParameters: queryParams);
+      final response = await http.get(uri);
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = json.decode(response.body);

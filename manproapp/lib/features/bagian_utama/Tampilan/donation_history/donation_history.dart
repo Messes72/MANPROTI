@@ -5,45 +5,58 @@ import 'package:manpro/navbar.dart';
 import 'package:manpro/utils/constants/image_string.dart';
 import 'package:manpro/features/bagian_utama/controllers/donationController.dart';
 
+/// DonationHistory menampilkan riwayat donasi pengguna
+/// Menggunakan GetX untuk state management dan navigasi
 class DonationHistory extends StatelessWidget {
-  // ===== CONTROLLER =====
+  // Controller untuk mengelola data donasi
   final DonationController donationController = Get.put(DonationController());
 
   DonationHistory({super.key});
+
+  // Membersihkan teks dari karakter HTML
+  String _sanitizeText(String? text) {
+    if (text == null || text.isEmpty) return '';
+    return text.replaceAll(RegExp(r'<[^>]*>'), '');
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
-          // Background
+          // Background aplikasi
           const BackgroundAPP(),
 
-          // Main Content
+          // Konten utama
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Back Button
+                  // Tombol kembali
                   IconButton(
                     onPressed: () {
-                      final controller = Get.put(NavigationController());
-                      controller.selectedIndex.value = 0;
-                      Get.to(() => const Navbar());
+                      try {
+                        final controller = Get.put(NavigationController());
+                        controller.selectedIndex.value = 0;
+                        Get.to(() => const Navbar());
+                      } catch (e) {
+                        Get.back(); // Navigasi fallback
+                      }
                     },
                     icon: const ImageIcon(
                       AssetImage(YPKImages.icon_back_button),
                       size: 32.0,
+                      semanticLabel: 'Kembali',
                     ),
                   ),
 
                   const SizedBox(height: 25.0),
 
-                  // Page Title
+                  // Judul halaman
                   const Text(
-                    'Donation History',
+                    'Riwayat Donasi',
                     style: TextStyle(
                       fontFamily: 'Montserrat',
                       fontWeight: FontWeight.w700,
@@ -54,26 +67,30 @@ class DonationHistory extends StatelessWidget {
 
                   const SizedBox(height: 20.0),
 
-                  // Donation List with Pull to Refresh
+                  // Daftar riwayat donasi dengan pull-to-refresh
                   Expanded(
                     child: RefreshIndicator(
-                      onRefresh: () => donationController.getDonations(),
+                      onRefresh: () async {
+                        try {
+                          await donationController.getDonations();
+                        } catch (e) {
+                          // Error sudah ditangani di controller
+                        }
+                      },
                       child: Obx(() {
-                        // Show loading indicator while fetching data
+                        // Tampilkan loading indicator saat memuat data
                         if (donationController.isLoading.value) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
+                          return const Center(child: CircularProgressIndicator());
                         }
 
-                        // Show error message if there's an error
+                        // Tampilkan pesan error jika terjadi kesalahan
                         if (donationController.hasError.value) {
                           return Center(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  donationController.errorMessage.value,
+                                  _sanitizeText(donationController.errorMessage.value),
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(
                                     color: Colors.red,
@@ -83,12 +100,11 @@ class DonationHistory extends StatelessWidget {
                                 ),
                                 const SizedBox(height: 16),
                                 ElevatedButton(
-                                  onPressed: () =>
-                                      donationController.retryOperation(
+                                  onPressed: () => donationController.retryOperation(
                                     donationController.getDonations,
                                   ),
                                   child: const Text(
-                                    'Retry',
+                                    'Coba Lagi',
                                     style: TextStyle(
                                       fontFamily: 'NunitoSans',
                                       fontWeight: FontWeight.w600,
@@ -100,11 +116,11 @@ class DonationHistory extends StatelessWidget {
                           );
                         }
 
-                        // Show message if no donations
+                        // Tampilkan pesan jika tidak ada riwayat donasi
                         if (donationController.donations.isEmpty) {
                           return const Center(
                             child: Text(
-                              'No donation history yet',
+                              'Belum ada riwayat donasi',
                               style: TextStyle(
                                 fontSize: 16.0,
                                 fontFamily: 'Montserrat',
@@ -113,16 +129,15 @@ class DonationHistory extends StatelessWidget {
                           );
                         }
 
-                        // Show list of donations
+                        // Tampilkan daftar riwayat donasi
                         return ListView.builder(
                           physics: const AlwaysScrollableScrollPhysics(),
                           itemCount: donationController.donations.length,
                           itemBuilder: (context, index) {
-                            // Get donation data for current item
-                            final donation =
-                                donationController.donations[index];
+                            // Ambil data donasi untuk item saat ini
+                            final donation = donationController.donations[index];
 
-                            // Build donation card
+                            // Buat kartu riwayat donasi
                             return Container(
                               margin: const EdgeInsets.only(bottom: 20),
                               padding: const EdgeInsets.all(20),
@@ -141,15 +156,14 @@ class DonationHistory extends StatelessWidget {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  // Donation Type and Status
+                                  // Tipe donasi dan status
                                   Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      // Donation Type
+                                      // Tipe donasi
                                       Expanded(
                                         child: Text(
-                                          'Type: ${donation.type}',
+                                          'Tipe: ${_sanitizeText(donation.type)}',
                                           style: const TextStyle(
                                             fontFamily: 'NunitoSans',
                                             fontWeight: FontWeight.w700,
@@ -158,22 +172,22 @@ class DonationHistory extends StatelessWidget {
                                         ),
                                       ),
 
-                                      // Status Badge
+                                      // Badge status
                                       Container(
                                         padding: const EdgeInsets.symmetric(
                                           horizontal: 12,
                                           vertical: 6,
                                         ),
                                         decoration: BoxDecoration(
-                                          color:
-                                              donationController.getStatusColor(
-                                                  donation.status ?? 'pending'),
-                                          borderRadius:
-                                              BorderRadius.circular(15),
+                                          color: donationController.getStatusColor(
+                                            donation.status ?? 'pending',
+                                          ),
+                                          borderRadius: BorderRadius.circular(15),
                                         ),
                                         child: Text(
                                           donationController.getStatusText(
-                                              donation.status ?? 'pending'),
+                                            donation.status ?? 'pending',
+                                          ),
                                           style: const TextStyle(
                                             fontFamily: 'NunitoSans',
                                             fontWeight: FontWeight.w700,
@@ -187,9 +201,9 @@ class DonationHistory extends StatelessWidget {
 
                                   const SizedBox(height: 10),
 
-                                  // Donation Details
+                                  // Detail donasi
                                   Text(
-                                    'Quantity: ${donation.quantity}',
+                                    'Jumlah: ${_sanitizeText(donation.quantity)}',
                                     style: const TextStyle(
                                       fontFamily: 'NunitoSans',
                                       fontWeight: FontWeight.w700,
@@ -200,7 +214,7 @@ class DonationHistory extends StatelessWidget {
                                   const SizedBox(height: 10),
 
                                   Text(
-                                    'Shipping Method: ${donation.shippingMethod}',
+                                    'Metode Pengiriman: ${_sanitizeText(donation.shippingMethod)}',
                                     style: const TextStyle(
                                       fontFamily: 'NunitoSans',
                                       fontWeight: FontWeight.w700,
@@ -211,7 +225,7 @@ class DonationHistory extends StatelessWidget {
                                   const SizedBox(height: 10),
 
                                   Text(
-                                    'Notes: ${donation.notes}',
+                                    'Catatan: ${_sanitizeText(donation.notes)}',
                                     style: const TextStyle(
                                       fontFamily: 'NunitoSans',
                                       fontWeight: FontWeight.w700,
@@ -222,7 +236,7 @@ class DonationHistory extends StatelessWidget {
                                   const SizedBox(height: 10),
 
                                   Text(
-                                    'Created at: ${donation.formattedDate}',
+                                    'Dibuat pada: ${_sanitizeText(donation.formattedDate)}',
                                     style: const TextStyle(
                                       fontFamily: 'NunitoSans',
                                       fontWeight: FontWeight.w700,
@@ -231,113 +245,95 @@ class DonationHistory extends StatelessWidget {
                                     ),
                                   ),
 
-                                  // Cancel Button (only for pending donations)
-                                  if (donation.status?.toLowerCase() ==
-                                      'pending')
+                                  // Tombol batalkan (hanya untuk donasi pending)
+                                  if (donation.status?.toLowerCase() == 'pending')
                                     Align(
                                       alignment: Alignment.centerRight,
                                       child: Obx(() => TextButton.icon(
-                                            // Disable button while processing
-                                            onPressed: donationController
-                                                    .isLoading.value
-                                                ? null
-                                                : () {
-                                                    // Show confirmation dialog
-                                                    Get.dialog(
-                                                      AlertDialog(
-                                                        title: const Text(
-                                                          'Cancel Donation',
-                                                          style: TextStyle(
-                                                            fontFamily:
-                                                                'Montserrat',
-                                                            fontWeight:
-                                                                FontWeight.w700,
-                                                            fontSize: 20.0,
-                                                          ),
-                                                        ),
-                                                        content: const Text(
-                                                          'Are you sure you want to cancel this donation?',
-                                                          style: TextStyle(
-                                                            fontFamily:
-                                                                'NunitoSans',
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                            fontSize: 16.0,
-                                                          ),
-                                                        ),
-                                                        actions: [
-                                                          // No Button
-                                                          TextButton(
-                                                            onPressed: () =>
-                                                                Get.back(),
-                                                            child: const Text(
-                                                              'No',
-                                                              style: TextStyle(
-                                                                fontFamily:
-                                                                    'NunitoSans',
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w700,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          // Yes Button
-                                                          TextButton(
-                                                            onPressed:
-                                                                () async {
-                                                              Get.back();
-                                                              await donationController
-                                                                  .cancelDonation(
-                                                                      donation
-                                                                          .id!);
-                                                            },
-                                                            style: TextButton
-                                                                .styleFrom(
-                                                              foregroundColor:
-                                                                  Colors.red,
-                                                            ),
-                                                            child: const Text(
-                                                              'Yes',
-                                                              style: TextStyle(
-                                                                fontFamily:
-                                                                    'NunitoSans',
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w700,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
+                                        // Nonaktifkan tombol saat proses berjalan
+                                        onPressed: donationController.isLoading.value
+                                            ? null
+                                            : () async {
+                                                // Tampilkan dialog konfirmasi
+                                                final bool? shouldCancel = await Get.dialog<bool>(
+                                                  AlertDialog(
+                                                    title: const Text(
+                                                      'Batalkan Donasi',
+                                                      style: TextStyle(
+                                                        fontFamily: 'Montserrat',
+                                                        fontWeight: FontWeight.w700,
+                                                        fontSize: 20.0,
                                                       ),
-                                                    );
-                                                  },
-                                            // Show loading indicator or cancel icon
-                                            icon: donationController
-                                                    .isLoading.value
-                                                ? const SizedBox(
-                                                    width: 20,
-                                                    height: 20,
-                                                    child:
-                                                        CircularProgressIndicator(
-                                                      strokeWidth: 2,
-                                                      valueColor:
-                                                          AlwaysStoppedAnimation<
-                                                                  Color>(
-                                                              Colors.red),
                                                     ),
-                                                  )
-                                                : const Icon(
-                                                    Icons.cancel_outlined,
-                                                    color: Colors.red),
-                                            label: const Text(
-                                              'Cancel Donation',
-                                              style: TextStyle(
-                                                color: Colors.red,
-                                                fontFamily: 'NunitoSans',
-                                                fontWeight: FontWeight.w700,
-                                              ),
-                                            ),
-                                          )),
+                                                    content: const Text(
+                                                      'Apakah Anda yakin ingin membatalkan donasi ini?',
+                                                      style: TextStyle(
+                                                        fontFamily: 'NunitoSans',
+                                                        fontWeight: FontWeight.w600,
+                                                        fontSize: 16.0,
+                                                      ),
+                                                    ),
+                                                    actions: [
+                                                      // Tombol tidak
+                                                      TextButton(
+                                                        onPressed: () => Get.back(result: false),
+                                                        child: const Text(
+                                                          'Tidak',
+                                                          style: TextStyle(
+                                                            fontFamily: 'NunitoSans',
+                                                            fontWeight: FontWeight.w700,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      // Tombol ya
+                                                      TextButton(
+                                                        onPressed: () => Get.back(result: true),
+                                                        style: TextButton.styleFrom(
+                                                          foregroundColor: Colors.red,
+                                                        ),
+                                                        child: const Text(
+                                                          'Ya',
+                                                          style: TextStyle(
+                                                            fontFamily: 'NunitoSans',
+                                                            fontWeight: FontWeight.w700,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+
+                                                // Proses pembatalan jika user menyetujui
+                                                if (shouldCancel == true && donation.id != null) {
+                                                  try {
+                                                    await donationController.cancelDonation(donation.id!);
+                                                  } catch (e) {
+                                                    // Error sudah ditangani di controller
+                                                  }
+                                                }
+                                              },
+                                        // Tampilkan loading indicator atau ikon batal
+                                        icon: donationController.isLoading.value
+                                            ? const SizedBox(
+                                                width: 20,
+                                                height: 20,
+                                                child: CircularProgressIndicator(
+                                                  strokeWidth: 2,
+                                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                                    Colors.red,
+                                                  ),
+                                                ),
+                                              )
+                                            : const Icon(Icons.cancel_outlined, color: Colors.red),
+                                        label: const Text(
+                                          'Batalkan Donasi',
+                                          style: TextStyle(
+                                            color: Colors.red,
+                                            fontFamily: 'NunitoSans',
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                      )),
                                     ),
                                 ],
                               ),

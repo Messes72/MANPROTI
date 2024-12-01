@@ -32,7 +32,8 @@ class _ForumState extends State<Forum> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     IconButton(
-                      onPressed: () => Get.to(() => const Navbar()),
+                      onPressed: () =>
+                          Get.offAll(() => const Navbar(), arguments: 0),
                       icon: const ImageIcon(
                         AssetImage(YPKImages.icon_back_button),
                         size: 32.0,

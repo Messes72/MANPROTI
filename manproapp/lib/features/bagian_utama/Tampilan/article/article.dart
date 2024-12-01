@@ -7,7 +7,8 @@ import 'package:manpro/utils/constants/image_string.dart';
 import 'package:manpro/features/bagian_utama/Tampilan/article/article_detail/article_detail.dart';
 import 'package:manpro/features/bagian_utama/controllers/articleController.dart';
 
-// Halaman Artikel yang menampilkan daftar artikel
+/// Halaman Artikel yang menampilkan daftar artikel
+/// Menggunakan StatefulWidget dengan AutomaticKeepAliveClientMixin untuk menjaga state
 class Article extends StatefulWidget {
   const Article({super.key});
 
@@ -16,6 +17,8 @@ class Article extends StatefulWidget {
 }
 
 class _ArticleState extends State<Article> with AutomaticKeepAliveClientMixin {
+  //================ CONTROLLER & STATE ================//
+
   // Controller untuk artikel dan pencarian
   late final ArticleController articleController;
   final TextEditingController _searchController = TextEditingController();
@@ -27,40 +30,42 @@ class _ArticleState extends State<Article> with AutomaticKeepAliveClientMixin {
   // Timer untuk debounce pencarian
   Timer? _debounceTimer;
 
+  // Constants untuk timeout dan debounce
+  static const Duration _debounceDelay = Duration(milliseconds: 500);
+  static const Duration _timeoutDuration = Duration(seconds: 30);
+  static const double _scrollThreshold = 500.0;
+  static const int _maxSearchLength = 100;
+
+  //================ LIFECYCLE METHODS ================//
+
   @override
   bool get wantKeepAlive => true;
 
   @override
   void initState() {
     super.initState();
-    // Inisialisasi controller dan scroll listener
-    _initController();
-    _setupScroll();
-  }
 
-  // Inisialisasi controller artikel
-  void _initController() {
-    // Daftarkan controller jika belum ada
+    // Inisialisasi controller
     if (!Get.isRegistered<ArticleController>()) {
       articleController = Get.put(ArticleController());
     } else {
       articleController = Get.find<ArticleController>();
     }
-    
+
     // Muat data artikel jika belum ada
     if (articleController.articles.isEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         articleController.fetchArticles();
       });
     }
-  }
 
-  // Setup scroll untuk infinite loading
-  void _setupScroll() {
+    // Setup scroll listener untuk infinite loading
     _scrollController.addListener(() {
+      if (!_scrollController.hasClients) return;
+
       // Muat artikel lebih banyak saat scroll mendekati bawah
-      if (_scrollController.position.pixels >= 
-          _scrollController.position.maxScrollExtent - 500) {
+      if (_scrollController.position.pixels >=
+          _scrollController.position.maxScrollExtent - _scrollThreshold) {
         articleController.loadMoreArticles();
       }
     });
@@ -78,24 +83,28 @@ class _ArticleState extends State<Article> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    
+
     return Scaffold(
       body: Stack(
         children: [
           // Background aplikasi
           const BackgroundAPP(),
-          
+
           // Konten utama dengan refresh indicator
           SafeArea(
             child: RefreshIndicator(
               key: _refreshKey,
               onRefresh: () async {
                 articleController.clearCache();
-                await articleController.fetchArticles();
+                await articleController
+                    .fetchArticles()
+                    .timeout(_timeoutDuration);
               },
               child: Obx(() {
-                // Tampilkan loading saat pertama kali memuat data
-                if (articleController.isLoading.value && 
+                //================ LOADING STATE ================//
+
+                // Tampilkan loading spinner saat pertama kali memuat data
+                if (articleController.isLoading.value &&
                     articleController.articles.isEmpty) {
                   return const Center(
                     child: Column(
@@ -115,6 +124,8 @@ class _ArticleState extends State<Article> with AutomaticKeepAliveClientMixin {
                   );
                 }
 
+                //================ ERROR STATE ================//
+
                 // Tampilkan pesan error jika ada
                 if (articleController.hasError.value) {
                   return SingleChildScrollView(
@@ -125,8 +136,8 @@ class _ArticleState extends State<Article> with AutomaticKeepAliveClientMixin {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Icon(Icons.error_outline, 
-                                     size: 48, color: Colors.red),
+                            const Icon(Icons.error_outline,
+                                size: 48, color: Colors.red),
                             const SizedBox(height: 16),
                             Text(
                               articleController.errorMessage.value,
@@ -146,9 +157,7 @@ class _ArticleState extends State<Article> with AutomaticKeepAliveClientMixin {
                               label: const Text('Try Again'),
                               style: ElevatedButton.styleFrom(
                                 padding: const EdgeInsets.symmetric(
-                                  horizontal: 24, 
-                                  vertical: 12
-                                ),
+                                    horizontal: 24, vertical: 12),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8),
                                 ),
@@ -161,7 +170,8 @@ class _ArticleState extends State<Article> with AutomaticKeepAliveClientMixin {
                   );
                 }
 
-                // Tampilan utama daftar artikel
+                //================ MAIN CONTENT ================//
+
                 return SingleChildScrollView(
                   controller: _scrollController,
                   physics: const AlwaysScrollableScrollPhysics(),
@@ -176,6 +186,7 @@ class _ArticleState extends State<Article> with AutomaticKeepAliveClientMixin {
                           icon: const ImageIcon(
                             AssetImage(YPKImages.icon_back_button),
                             size: 32.0,
+                            semanticLabel: 'Kembali ke halaman utama',
                           ),
                         ),
                         const SizedBox(height: 25.0),
@@ -195,6 +206,12 @@ class _ArticleState extends State<Article> with AutomaticKeepAliveClientMixin {
                         // Kolom pencarian
                         TextField(
                           controller: _searchController,
+                          maxLength: _maxSearchLength,
+                          buildCounter: (context,
+                                  {required currentLength,
+                                  required isFocused,
+                                  maxLength}) =>
+                              null,
                           decoration: InputDecoration(
                             hintText: 'Search for an article...',
                             prefixIcon: const Icon(Icons.search),
@@ -205,12 +222,18 @@ class _ArticleState extends State<Article> with AutomaticKeepAliveClientMixin {
                             fillColor: Colors.white,
                           ),
                           onChanged: (value) {
-                            // Tunda pencarian selama 500ms untuk menghindari
-                            // terlalu banyak request
+                            // Tunda pencarian untuk menghindari terlalu banyak request
                             _debounceTimer?.cancel();
                             _debounceTimer = Timer(
-                              const Duration(milliseconds: 500),
-                              () => articleController.searchArticles(value),
+                              _debounceDelay,
+                              () {
+                                // Bersihkan input dari karakter berbahaya
+                                final sanitizedValue = value
+                                    .trim()
+                                    .replaceAll(RegExp(r'[^\w\s]'), '');
+                                articleController
+                                    .searchArticles(sanitizedValue);
+                              },
                             );
                           },
                         ),
@@ -223,15 +246,22 @@ class _ArticleState extends State<Article> with AutomaticKeepAliveClientMixin {
                           // Tampilkan pesan jika tidak ada artikel
                           if (articles.isEmpty) {
                             return Center(
-                              child: Text(articleController.articles.isEmpty
-                                  ? 'No articles found'
-                                  : 'No articles match your search'),
+                              child: Text(
+                                articleController.articles.isEmpty
+                                    ? 'Belum ada artikel'
+                                    : 'Tidak ada artikel yang sesuai pencarian',
+                                style: const TextStyle(
+                                  fontFamily: 'NunitoSans',
+                                  fontSize: 16,
+                                ),
+                              ),
                             );
                           }
 
                           // Tampilkan daftar artikel
                           return Column(
                             children: [
+                              // List artikel
                               ListView.builder(
                                 shrinkWrap: true,
                                 physics: const NeverScrollableScrollPhysics(),
@@ -239,7 +269,6 @@ class _ArticleState extends State<Article> with AutomaticKeepAliveClientMixin {
                                 itemBuilder: (context, index) {
                                   final article = articles[index];
 
-                                  // Item artikel
                                   return Padding(
                                     padding: const EdgeInsets.only(bottom: 10),
                                     child: Container(
@@ -267,10 +296,15 @@ class _ArticleState extends State<Article> with AutomaticKeepAliveClientMixin {
                                                     fit: BoxFit.cover,
                                                     errorBuilder: (context,
                                                         error, stackTrace) {
+                                                      debugPrint(
+                                                          'Error loading image: $error');
                                                       return Container(
                                                         color: Colors.grey[300],
                                                         child: const Icon(
-                                                            Icons.error),
+                                                          Icons.error,
+                                                          semanticLabel:
+                                                              'Gambar gagal dimuat',
+                                                        ),
                                                       );
                                                     },
                                                   )
@@ -279,10 +313,15 @@ class _ArticleState extends State<Article> with AutomaticKeepAliveClientMixin {
                                                     fit: BoxFit.cover,
                                                     errorBuilder: (context,
                                                         error, stackTrace) {
+                                                      debugPrint(
+                                                          'Error loading image: $error');
                                                       return Container(
                                                         color: Colors.grey[300],
                                                         child: const Icon(
-                                                            Icons.error),
+                                                          Icons.error,
+                                                          semanticLabel:
+                                                              'Gambar gagal dimuat',
+                                                        ),
                                                       );
                                                     },
                                                     loadingBuilder: (context,
@@ -303,6 +342,12 @@ class _ArticleState extends State<Article> with AutomaticKeepAliveClientMixin {
                                                                     loadingProgress
                                                                         .expectedTotalBytes!
                                                                 : null,
+                                                            valueColor:
+                                                                AlwaysStoppedAnimation<
+                                                                    Color>(
+                                                              Colors.grey
+                                                                  .shade400,
+                                                            ),
                                                           ),
                                                         ),
                                                       );
@@ -337,8 +382,10 @@ class _ArticleState extends State<Article> with AutomaticKeepAliveClientMixin {
                                             ),
                                           ],
                                         ),
-                                        trailing:
-                                            const Icon(Icons.arrow_forward),
+                                        trailing: const Icon(
+                                          Icons.arrow_forward,
+                                          semanticLabel: 'Lihat detail artikel',
+                                        ),
                                         // Navigasi ke detail artikel
                                         onTap: () {
                                           Get.to(() => ArticleDetail(
@@ -357,14 +404,18 @@ class _ArticleState extends State<Article> with AutomaticKeepAliveClientMixin {
                               ),
                               // Loading indicator saat memuat artikel tambahan
                               if (articleController.isLoadingMore.value)
-                                const Padding(
-                                  padding: EdgeInsets.all(8.0),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
                                   child: Center(
                                     child: SizedBox(
                                       width: 20,
                                       height: 20,
                                       child: CircularProgressIndicator(
                                         strokeWidth: 2,
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                          Colors.grey.shade400,
+                                        ),
                                       ),
                                     ),
                                   ),

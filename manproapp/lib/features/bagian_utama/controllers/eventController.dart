@@ -23,14 +23,14 @@ class ApiResponse<T> {
 class EventController extends GetxController {
   // =========== VARIABLES ===========
   static EventController get instance => Get.find<EventController>();
-  
+
   // Observable States
   final isLoading = false.obs;
   final events = <Event>[].obs;
   final eventHistory = <EventRegistration>[].obs;
   final selectedCategory = RxString('');
   final errorMessage = RxString('');
-  
+
   // Cache Management
   final _eventCache = <String, List<Event>>{}.obs;
   final box = GetStorage();
@@ -104,9 +104,10 @@ class EventController extends GetxController {
         if (response.statusCode == 200) {
           final responseJson = json.decode(response.body);
           final List<dynamic> data = responseJson['data'];
-          
+
           // Convert and sort events
-          final parsedEvents = data.map((json) => Event.fromJson(json)).toList();
+          final parsedEvents =
+              data.map((json) => Event.fromJson(json)).toList();
           _sortEvents(parsedEvents);
 
           // Update cache and state
@@ -148,7 +149,7 @@ class EventController extends GetxController {
       if (response.statusCode == 200) {
         final responseJson = json.decode(response.body);
         final List<dynamic> data = responseJson['data'];
-        
+
         final parsedEvents = data.map((json) => Event.fromJson(json)).toList();
         _sortEvents(parsedEvents);
 
@@ -171,7 +172,7 @@ class EventController extends GetxController {
     try {
       isLoading.value = true;
       errorMessage.value = '';
-      
+
       final response = await http.get(
         Uri.parse('${url}events/$eventId'),
         headers: await _headers,
@@ -274,7 +275,7 @@ class EventController extends GetxController {
     try {
       isLoading.value = true;
       errorMessage.value = '';
-      
+
       final response = await http.get(
         Uri.parse('${url}event/history'),
         headers: await _headers,
@@ -282,7 +283,8 @@ class EventController extends GetxController {
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body)['data'];
-        eventHistory.value = data.map((json) => EventRegistration.fromJson(json)).toList();
+        eventHistory.value =
+            data.map((json) => EventRegistration.fromJson(json)).toList();
       } else if (response.statusCode == 401) {
         Get.offAllNamed('/login');
       }
@@ -298,7 +300,7 @@ class EventController extends GetxController {
     try {
       isLoading.value = true;
       errorMessage.value = '';
-      
+
       final response = await http.delete(
         Uri.parse('${url}events/registration/$registrationId'),
         headers: await _headers,
@@ -328,17 +330,17 @@ class EventController extends GetxController {
       try {
         final partsA = a.date.split(' ');
         final partsB = b.date.split(' ');
-        
+
         if (partsA.length != 3 || partsB.length != 3) return 0;
-        
+
         final yearA = int.parse(partsA[2]);
         final yearB = int.parse(partsB[2]);
         if (yearA != yearB) return yearB.compareTo(yearA);
-        
+
         final monthA = _parseMonth(partsA[1]);
         final monthB = _parseMonth(partsB[1]);
         if (monthA != monthB) return monthB.compareTo(monthA);
-        
+
         final dayA = int.parse(partsA[0]);
         final dayB = int.parse(partsB[0]);
         return dayB.compareTo(dayA);
@@ -351,9 +353,18 @@ class EventController extends GetxController {
 
   static int _parseMonth(String month) {
     const months = {
-      'January': 1, 'February': 2, 'March': 3, 'April': 4,
-      'May': 5, 'June': 6, 'July': 7, 'August': 8,
-      'September': 9, 'October': 10, 'November': 11, 'December': 12
+      'January': 1,
+      'February': 2,
+      'March': 3,
+      'April': 4,
+      'May': 5,
+      'June': 6,
+      'July': 7,
+      'August': 8,
+      'September': 9,
+      'October': 10,
+      'November': 11,
+      'December': 12
     };
     return months[month] ?? 1;
   }
