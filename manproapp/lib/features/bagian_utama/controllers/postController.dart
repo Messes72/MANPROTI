@@ -102,4 +102,57 @@ class PostController extends GetxController {
     print(e.toString());
    }
   }
+
+  Future createComment(id, body) async{
+    try {
+      isLoading.value = true;
+      var data = {
+        'body': body,
+      };
+
+      var request = await http.post(
+        Uri.parse('${url}feed/comment/$id'),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${box.read('token')}',
+        },
+        body: data,
+      );
+
+      if (request.statusCode == 201) {
+        isLoading.value = false;  
+        print(json.decode(request.body));
+      } else {
+        isLoading.value = false;
+        print(json.decode(request.body));
+      }
+
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future likeAndUnlike(id) async{
+   try {
+    isLoading.value = true;
+
+    var request = await http.post(
+      Uri.parse('${url}feed/like/$id'),
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ${box.read('token')}',
+      },
+    );
+    if (request.statusCode == 200 || json.decode(request.body)['message'] == 'Liked') {
+      isLoading.value = false;
+      print(json.decode(request.body));
+    }else if (request.statusCode == 200 || json.decode(request.body)['message'] == 'Unliked') {
+      isLoading.value = false;
+      print(json.decode(request.body));
+    }
+    
+   } catch (e) {
+    print(e.toString());
+   }
+  }
 }

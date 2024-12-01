@@ -2,11 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:manpro/features/bagian_utama/models/post_Model.dart';
 import 'package:manpro/features/bagian_utama/Tampilan/forum/post_details.dart';
+import 'package:manpro/features/bagian_utama/controllers/postController.dart';
 
-class PostData extends StatelessWidget {
+class PostData extends StatefulWidget {
   const PostData({super.key, required this.post});
 
   final PostModel post;
+
+  @override
+  State<PostData> createState() => _PostDataState();
+}
+
+class _PostDataState extends State<PostData> {
+
+final PostController _postController = Get.put(PostController());
+Color likedPost = Colors.grey;
 
   @override
   Widget build(BuildContext context) {
@@ -22,18 +32,18 @@ class PostData extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(post.user!.username!, style: TextStyle(
+            Text(widget.post.user!.username!, style: TextStyle(
               fontFamily: 'Montserrat',
               fontWeight: FontWeight.w700,
               fontSize: 16.0,
             ),),
-            Text(post.user!.email!, style: TextStyle(
+            Text(widget.post.user!.email!, style: TextStyle(
               fontFamily: 'Montserrat',
               fontWeight: FontWeight.w400,
               fontSize: 14.0,
             ),),
             const SizedBox(height: 10,),
-            Text(post.content!, style: TextStyle(
+            Text(widget.post.content!, style: TextStyle(
               fontFamily: 'Montserrat',
               fontWeight: FontWeight.w400,
               fontSize: 12.0,
@@ -42,10 +52,14 @@ class PostData extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                IconButton(onPressed: () {}, icon: Icon(Icons.favorite)),
+                IconButton(onPressed: () async {
+                  await _postController.likeAndUnlike(widget.post.id);
+                  _postController.getAllPosts();
+                 
+                }, icon: Icon(Icons.favorite, color: widget.post.liked! ? Colors.red : Colors.grey)),
                 IconButton(onPressed: () {
                   Get.to(() => PostDetails(
-                    post: post,));
+                    post: widget.post,));
                 }, icon: Icon(Icons.comment)),
               ],
             ),

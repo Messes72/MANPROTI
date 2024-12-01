@@ -82,7 +82,14 @@ class PostDetails extends StatefulWidget {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    onPressed: () {},
+                    onPressed: () async {
+                      await _postController.createComment(
+                        widget.post.id, 
+                        _commentController.text.trim()
+                        );
+                      _commentController.clear();
+                      _postController.getComments(widget.post.id);
+                    },
                     child: const Text('Comment',
                         style: TextStyle(
                             color: Colors.black, fontWeight: FontWeight.bold)),
