@@ -259,7 +259,7 @@ class EventController extends GetxController {
           colorText: Colors.white,
         );
         await getEventHistory();
-        Get.off(() => EventHistory());
+        Get.off(() => const EventHistory());
       } else {
         throw 'Gagal mendaftar event';
       }

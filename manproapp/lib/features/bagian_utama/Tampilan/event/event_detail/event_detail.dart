@@ -19,7 +19,7 @@ class EventDetail extends StatefulWidget {
   final int registrationsCount;
 
   const EventDetail({
-    Key? key,
+    super.key,
     required this.eventId,
     required this.title,
     required this.content,
@@ -31,7 +31,7 @@ class EventDetail extends StatefulWidget {
     this.additionalImages,
     this.capacity,
     required this.registrationsCount,
-  }) : super(key: key);
+  });
 
   @override
   State<EventDetail> createState() => _EventDetailState();
@@ -171,10 +171,10 @@ class _EventDetailState extends State<EventDetail> {
                       ),
                     ),
                     const SizedBox(height: 25.0),
-                    Row(
+                    const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
+                        Text(
                           'Events',
                           textAlign: TextAlign.center,
                           style: TextStyle(
@@ -280,8 +280,9 @@ class _EventDetailState extends State<EventDetail> {
                                       cacheWidth: 800,
                                       loadingBuilder:
                                           (context, child, loadingProgress) {
-                                        if (loadingProgress == null)
+                                        if (loadingProgress == null) {
                                           return child;
+                                        }
                                         return Center(
                                           child: CircularProgressIndicator(
                                             value: loadingProgress

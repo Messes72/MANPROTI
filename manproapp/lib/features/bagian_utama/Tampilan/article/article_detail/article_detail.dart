@@ -13,13 +13,13 @@ class ArticleDetail extends StatefulWidget {
   final List<String>? additionalImages; // Gambar-gambar tambahan (opsional)
 
   const ArticleDetail({
-    Key? key,
+    super.key,
     required this.title,
     required this.content,
     required this.image,
     required this.date,
     this.additionalImages,
-  }) : super(key: key);
+  });
 
   @override
   State<ArticleDetail> createState() => _ArticleDetailState();
@@ -98,10 +98,10 @@ class _ArticleDetailState extends State<ArticleDetail>
                     const SizedBox(height: 25.0),
 
                     // Header "Articles"
-                    Row(
+                    const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
+                        Text(
                           'Articles',
                           textAlign: TextAlign.center,
                           style: TextStyle(
@@ -181,8 +181,9 @@ class _ArticleDetailState extends State<ArticleDetail>
                                       // Loading indicator
                                       loadingBuilder:
                                           (context, child, loadingProgress) {
-                                        if (loadingProgress == null)
+                                        if (loadingProgress == null) {
                                           return child;
+                                        }
                                         return Center(
                                           child: CircularProgressIndicator(
                                             value: loadingProgress

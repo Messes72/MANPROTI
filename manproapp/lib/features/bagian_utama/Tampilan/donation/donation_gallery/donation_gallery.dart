@@ -206,9 +206,9 @@ class _DonationGalleryState extends State<DonationGallery>
     if (_loadedImages.contains(imageUrl)) return;
 
     try {
-      final configuration = ImageConfiguration();
+      final configuration = const ImageConfiguration();
       final image = NetworkImage(imageUrl);
-      await image.resolve(configuration);
+      image.resolve(configuration);
       _loadedImages.add(imageUrl);
     } catch (e) {
       debugPrint('Error preloading image: $imageUrl');
@@ -415,8 +415,9 @@ class _DonationGalleryState extends State<DonationGallery>
                                               },
                                               loadingBuilder: (context, child,
                                                   loadingProgress) {
-                                                if (loadingProgress == null)
+                                                if (loadingProgress == null) {
                                                   return child;
+                                                }
                                                 return Center(
                                                   child:
                                                       CircularProgressIndicator(

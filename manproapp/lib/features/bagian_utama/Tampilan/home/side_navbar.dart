@@ -82,7 +82,7 @@ class SideNavbar extends StatelessWidget {
             child: SizedBox(
               width: double.infinity, // Set width to fill the available space
               child: ElevatedButton.icon(
-                onPressed: () => Get.to(() => EventHistory()),
+                onPressed: () => Get.to(() => const EventHistory()),
                 icon: const Icon(
                   Icons.history,
                   size: 24,
