@@ -2,7 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:manpro/features/bagian_utama/Tampilan/article/article.dart';
 import 'package:manpro/features/bagian_utama/Tampilan/donation/donation.dart';
+<<<<<<< HEAD
 import 'package:manpro/features/bagian_utama/Tampilan/donation/donation_gallery.dart';
+=======
+import 'package:manpro/features/bagian_utama/Tampilan/donation/donation_gallery/donation_gallery.dart';
+import 'package:manpro/features/bagian_utama/Tampilan/donation/donation_goal/donation_goal.dart';
+>>>>>>> def64f356d344a2d80879ba2ca06edb5c05023c7
 import 'package:manpro/features/bagian_utama/Tampilan/event/event.dart';
 import 'package:manpro/features/bagian_utama/Tampilan/event/event_detail/event_detail.dart';
 import 'package:manpro/features/bagian_utama/Tampilan/profile_yayasan/profile_yayasan.dart';
@@ -19,19 +24,41 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  // =========== CONTROLLERS ===========
   final profileController = Get.put(ProfileController());
-  final eventController = Get.put(EventController());
+  late final EventController eventController;
+
+  // =========== UI CONTROLLERS ===========
   final currentPage = 0.obs;
   final pageController = PageController();
 
+  // =========== LIFECYCLE METHODS ===========
   @override
   void initState() {
     super.initState();
+    _initializeControllers();
+  }
+
+  @override
+  void dispose() {
+    pageController.dispose();
+    super.dispose();
+  }
+
+  // =========== INITIALIZATION ===========
+  void _initializeControllers() {
+    // Initialize EventController once
+    eventController = Get.put(EventController());
+
+    // Load events after widget is built
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      eventController.getActiveEventImages();
+      if (eventController.events.isEmpty) {
+        eventController.getActiveEventImages();
+      }
     });
   }
 
+  // =========== BUILD METHOD ===========
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -145,7 +172,14 @@ class _HomeState extends State<Home> {
                                       content: event.content,
                                       image: event.image,
                                       date: event.date,
+                                      registrationsCount:
+                                          event.registrationsCount,
+                                      time: event.time,
                                       eventId: event.id,
+                                      category: event.category?.name ??
+                                          'Uncategorized',
+                                      status: event.status,
+                                      additionalImages: event.additionalImages,
                                     ));
                               },
                               child: Card(
@@ -373,7 +407,11 @@ class _HomeState extends State<Home> {
                                     width: 80,
                                     child: IconButton(
                                       onPressed: () =>
+<<<<<<< HEAD
                                           Get.to(() => DonationGallery()),
+=======
+                                          Get.to(() => const DonationGallery()),
+>>>>>>> def64f356d344a2d80879ba2ca06edb5c05023c7
                                       icon: Padding(
                                         padding: const EdgeInsets.fromLTRB(
                                             0.0, 15.0, 1.0, 0.0),
@@ -408,7 +446,8 @@ class _HomeState extends State<Home> {
                                   height: 80,
                                   width: 80,
                                   child: IconButton(
-                                    onPressed: () {},
+                                    onPressed: () =>
+                                        Get.to(() => DonationGoal()),
                                     icon: Padding(
                                       padding: const EdgeInsets.fromLTRB(
                                           0.0, 5.0, 9.0, 0.0),

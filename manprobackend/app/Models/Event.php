@@ -24,7 +24,7 @@ class Event extends Model
 
     protected $casts = [
         'additional_images' => 'array',
-        'date' => 'date',
+        'date' => 'datetime',
         'reminder_at' => 'datetime',
         'registration_end_date' => 'datetime',
         'enable_reminder' => 'boolean'
@@ -32,7 +32,7 @@ class Event extends Model
 
     public function category()
     {
-        return $this->belongsTo(EventCategory::class);
+        return $this->belongsTo(EventCategory::class, 'category_id');
     }
 
     public function registrations()
@@ -43,6 +43,11 @@ class Event extends Model
     public function getAvailableSpotsAttribute()
     {
         return $this->capacity - $this->registrations()->count();
+    }
+
+    public function getTimeAttribute()
+    {
+        return $this->date ? $this->date->format('H:i') : null;
     }
 
     public function scopeFilter($query, array $filters)

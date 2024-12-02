@@ -18,8 +18,17 @@ class Donation extends Model
         'notes'
     ];
 
+    protected $attributes = [
+        'status' => 'pending'
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public static function getAllowedStatuses()
+    {
+        return ['pending', 'accepted', 'success', 'failed'];
     }
 }

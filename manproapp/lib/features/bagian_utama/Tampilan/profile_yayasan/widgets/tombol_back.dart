@@ -11,7 +11,9 @@ class TombolBack extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      onPressed: () => Get.to(() => const Navbar()),
+      onPressed: () {
+        Get.offAll(() => const Navbar(), arguments: 0);
+      },
       icon: const ImageIcon(
         AssetImage(YPKImages.icon_back_button),
         size: 32.0,
@@ -19,4 +21,3 @@ class TombolBack extends StatelessWidget {
     );
   }
 }
-

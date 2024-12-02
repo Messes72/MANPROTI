@@ -1,87 +1,85 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:manpro/utils/constants/image_string.dart';
 import 'package:manpro/common/widgets/background_app.dart';
+import 'package:manpro/utils/constants/image_string.dart';
 
-class ArticleDetail extends StatelessWidget {
-  const ArticleDetail({super.key});
+// Halaman Detail Artikel yang menampilkan informasi lengkap tentang sebuah artikel
+class ArticleDetail extends StatefulWidget {
+  // Data yang diperlukan untuk menampilkan detail artikel
+  final String title; // Judul artikel
+  final String content; // Isi artikel
+  final String image; // Gambar utama artikel
+  final String date; // Tanggal artikel
+  final List<String>? additionalImages; // Gambar-gambar tambahan (opsional)
 
-  void _showImageOverlay(BuildContext context, List<String> images,
-      int initialIndex, bool isAsset) {
-    showDialog(
-      context: context,
-      builder: (context) => Dialog(
-        backgroundColor: Colors.transparent,
-        insetPadding: EdgeInsets.zero,
-        child: Stack(
-          children: [
-            PageView.builder(
-              itemCount: images.length,
-              controller: PageController(initialPage: initialIndex),
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () => Navigator.pop(context),
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height,
-                    color: Colors.black.withOpacity(0.5),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 40),
-                      child: InteractiveViewer(
-                        minScale: 0.5,
-                        maxScale: 3.0,
-                        child: isAsset
-                            ? Image.asset(
-                                images[index],
-                                fit: BoxFit.contain,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return const Center(child: Icon(Icons.error));
-                                },
-                              )
-                            : Image.network(
-                                images[index],
-                                fit: BoxFit.contain,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return const Center(child: Icon(Icons.error));
-                                },
-                              ),
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
-            Positioned(
-              top: 40,
-              right: 20,
-              child: IconButton(
-                icon: const Icon(Icons.close, color: Colors.white, size: 30),
-                onPressed: () => Navigator.pop(context),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+  const ArticleDetail({
+    Key? key,
+    required this.title,
+    required this.content,
+    required this.image,
+    required this.date,
+    this.additionalImages,
+  }) : super(key: key);
+
+  @override
+  State<ArticleDetail> createState() => _ArticleDetailState();
+}
+
+class _ArticleDetailState extends State<ArticleDetail>
+    with AutomaticKeepAliveClientMixin {
+  // Controller untuk mengatur tampilan gambar
+  final _pageController = PageController();
+
+  // State untuk mengatur tampilan
+  final _currentPage = 0.obs; // Halaman gambar yang sedang aktif
+  final _images = <String>[].obs; // List semua gambar yang akan ditampilkan
+  final _imageErrors = <int, bool>{}.obs; // Tracking error loading gambar
+
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    super.initState();
+    // Inisialisasi daftar gambar saat widget pertama kali dibuat
+    _setupImages();
+  }
+
+  // Menyiapkan daftar gambar yang akan ditampilkan
+  void _setupImages() {
+    try {
+      // Tambahkan gambar utama jika valid
+      if (widget.image.isNotEmpty) {
+        _images.add(widget.image);
+      }
+
+      // Tambahkan gambar tambahan jika ada
+      if (widget.additionalImages != null &&
+          widget.additionalImages!.isNotEmpty) {
+        _images.addAll(widget.additionalImages!);
+      }
+    } catch (e) {
+      print('Error setting up images: $e');
+    }
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final Map<String, dynamic> article = Get.arguments as Map<String, dynamic>;
-
-    final List<String> articleImages = [
-      article['image']!,
-      if (article['additionalImages'] != null)
-        ...(article['additionalImages'] as List<String>),
-    ];
-
-    final bool isAsset = article['isAsset'] == 'true';
+    super.build(context);
 
     return Scaffold(
       body: Stack(
         children: [
+          // Background aplikasi
           const BackgroundAPP(),
+
+          // Konten utama
           SafeArea(
             child: SingleChildScrollView(
               child: Padding(
@@ -89,6 +87,7 @@ class ArticleDetail extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Tombol kembali
                     IconButton(
                       onPressed: () => Get.back(),
                       icon: const ImageIcon(
@@ -97,70 +96,159 @@ class ArticleDetail extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 25.0),
-                    const Text(
-                      'Articles',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontFamily: 'Montserrat',
-                        fontWeight: FontWeight.w700,
-                        fontSize: 24.0,
-                        letterSpacing: -0.5,
-                      ),
+
+                    // Header "Articles"
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          'Articles',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontFamily: 'Montserrat',
+                            fontWeight: FontWeight.w700,
+                            fontSize: 24.0,
+                            letterSpacing: -0.5,
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 20),
-                    SizedBox(
-                      height: 200,
-                      child: Stack(
-                        children: [
-                          PageView.builder(
-                            itemCount: articleImages.length,
-                            itemBuilder: (context, index) {
-                              return GestureDetector(
-                                onTap: () => _showImageOverlay(
-                                    context, articleImages, index, isAsset),
-                                child: Container(
+
+                    // Bagian galeri gambar
+                    Obx(() {
+                      // Tampilkan pesan jika tidak ada gambar
+                      if (_images.isEmpty) {
+                        return const SizedBox(
+                          height: 200,
+                          child: Center(child: Text('No images available')),
+                        );
+                      }
+
+                      // Tampilan galeri gambar dengan PageView
+                      return SizedBox(
+                        height: 200,
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            // PageView untuk slide gambar
+                            PageView.builder(
+                              controller: _pageController,
+                              itemCount: _images.length,
+                              onPageChanged: (index) =>
+                                  _currentPage.value = index,
+                              physics: const BouncingScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                // Tampilkan error icon jika gambar gagal dimuat
+                                if (_imageErrors[index] == true) {
+                                  return Container(
+                                    color: Colors.grey[300],
+                                    child: const Center(
+                                      child: Icon(
+                                        Icons.error_outline,
+                                        color: Colors.grey,
+                                        size: 50,
+                                      ),
+                                    ),
+                                  );
+                                }
+
+                                // Tampilan gambar
+                                return Container(
                                   margin:
-                                      const EdgeInsets.symmetric(horizontal: 4),
+                                      const EdgeInsets.symmetric(horizontal: 8),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(16),
-                                    image: DecorationImage(
-                                      image: isAsset
-                                          ? AssetImage(articleImages[index])
-                                              as ImageProvider
-                                          : NetworkImage(articleImages[index]),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.2),
+                                        spreadRadius: 0,
+                                        blurRadius: 10,
+                                        offset: const Offset(0, 4),
+                                      ),
+                                    ],
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(16),
+                                    child: Image.network(
+                                      _images[index],
                                       fit: BoxFit.cover,
+                                      // Optimasi ukuran gambar
+                                      cacheWidth: MediaQuery.of(context)
+                                          .size
+                                          .width
+                                          .toInt(),
+                                      // Loading indicator
+                                      loadingBuilder:
+                                          (context, child, loadingProgress) {
+                                        if (loadingProgress == null)
+                                          return child;
+                                        return Center(
+                                          child: CircularProgressIndicator(
+                                            value: loadingProgress
+                                                        .expectedTotalBytes !=
+                                                    null
+                                                ? loadingProgress
+                                                        .cumulativeBytesLoaded /
+                                                    loadingProgress
+                                                        .expectedTotalBytes!
+                                                : null,
+                                          ),
+                                        );
+                                      },
+                                      // Error handler
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                        _imageErrors[index] = true;
+                                        return Container(
+                                          color: Colors.grey[300],
+                                          child: const Center(
+                                            child: Icon(
+                                              Icons.error_outline,
+                                              color: Colors.grey,
+                                              size: 50,
+                                            ),
+                                          ),
+                                        );
+                                      },
                                     ),
                                   ),
-                                ),
-                              );
-                            },
-                          ),
-                          if (articleImages.length > 1)
-                            Positioned(
-                              bottom: 10,
-                              left: 0,
-                              right: 0,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: List.generate(
-                                  articleImages.length,
-                                  (index) => Container(
-                                    margin: const EdgeInsets.symmetric(
-                                        horizontal: 2),
-                                    width: 8,
-                                    height: 8,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Colors.white.withOpacity(0.8),
+                                );
+                              },
+                            ),
+
+                            // Indikator halaman (dots)
+                            if (_images.length > 1)
+                              Positioned(
+                                bottom: 16,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: List.generate(
+                                    _images.length,
+                                    (index) => Container(
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 2),
+                                      width:
+                                          _currentPage.value == index ? 12 : 8,
+                                      height:
+                                          _currentPage.value == index ? 12 : 8,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: _currentPage.value == index
+                                            ? Colors.black.withOpacity(0.9)
+                                            : Colors.grey.withOpacity(0.7),
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
-                            ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 16),
+                          ],
+                        ),
+                      );
+                    }),
+                    const SizedBox(height: 20),
+
+                    // Konten artikel (tanggal, judul, dan isi)
                     Container(
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.8),
@@ -170,8 +258,9 @@ class ArticleDetail extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          // Tanggal artikel
                           Text(
-                            article['date'] ?? '',
+                            widget.date,
                             style: const TextStyle(
                               color: Colors.grey,
                               fontSize: 14,
@@ -179,21 +268,24 @@ class ArticleDetail extends StatelessWidget {
                               fontWeight: FontWeight.w700,
                             ),
                           ),
-                          const SizedBox(height: 8),
+                          const SizedBox(height: 16),
+
+                          // Judul artikel
                           Text(
-                            article['title'] ?? '',
+                            widget.title,
                             style: const TextStyle(
                               fontSize: 24,
                               fontFamily: 'NunitoSans',
                               fontWeight: FontWeight.w700,
                             ),
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 8),
+
+                          // Isi artikel
                           Text(
-                            article['content'] ?? '',
+                            widget.content,
                             style: const TextStyle(
                               fontSize: 16,
-                              height: 1.5,
                               fontFamily: 'NunitoSans',
                               fontWeight: FontWeight.w700,
                             ),

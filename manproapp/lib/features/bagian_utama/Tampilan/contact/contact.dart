@@ -23,6 +23,7 @@ class KontakYayasan extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Tombol back
+<<<<<<< HEAD
                     IconButton(
                       onPressed: () {
                         final controller = Get.put(NavigationController());
@@ -34,6 +35,9 @@ class KontakYayasan extends StatelessWidget {
                         size: 32.0,
                       ),
                     ),
+=======
+                    const TombolBack(),
+>>>>>>> def64f356d344a2d80879ba2ca06edb5c05023c7
 
                     // Tulisan Kontak Yayasan
                     const TulisanKontak(),
@@ -42,9 +46,15 @@ class KontakYayasan extends StatelessWidget {
                     ),
 
                     // Kontak Yayasan
+<<<<<<< HEAD
                     const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 20.0),
                       child: KontakYayasanContent(),
+=======
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      child: ContactYayasanContent(),
+>>>>>>> def64f356d344a2d80879ba2ca06edb5c05023c7
                     ),
                   ],
                 ),

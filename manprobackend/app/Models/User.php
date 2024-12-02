@@ -22,6 +22,7 @@ class User extends Authenticatable
         'kota_asal',
         'no_telpon',
         'password',
+        'is_admin',
     ];
 
     /**
@@ -44,6 +45,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_admin' => 'boolean',
         ];
     }
 }

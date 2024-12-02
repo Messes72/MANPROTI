@@ -1,13 +1,17 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:manpro/common/widgets/background_app.dart';
 import 'package:manpro/utils/constants/image_string.dart';
 import 'package:manpro/features/bagian_utama/controllers/eventController.dart';
 
+// Widget untuk form pendaftaran event
 class RegisEvent extends StatefulWidget {
+  // Parameter yang dibutuhkan
   final String eventName;
   final int eventId;
 
+  // Constructor
   const RegisEvent({
     super.key,
     required this.eventName,
@@ -19,18 +23,45 @@ class RegisEvent extends StatefulWidget {
 }
 
 class _RegisEventState extends State<RegisEvent> {
+  // Controller untuk input field
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
+
+  // Controller untuk event dan form
   final eventController = Get.find<EventController>();
   final _formKey = GlobalKey<FormState>();
 
-  void _submitRegistration() async {
+  // Membersihkan controller saat widget dihapus
+  @override
+  void dispose() {
+    nameController.dispose();
+    emailController.dispose();
+    super.dispose();
+  }
+
+  // Fungsi untuk mengirim data pendaftaran
+  Future<void> _submitRegistration() async {
+    // Validasi form terlebih dahulu
     if (_formKey.currentState!.validate()) {
-      eventController.registerEvent(
-        eventId: widget.eventId,
-        name: nameController.text,
-        email: emailController.text,
-      );
+      try {
+        // Mencoba mendaftarkan event
+        await eventController.registerEvent(
+          eventId: widget.eventId,
+          name: nameController.text.trim(),
+          email: emailController.text.trim(),
+        );
+      } catch (e) {
+        // Menampilkan pesan error jika gagal
+        Get.snackbar(
+          'Error',
+          e.toString().contains('duplicate')
+              ? 'Anda sudah terdaftar di event ini'
+              : 'Gagal mendaftar. Silakan coba lagi.',
+          backgroundColor: Colors.red[100],
+          colorText: Colors.red[900],
+          duration: const Duration(seconds: 3),
+        );
+      }
     }
   }
 
@@ -39,7 +70,10 @@ class _RegisEventState extends State<RegisEvent> {
     return Scaffold(
       body: Stack(
         children: [
+          // Background aplikasi
           const BackgroundAPP(),
+
+          // Konten utama
           SafeArea(
             child: SingleChildScrollView(
               child: Padding(
@@ -49,6 +83,7 @@ class _RegisEventState extends State<RegisEvent> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      // Tombol kembali
                       IconButton(
                         onPressed: () => Get.back(),
                         icon: const ImageIcon(
@@ -57,6 +92,8 @@ class _RegisEventState extends State<RegisEvent> {
                         ),
                       ),
                       const SizedBox(height: 25.0),
+
+                      // Judul halaman
                       const Text(
                         'Daftar Event',
                         style: TextStyle(
@@ -67,6 +104,8 @@ class _RegisEventState extends State<RegisEvent> {
                         ),
                       ),
                       const SizedBox(height: 20),
+
+                      // Form container
                       Container(
                         padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
@@ -84,6 +123,7 @@ class _RegisEventState extends State<RegisEvent> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            // Nama event yang dipilih
                             Text(
                               'Event: ${widget.eventName}',
                               style: const TextStyle(
@@ -94,16 +134,18 @@ class _RegisEventState extends State<RegisEvent> {
                               ),
                             ),
                             const SizedBox(height: 20),
+
+                            // Input field untuk nama
                             TextFormField(
                               controller: nameController,
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return 'Please enter your name';
+                                  return 'Mohon masukkan nama Anda';
                                 }
                                 return null;
                               },
                               decoration: InputDecoration(
-                                hintText: 'Name',
+                                hintText: 'Nama',
                                 hintStyle: const TextStyle(
                                   fontFamily: 'NunitoSans',
                                   fontWeight: FontWeight.w700,
@@ -119,14 +161,16 @@ class _RegisEventState extends State<RegisEvent> {
                               ),
                             ),
                             const SizedBox(height: 20),
+
+                            // Input field untuk email
                             TextFormField(
                               controller: emailController,
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return 'Please enter your email';
+                                  return 'Mohon masukkan email Anda';
                                 }
                                 if (!GetUtils.isEmail(value)) {
-                                  return 'Please enter a valid email';
+                                  return 'Mohon masukkan email yang valid';
                                 }
                                 return null;
                               },
@@ -147,9 +191,12 @@ class _RegisEventState extends State<RegisEvent> {
                               ),
                             ),
                             const SizedBox(height: 30),
+
+                            // Tombol submit
                             SizedBox(
                               width: double.infinity,
                               child: Obx(() => ElevatedButton(
+                                    // Nonaktifkan tombol saat loading
                                     onPressed: eventController.isLoading.value
                                         ? null
                                         : _submitRegistration,
@@ -165,10 +212,11 @@ class _RegisEventState extends State<RegisEvent> {
                                         ),
                                       ),
                                     ),
+                                    // Tampilkan loading indicator atau teks
                                     child: eventController.isLoading.value
                                         ? const CircularProgressIndicator()
                                         : const Text(
-                                            'Confirm',
+                                            'Daftar',
                                             style: TextStyle(
                                               fontSize: 16,
                                               fontFamily: "Montserrat",
